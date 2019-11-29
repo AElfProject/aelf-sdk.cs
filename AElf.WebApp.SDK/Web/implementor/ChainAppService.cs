@@ -34,7 +34,7 @@ namespace AElf.WebApp.SDK.Web.Service
 
         public async Task<RoundDto> GetCurrentRoundInformationAsync()
         {
-            var url = GetRequestUrl(ApiMethods.CurrentRoundInformation);
+            var url = GetRequestUrl(ApiMethods.GetCurrentRoundInformation);
             return await _httpService.GetResponseAsync<RoundDto>(url);
         }
 

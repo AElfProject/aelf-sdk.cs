@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using AElf.WebApp.SDK.Web.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -158,7 +157,6 @@ namespace AElf.WebApp.SDK.Web.Service
             {
                 retryTimes++;
                 if (retryTimes > RetryTimes) throw new AElfWebAppException(ex.Message);
-                ;
 
                 await Task.Delay(5000);
                 return await PostResponseAsync(url, parameters, version, useApplicationJson, expectedStatusCode,

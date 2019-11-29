@@ -1,8 +1,6 @@
-using System;
-
-namespace AElf.WebApp.SDK.Web.Exceptions
+namespace AElf.WebApp.SDK.Web
 {
-    public class AElfWebAppException : Exception
+    public class AElfWebAppException : System.Exception
     {
         public AElfWebAppException(string message) : base(message)
         {

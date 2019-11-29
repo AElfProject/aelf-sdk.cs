@@ -5,7 +5,7 @@ namespace AElf.WebApp.SDK.Web
         //Chain
         GetChainStatus,
         GetContractFileDescriptorSet,
-        CurrentRoundInformation,
+        GetCurrentRoundInformation,
         GetRoundFromBase64,
         GetMiningSequences,
 
@@ -32,6 +32,6 @@ namespace AElf.WebApp.SDK.Web
         GetPeers,
         AddPeer,
         RemovePeer,
-        NetworkInfo
+        GetNetworkInfo
     }
 }

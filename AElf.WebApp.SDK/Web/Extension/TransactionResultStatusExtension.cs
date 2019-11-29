@@ -1,7 +1,7 @@
 using System;
 using AElf.Types;
 
-namespace AElf.WebApp.SDK.Web.Extensions
+namespace AElf.WebApp.SDK.Web.Extension
 {
     public static class TransactionResultStatusExtension
     {

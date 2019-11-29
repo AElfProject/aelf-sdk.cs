@@ -35,7 +35,7 @@ namespace AElf.WebApp.SDK.Web.Service
                 {ApiMethods.GetChainStatus, "/api/blockChain/chainStatus"},
                 {ApiMethods.GetContractFileDescriptorSet, "/api/blockChain/contractFileDescriptorSet?address={0}"},
                 {
-                    ApiMethods.CurrentRoundInformation, "/api/blockChain/currentRoundInformation"
+                    ApiMethods.GetCurrentRoundInformation, "/api/blockChain/currentRoundInformation"
                 },
 
                 {ApiMethods.GetRoundFromBase64, "/api/blockChain/roundFromBase64?str={0}"},
@@ -70,7 +70,7 @@ namespace AElf.WebApp.SDK.Web.Service
                 {ApiMethods.GetPeers, "/api/net/peers?withMetrics={0}"},
                 {ApiMethods.AddPeer, "/api/net/peer"},
                 {ApiMethods.RemovePeer, "/api/net/peer?address={0}"},
-                {ApiMethods.NetworkInfo, "/api/net/networkInfo"}
+                {ApiMethods.GetNetworkInfo, "/api/net/networkInfo"}
             };
         }
     }

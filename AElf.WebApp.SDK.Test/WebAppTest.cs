@@ -7,7 +7,7 @@ using AElf.Runtime.CSharp;
 using AElf.Types;
 using AElf.WebApp.SDK.Web;
 using AElf.WebApp.SDK.Web.Dto;
-using AElf.WebApp.SDK.Web.Extensions;
+using AElf.WebApp.SDK.Web.Extension;
 using AElf.WebApp.SDK.Web.Service;
 using Google.Protobuf;
 using Newtonsoft.Json;

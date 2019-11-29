@@ -39,7 +39,7 @@ namespace AElf.WebApp.SDK.Web.Service
 
         public async Task<NetworkInfoOutput> GetNetworkInfoAsync()
         {
-            var url = GetRequestUrl(ApiMethods.NetworkInfo);
+            var url = GetRequestUrl(ApiMethods.GetNetworkInfo);
             return await _httpService.GetResponseAsync<NetworkInfoOutput>(url);
         }
     }
