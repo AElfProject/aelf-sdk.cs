@@ -34,14 +34,14 @@ namespace AElf.WebApp.SDK.Test
         private const string Account = "2bWwpsN9WSc4iKJPHYL4EZX3nfxVY7XLadecnNMar1GdSb4hJz";
         private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
-        private IWebAppService WebAppService { get; }
+        private AElfWebService WebService { get; }
         private IHttpService _httpService;
         private readonly ITestOutputHelper _testOutputHelper;
 
         public WebAppTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
-            WebAppService = AElfWebAppClient.GetClientByUrl(Url);
+            WebService = AElfWebAppClient.GetClientByUrl(Url);
         }
 
         #region block
@@ -49,7 +49,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetBlockHeightTest()
         {
-            var height = await WebAppService.GetBlockHeightAsync();
+            var height = await WebService.GetBlockHeightAsync();
             height.ShouldNotBeNull();
             _testOutputHelper.WriteLine(height.ToString());
         }
@@ -57,8 +57,8 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetBlock_ByHeightAsyncTest()
         {
-            var height = await WebAppService.GetBlockHeightAsync();
-            var blockDto = await WebAppService.GetBlockByHeightAsync(height);
+            var height = await WebService.GetBlockHeightAsync();
+            var blockDto = await WebService.GetBlockByHeightAsync(height);
             Assert.True(blockDto != null);
 
             var block = JsonConvert.SerializeObject(blockDto, Formatting.Indented);
@@ -82,10 +82,10 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetBlockAsync_Success_Test()
         {
-            var firstBlockDto = await WebAppService.GetBlockByHeightAsync(1);
+            var firstBlockDto = await WebService.GetBlockByHeightAsync(1);
             var genesisHash = firstBlockDto.BlockHash;
 
-            var blockDto = await WebAppService.GetBlockAsync(genesisHash, true);
+            var blockDto = await WebService.GetBlockAsync(genesisHash, true);
             Assert.True(blockDto != null);
 
             var block = JsonConvert.SerializeObject(blockDto, Formatting.Indented);
@@ -99,7 +99,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetChainStatusAsync_Test()
         {
-            var chainStatusDto = await WebAppService.GetChainStatusAsync();
+            var chainStatusDto = await WebService.GetChainStatusAsync();
             Assert.True(chainStatusDto != null);
 
             var chainStatus = JsonConvert.SerializeObject(chainStatusDto, Formatting.Indented);
@@ -110,7 +110,7 @@ namespace AElf.WebApp.SDK.Test
         public async Task GetContractFileDescriptorSetAsync_Test()
         {
             var contractAddress = GenesisAddress;
-            var fileDescriptorBytes = await WebAppService.GetContractFileDescriptorSetAsync(contractAddress);
+            var fileDescriptorBytes = await WebService.GetContractFileDescriptorSetAsync(contractAddress);
             var descriptorSet = FileDescriptorSet.Parser.ParseFrom(fileDescriptorBytes);
             descriptorSet.ShouldNotBeNull();
         }
@@ -137,13 +137,13 @@ namespace AElf.WebApp.SDK.Test
         [Fact(Skip = "Redo this later.")]
         public async Task AddPeerAsync_Test()
         {
-            var peers = await WebAppService.GetPeersAsync(false);
+            var peers = await WebService.GetPeersAsync(false);
             peers.ShouldNotBeEmpty();
             Assert.True(peers.Count >= 1);
 
             // remove the last ipAddress
             var peerToRemoveAddress = peers[^1].IpAddress;
-            var removeSuccess = await WebAppService.RemovePeerAsync(peerToRemoveAddress);
+            var removeSuccess = await WebService.RemovePeerAsync(peerToRemoveAddress);
             removeSuccess.ShouldBeTrue();
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
 
@@ -152,7 +152,7 @@ namespace AElf.WebApp.SDK.Test
             {
                 Address = peerToRemoveAddress
             };
-            var addSuccess = await WebAppService.AddPeerAsync(peerInput);
+            var addSuccess = await WebService.AddPeerAsync(peerInput);
             addSuccess.ShouldBeTrue();
             _testOutputHelper.WriteLine($"Added ipAddress: {peerInput.Address}");
         }
@@ -160,11 +160,11 @@ namespace AElf.WebApp.SDK.Test
         [Fact(Skip = "Redo this later.")]
         public async Task RemovePeerAsync_Test()
         {
-            var peers = await WebAppService.GetPeersAsync(false);
+            var peers = await WebService.GetPeersAsync(false);
             peers.ShouldNotBeEmpty();
 
             var peerToRemoveAddress = peers[0].IpAddress;
-            var removeSuccess = await WebAppService.RemovePeerAsync(peerToRemoveAddress);
+            var removeSuccess = await WebService.RemovePeerAsync(peerToRemoveAddress);
             Assert.True(removeSuccess);
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
         }
@@ -172,7 +172,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetPeersAsync_Test()
         {
-            var peers = await WebAppService.GetPeersAsync(false);
+            var peers = await WebService.GetPeersAsync(false);
             Assert.True(peers != null);
             var peersInfo = JsonConvert.SerializeObject(peers, Formatting.Indented);
             _testOutputHelper.WriteLine(peersInfo);
@@ -181,7 +181,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetNetworkInfoAsync_Test()
         {
-            var netWorkInfo = await WebAppService.GetNetworkInfoAsync();
+            var netWorkInfo = await WebService.GetNetworkInfoAsync();
             Assert.True(netWorkInfo != null);
             var info = JsonConvert.SerializeObject(netWorkInfo, Formatting.Indented);
             _testOutputHelper.WriteLine(info);
@@ -194,7 +194,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetTaskQueueStatusAsync_Test()
         {
-            var taskQueueStatus = await WebAppService.GetTaskQueueStatusAsync();
+            var taskQueueStatus = await WebService.GetTaskQueueStatusAsync();
             taskQueueStatus.ShouldNotBeEmpty();
 
             var queueStatus = JsonConvert.SerializeObject(taskQueueStatus, Formatting.Indented);
@@ -204,7 +204,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetTransactionPoolStatusAsync_Test()
         {
-            var poolStatus = await WebAppService.GetTransactionPoolStatusAsync();
+            var poolStatus = await WebService.GetTransactionPoolStatusAsync();
             Assert.True(poolStatus != null);
 
             var status = JsonConvert.SerializeObject(poolStatus, Formatting.Indented);
@@ -222,7 +222,7 @@ namespace AElf.WebApp.SDK.Test
             var signature = GetSignatureWith(PrivateKey, transaction.GetHash().ToByteArray());
             transaction.Signature = ByteString.CopyFrom(signature.ToByteArray());
 
-            var transactionResult = await WebAppService.ExecuteTransactionAsync(new ExecuteTransactionDto
+            var transactionResult = await WebService.ExecuteTransactionAsync(new ExecuteTransactionDto
             {
                 RawTransaction = transaction.ToByteArray().ToHex()
             });
@@ -234,10 +234,10 @@ namespace AElf.WebApp.SDK.Test
         public async Task ExecuteRawTransactionAsync_Test()
         {
             var address = GenesisAddress;
-            var height = await WebAppService.GetBlockHeightAsync();
-            var block = await WebAppService.GetBlockByHeightAsync(height);
+            var height = await WebService.GetBlockHeightAsync();
+            var block = await WebService.GetBlockByHeightAsync(height);
 
-            var createRaw = await WebAppService.CreateRawTransactionAsync(new CreateRawTransactionInput
+            var createRaw = await WebService.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
                 From = Account,
                 To = address,
@@ -253,7 +253,7 @@ namespace AElf.WebApp.SDK.Test
             var transactionId = Hash.FromRawBytes(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
             var signature = GetSignatureWith(PrivateKey, transactionId.ToByteArray()).ToHex();
 
-            var rawTransactionResult = await WebAppService.ExecuteRawTransactionAsync(new ExecuteRawTransactionDto
+            var rawTransactionResult = await WebService.ExecuteRawTransactionAsync(new ExecuteRawTransactionDto
             {
                 RawTransaction = createRaw.RawTransaction,
                 Signature = signature
@@ -266,10 +266,10 @@ namespace AElf.WebApp.SDK.Test
         public async Task CreateRawTransactionAsync_Test()
         {
             var address = GenesisAddress;
-            var height = await WebAppService.GetBlockHeightAsync();
-            var block = await WebAppService.GetBlockByHeightAsync(height);
+            var height = await WebService.GetBlockHeightAsync();
+            var block = await WebService.GetBlockByHeightAsync(height);
 
-            var createRaw = await WebAppService.CreateRawTransactionAsync(new CreateRawTransactionInput
+            var createRaw = await WebService.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
                 From = Account,
                 To = address,
@@ -289,10 +289,10 @@ namespace AElf.WebApp.SDK.Test
         public async Task SendRawTransactionAsync_Test()
         {
             var toAddress = GenesisAddress;
-            var height = await WebAppService.GetBlockHeightAsync();
-            var block = await WebAppService.GetBlockByHeightAsync(height);
+            var height = await WebService.GetBlockHeightAsync();
+            var block = await WebService.GetBlockByHeightAsync(height);
 
-            var createRaw = await WebAppService.CreateRawTransactionAsync(new CreateRawTransactionInput
+            var createRaw = await WebService.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
                 From = Account,
                 To = toAddress,
@@ -309,7 +309,7 @@ namespace AElf.WebApp.SDK.Test
             var transactionId = Hash.FromRawBytes(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
             var signature = GetSignatureWith(PrivateKey, transactionId.ToByteArray()).ToHex();
 
-            var rawTransactionResult = await WebAppService.SendRawTransactionAsync(new SendRawTransactionInput
+            var rawTransactionResult = await WebService.SendRawTransactionAsync(new SendRawTransactionInput
             {
                 Transaction = createRaw.RawTransaction,
                 Signature = signature,
@@ -333,7 +333,7 @@ namespace AElf.WebApp.SDK.Test
             var signature = GetSignatureWith(PrivateKey, transaction.GetHash().ToByteArray());
             transaction.Signature = ByteString.CopyFrom(signature.ToByteArray());
 
-            var transactionResult = await WebAppService.SendTransactionAsync(new SendTransactionInput
+            var transactionResult = await WebService.SendTransactionAsync(new SendTransactionInput
             {
                 RawTransaction = transaction.ToByteArray().ToHex()
             });
@@ -363,14 +363,14 @@ namespace AElf.WebApp.SDK.Test
             }
 
             transactions.Count.ShouldBe(2);
-            var result1 = await WebAppService.SendTransactionAsync(new SendTransactionInput
+            var result1 = await WebService.SendTransactionAsync(new SendTransactionInput
             {
                 RawTransaction = transactions[0].ToByteArray().ToHex()
             });
 
             Assert.True(result1 != null);
 
-            var result2 = await WebAppService.SendTransactionAsync(new SendTransactionInput
+            var result2 = await WebService.SendTransactionAsync(new SendTransactionInput
             {
                 RawTransaction = transactions[1].ToByteArray().ToHex()
             });
@@ -381,20 +381,20 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetTransactionResultAsync_Test()
         {
-            var firstBlockDto = await WebAppService.GetBlockByHeightAsync(1, true);
+            var firstBlockDto = await WebService.GetBlockByHeightAsync(1, true);
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
 
-            var transactionResultDto = await WebAppService.GetTransactionResultAsync(transactionId);
+            var transactionResultDto = await WebService.GetTransactionResultAsync(transactionId);
             Assert.True(transactionResultDto.Status.ToTransactionResultStatus() == TransactionResultStatus.Mined);
         }
 
         [Fact]
         public async Task GetTransactionResultsAsync_Test()
         {
-            var firstBlockDto = await WebAppService.GetBlockByHeightAsync(1, true);
+            var firstBlockDto = await WebService.GetBlockByHeightAsync(1, true);
             var blockHash = firstBlockDto.BlockHash;
 
-            var transactionResults = await WebAppService.GetTransactionResultsAsync(blockHash, 0, 2);
+            var transactionResults = await WebService.GetTransactionResultsAsync(blockHash, 0, 2);
             foreach (var transaction in transactionResults)
             {
                 Assert.True(transaction.Status.ToTransactionResultStatus() == TransactionResultStatus.Mined);
@@ -404,9 +404,9 @@ namespace AElf.WebApp.SDK.Test
         [Fact]
         public async Task GetMerklePathByTransactionIdAsync_Test()
         {
-            var firstBlockDto = await WebAppService.GetBlockByHeightAsync(1, true);
+            var firstBlockDto = await WebService.GetBlockByHeightAsync(1, true);
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
-            var merklePathDto = await WebAppService.GetMerklePathByTransactionIdAsync(transactionId);
+            var merklePathDto = await WebService.GetMerklePathByTransactionIdAsync(transactionId);
             Assert.True(merklePathDto != null);
 
             var merklePath = JsonConvert.SerializeObject(merklePathDto, Formatting.Indented);
@@ -423,7 +423,7 @@ namespace AElf.WebApp.SDK.Test
         {
             if (_genesisAddress != null) return _genesisAddress;
 
-            var statusDto = AsyncHelper.RunSync(WebAppService.GetChainStatusAsync);
+            var statusDto = AsyncHelper.RunSync(WebService.GetChainStatusAsync);
             _genesisAddress = statusDto.GenesisContractAddress;
 
             return _genesisAddress;
@@ -439,8 +439,8 @@ namespace AElf.WebApp.SDK.Test
         private async Task<Transaction> GenerateTransactionAsync(string from, string to, string methodName,
             IMessage input)
         {
-            var height = await WebAppService.GetBlockHeightAsync();
-            var block = await WebAppService.GetBlockByHeightAsync(height);
+            var height = await WebService.GetBlockHeightAsync();
+            var block = await WebService.GetBlockByHeightAsync(height);
             var blockHash = HashHelper.HexStringToHash(block.BlockHash);
 
             var transaction = new Transaction

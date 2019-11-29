@@ -2,18 +2,21 @@ using System.Collections.Generic;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
-    // TODO move
-    public class BaseService
+    public partial class AElfWebService
     {
-        protected BaseService()
+        private readonly IHttpService _httpService;
+
+        public AElfWebService(IHttpService httpService, string baseUrl)
         {
             InitializeWebApiRoute();
+            _httpService = httpService;
+            BaseUrl = FormatServiceUrl(baseUrl);
         }
-        
-        private Dictionary<ApiMethods, string> _apiRoute;
-        protected string BaseUrl { get; set; }
 
-        protected string FormatServiceUrl(string serviceUrl)
+        private Dictionary<ApiMethods, string> _apiRoute;
+        private string BaseUrl { get; set; }
+
+        private string FormatServiceUrl(string serviceUrl)
         {
             if (serviceUrl.Contains("http://") || serviceUrl.Contains("https://"))
                 return serviceUrl;
@@ -21,7 +24,7 @@ namespace AElf.WebApp.SDK.Web.Service
             return $"http://{serviceUrl}";
         }
 
-        protected string GetRequestUrl(ApiMethods api, params object[] parameters)
+        private string GetRequestUrl(ApiMethods api, params object[] parameters)
         {
             var subUrl = string.Format(_apiRoute[api], parameters);
 

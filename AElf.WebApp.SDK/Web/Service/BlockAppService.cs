@@ -3,15 +3,17 @@ using AElf.WebApp.SDK.Web.Dto;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
-    public class BlockService : BaseService, IBlockAppService
+    public interface IBlockAppService
     {
-        private readonly IHttpService _httpService;
+        Task<long> GetBlockHeightAsync();
 
-        public BlockService(IHttpService httpService, string baseUrl)
-        {
-            _httpService = httpService;
-            BaseUrl = FormatServiceUrl(baseUrl);
-        }
+        Task<BlockDto> GetBlockAsync(string blockHash, bool includeTransactions = false);
+
+        Task<BlockDto> GetBlockByHeightAsync(long blockHeight, bool includeTransactions = false);
+    }
+    
+    public partial class AElfWebService : IBlockAppService
+    {
 
         public async Task<long> GetBlockHeightAsync()
         {

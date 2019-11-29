@@ -4,16 +4,19 @@ using AElf.WebApp.SDK.Web.Dto;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
-    public class ChainService : BaseService, IChainAppService
+    public interface IChainAppService
     {
-        private readonly IHttpService _httpService;
+        Task<ChainStatusDto> GetChainStatusAsync();
 
-        public ChainService(IHttpService httpService, string baseUrl)
-        {
-            _httpService = httpService;
-            BaseUrl = FormatServiceUrl(baseUrl);
-        }
+        Task<byte[]> GetContractFileDescriptorSetAsync(string address);
 
+        Task<RoundDto> GetCurrentRoundInformationAsync();
+
+        Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync();
+    }
+
+    public partial class AElfWebService : IChainAppService
+    {
         public async Task<ChainStatusDto> GetChainStatusAsync()
         {
             var url = GetRequestUrl(ApiMethods.GetChainStatus);

@@ -4,16 +4,19 @@ using AElf.WebApp.SDK.Web.Dto;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
-    public class NetService : BaseService, INetAppService
+    public interface INetAppService
     {
-        private readonly IHttpService _httpService;
+        Task<bool> AddPeerAsync(AddPeerInput input);
 
-        public NetService(IHttpService httpService, string baseUrl)
-        {
-            _httpService = httpService;
-            BaseUrl = FormatServiceUrl(baseUrl);
-        }
+        Task<bool> RemovePeerAsync(string address);
 
+        Task<List<PeerDto>> GetPeersAsync(bool withMetrics);
+
+        Task<NetworkInfoOutput> GetNetworkInfoAsync();
+    }
+    
+    public partial class AElfWebService : INetAppService
+    {
         public async Task<bool> AddPeerAsync(AddPeerInput input)
         {
             var url = GetRequestUrl(ApiMethods.AddPeer);

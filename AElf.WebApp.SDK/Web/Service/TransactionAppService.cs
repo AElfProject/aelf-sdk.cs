@@ -4,16 +4,32 @@ using AElf.WebApp.SDK.Web.Dto;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
-    public class TransactionService : BaseService, ITransactionAppService
+    public interface ITransactionAppService
     {
-        private readonly IHttpService _httpService;
+        Task<TransactionPoolStatusOutput> GetTransactionPoolStatusAsync();
 
-        public TransactionService(IHttpService httpService, string baseUrl)
-        {
-            _httpService = httpService;
-            BaseUrl = FormatServiceUrl(baseUrl);
-        }
+        Task<string> ExecuteTransactionAsync(ExecuteTransactionDto input);
 
+        Task<string> ExecuteRawTransactionAsync(ExecuteRawTransactionDto input);
+
+        Task<CreateRawTransactionOutput> CreateRawTransactionAsync(CreateRawTransactionInput input);
+
+        Task<SendRawTransactionOutput> SendRawTransactionAsync(SendRawTransactionInput input);
+
+        Task<SendTransactionOutput> SendTransactionAsync(SendTransactionInput input);
+
+        Task<string[]> SendTransactionsAsync(SendTransactionsInput input);
+
+        Task<TransactionResultDto> GetTransactionResultAsync(string transactionId);
+
+        Task<List<TransactionResultDto>> GetTransactionResultsAsync(string blockHash, int offset = 0,
+            int limit = 10);
+
+        Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
+    }
+
+    public partial class AElfWebService : ITransactionAppService
+    {
         public async Task<TransactionPoolStatusOutput> GetTransactionPoolStatusAsync()
         {
             var url = GetRequestUrl(ApiMethods.GetTransactionPoolStatus);
