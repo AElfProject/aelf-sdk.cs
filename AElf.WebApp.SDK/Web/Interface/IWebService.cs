@@ -22,8 +22,6 @@ namespace AElf.WebApp.SDK.Web
         Task<BlockDto> GetBlockAsync(string blockHash, bool includeTransactions = false);
 
         Task<BlockDto> GetBlockByHeightAsync(long blockHeight, bool includeTransactions = false);
-
-        Task<BlockStateDto> GetBlockStateAsync(string blockHash);
     }
 
     public interface IChainAppService
@@ -32,17 +30,13 @@ namespace AElf.WebApp.SDK.Web
 
         Task<byte[]> GetContractFileDescriptorSetAsync(string address);
 
-        Task<RoundDto> GetRoundFromBase64Async(string base64Info);
-
         Task<RoundDto> GetCurrentRoundInformationAsync();
 
-        Task<List<MiningSequenceDto>> GetMiningSequencesAsync(int count);
+        Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync();
     }
 
     public interface ITransactionAppService
     {
-        Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync();
-
         Task<TransactionPoolStatusOutput> GetTransactionPoolStatusAsync();
 
         Task<string> ExecuteTransactionAsync(ExecuteTransactionDto input);

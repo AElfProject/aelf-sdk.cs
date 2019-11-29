@@ -55,11 +55,6 @@ namespace AElf.WebApp.SDK.Web.Service
             return await _blockAppService.GetBlockByHeightAsync(blockHeight, includeTransactions);
         }
 
-        public async Task<BlockStateDto> GetBlockStateAsync(string blockHash)
-        {
-            return await _blockAppService.GetBlockStateAsync(blockHash);
-        }
-
         public async Task<RoundDto> GetCurrentRoundInformationAsync()
         {
             return await _chainAppService.GetCurrentRoundInformationAsync();
@@ -75,19 +70,9 @@ namespace AElf.WebApp.SDK.Web.Service
             return await _chainAppService.GetContractFileDescriptorSetAsync(address);
         }
 
-        public async Task<RoundDto> GetRoundFromBase64Async(string base64Info)
-        {
-            return await _chainAppService.GetRoundFromBase64Async(base64Info);
-        }
-
-        public async Task<List<MiningSequenceDto>> GetMiningSequencesAsync(int count)
-        {
-            return await _chainAppService.GetMiningSequencesAsync(count);
-        }
-
         public async Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync()
         {
-            return await _transactionAppService.GetTaskQueueStatusAsync();
+            return await _chainAppService.GetTaskQueueStatusAsync();
         }
 
         public async Task<TransactionPoolStatusOutput> GetTransactionPoolStatusAsync()

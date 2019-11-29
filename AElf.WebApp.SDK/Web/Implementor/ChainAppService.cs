@@ -26,22 +26,16 @@ namespace AElf.WebApp.SDK.Web.Service
             return await _httpService.GetResponseAsync<byte[]>(url);
         }
 
-        public async Task<RoundDto> GetRoundFromBase64Async(string base64Info)
-        {
-            var url = GetRequestUrl(ApiMethods.GetRoundFromBase64, base64Info);
-            return await _httpService.GetResponseAsync<RoundDto>(url);
-        }
-
         public async Task<RoundDto> GetCurrentRoundInformationAsync()
         {
             var url = GetRequestUrl(ApiMethods.GetCurrentRoundInformation);
             return await _httpService.GetResponseAsync<RoundDto>(url);
         }
 
-        public async Task<List<MiningSequenceDto>> GetMiningSequencesAsync(int count)
+        public async Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync()
         {
-            var url = GetRequestUrl(ApiMethods.GetMiningSequences, count);
-            return await _httpService.GetResponseAsync<List<MiningSequenceDto>>(url);
+            var url = GetRequestUrl(ApiMethods.GetTaskQueueStatus);
+            return await _httpService.GetResponseAsync<List<TaskQueueInfoDto>>(url);
         }
     }
 }

@@ -30,11 +30,5 @@ namespace AElf.WebApp.SDK.Web.Service
             var url = GetRequestUrl(ApiMethods.GetBlockByHeight, blockHeight, includeTransactions);
             return await _httpService.GetResponseAsync<BlockDto>(url);
         }
-
-        public async Task<BlockStateDto> GetBlockStateAsync(string blockHash)
-        {
-            var url = GetRequestUrl(ApiMethods.GetBlockState, blockHash);
-            return await _httpService.GetResponseAsync<BlockStateDto>(url);
-        }
     }
 }

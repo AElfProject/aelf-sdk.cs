@@ -16,7 +16,7 @@ namespace AElf.WebApp.SDK.Web.Dto
 
         public long Height { get; set; }
 
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
 
         public string ChainId { get; set; }
 

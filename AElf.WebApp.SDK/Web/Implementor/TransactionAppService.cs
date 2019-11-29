@@ -14,12 +14,6 @@ namespace AElf.WebApp.SDK.Web.Service
             BaseUrl = FormatServiceUrl(baseUrl);
         }
 
-        public async Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync()
-        {
-            var url = GetRequestUrl(ApiMethods.GetTaskQueueStatus);
-            return await _httpService.GetResponseAsync<List<TaskQueueInfoDto>>(url);
-        }
-
         public async Task<TransactionPoolStatusOutput> GetTransactionPoolStatusAsync()
         {
             var url = GetRequestUrl(ApiMethods.GetTransactionPoolStatus);

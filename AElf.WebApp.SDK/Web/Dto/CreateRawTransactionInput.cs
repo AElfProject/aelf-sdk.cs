@@ -41,6 +41,7 @@ namespace AElf.WebApp.SDK.Web.Dto
         [Required]
         public string Params { get; set; }
 
+        // TODO validate
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();

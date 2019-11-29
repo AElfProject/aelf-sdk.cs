@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
+    // TODO move
     public class BaseService
     {
         protected BaseService()

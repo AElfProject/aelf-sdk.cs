@@ -30,6 +30,7 @@ namespace AElf.WebApp.SDK.Test
         private string ContractMethodName => "GetContractAddressByName";
 
         // Info of a running node.
+        // TODO init the account
         private const string Account = "2bWwpsN9WSc4iKJPHYL4EZX3nfxVY7XLadecnNMar1GdSb4hJz";
         private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
@@ -79,20 +80,6 @@ namespace AElf.WebApp.SDK.Test
         }
 
         [Fact]
-        public async Task GetBlockStateAsync_Success_Test()
-        {
-            var height = await WebAppService.GetBlockHeightAsync();
-            var blockDto = await WebAppService.GetBlockByHeightAsync(height);
-            var blockHash = blockDto.BlockHash;
-
-            var blockStateDto = await WebAppService.GetBlockStateAsync(blockHash);
-            Assert.True(blockStateDto != null);
-
-            var blockState = JsonConvert.SerializeObject(blockStateDto, Formatting.Indented);
-            _testOutputHelper.WriteLine(blockState);
-        }
-
-        [Fact]
         public async Task GetBlockAsync_Success_Test()
         {
             var firstBlockDto = await WebAppService.GetBlockByHeightAsync(1);
@@ -137,17 +124,6 @@ namespace AElf.WebApp.SDK.Test
 
             var currentRoundInformation = JsonConvert.SerializeObject(roundDto);
             _testOutputHelper.WriteLine(currentRoundInformation);
-        }
-
-        [Fact]
-        public async Task GetMiningSequencesAsync_Test()
-        {
-            var count = 5;
-            var miningSequenceDtos = await WebAppService.GetMiningSequencesAsync(count);
-            miningSequenceDtos.ShouldNotBeEmpty();
-
-            var sequences = JsonConvert.SerializeObject(miningSequenceDtos, Formatting.Indented);
-            _testOutputHelper.WriteLine(sequences);
         }
 
         #endregion
@@ -409,7 +385,7 @@ namespace AElf.WebApp.SDK.Test
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
 
             var transactionResultDto = await WebAppService.GetTransactionResultAsync(transactionId);
-            Assert.True(transactionResultDto.Status.ConvertTransactionResultStatus() == TransactionResultStatus.Mined);
+            Assert.True(transactionResultDto.Status.ToTransactionResultStatus() == TransactionResultStatus.Mined);
         }
 
         [Fact]
@@ -421,7 +397,7 @@ namespace AElf.WebApp.SDK.Test
             var transactionResults = await WebAppService.GetTransactionResultsAsync(blockHash, 0, 2);
             foreach (var transaction in transactionResults)
             {
-                Assert.True(transaction.Status.ConvertTransactionResultStatus() == TransactionResultStatus.Mined);
+                Assert.True(transaction.Status.ToTransactionResultStatus() == TransactionResultStatus.Mined);
             }
         }
 
