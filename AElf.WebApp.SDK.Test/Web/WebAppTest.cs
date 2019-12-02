@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -118,7 +119,7 @@ namespace AElf.WebApp.SDK.Test
         [Fact(Skip = "Redo this later.")]
         public async Task GetCurrentRoundInformationAsync_Test()
         {
-            var webAppService = AElfWebAppClient.GetClientByUrl(Url, retryTimes: 10, timeout:60);
+            var webAppService = AElfWebAppClient.GetClientByUrl(Url, retryTimes: 10, timeout: 60);
             var roundDto = await webAppService.GetCurrentRoundInformationAsync();
             roundDto.ShouldNotBeNull();
 
@@ -317,7 +318,7 @@ namespace AElf.WebApp.SDK.Test
             });
 
             Assert.True(rawTransactionResult != null);
-            
+
             var result = JsonConvert.SerializeObject(rawTransactionResult, Formatting.Indented);
             _testOutputHelper.WriteLine(result);
         }
@@ -411,7 +412,7 @@ namespace AElf.WebApp.SDK.Test
 
             var merklePath = JsonConvert.SerializeObject(merklePathDto, Formatting.Indented);
             merklePath.ShouldNotBeEmpty();
-            
+
             _testOutputHelper.WriteLine(merklePath);
         }
 
@@ -421,8 +422,37 @@ namespace AElf.WebApp.SDK.Test
             var chainId = await WebService.GetChainIdAsync();
             chainId.ShouldNotBeNull();
             chainId.ShouldBeOfType(typeof(int));
-            
+
             _testOutputHelper.WriteLine(chainId.ToString());
+        }
+        
+        [Fact]
+        public async Task IsConnected_Test()
+        {
+            var isConnected = await WebService.IsConnected();
+            isConnected.ShouldBeTrue();
+        }
+        
+        [Fact]
+        public async Task GetAccountFromPrivateKeyAsync_Test()
+        {
+            var address = await WebService.GetAccountFromPrivateKeyAsync(PrivateKey);
+            Assert.True(address == Account);
+        }
+        
+        [Fact]
+        public async Task GetAccountFromPubKeyAsync_Test()
+        {
+            var pubKey = await WebService.GetPublicKey(PrivateKey);
+            var address = await WebService.GetAccountFromPubKeyAsync(pubKey);
+            Assert.True(address == Account);
+        }
+
+        [Fact]
+        public async Task GetGenesisContractAddressAsync_Test()
+        {
+            var genesisAddress = await WebService.GetGenesisContractAddressAsync();
+            genesisAddress.ShouldNotBeEmpty();
         }
 
         #endregion
@@ -465,7 +495,7 @@ namespace AElf.WebApp.SDK.Test
 
             return transaction;
         }
-        
+
         #endregion
     }
 }
