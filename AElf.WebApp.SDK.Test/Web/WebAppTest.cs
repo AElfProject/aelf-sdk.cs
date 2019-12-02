@@ -3,12 +3,12 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AElf.Cryptography;
-using AElf.Runtime.CSharp;
 using AElf.Types;
 using AElf.WebApp.SDK.Web;
 using AElf.WebApp.SDK.Web.Dto;
 using AElf.WebApp.SDK.Web.Extension;
 using AElf.WebApp.SDK.Web.Service;
+using AElfSdk;
 using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,7 +21,7 @@ namespace AElf.WebApp.SDK.Test
 {
     public class WebAppTest
     {
-        private const string Url = "127.0.0.1:8200";
+        private const string Url = "127.0.0.1:8001";
         private const int RetryTimes = 3;
         private const int TimeOut = 60;
 
@@ -413,6 +413,16 @@ namespace AElf.WebApp.SDK.Test
             merklePath.ShouldNotBeEmpty();
             
             _testOutputHelper.WriteLine(merklePath);
+        }
+
+        [Fact]
+        public async Task GetChainIdAsync_Test()
+        {
+            var chainId = await WebService.GetChainIdAsync();
+            chainId.ShouldNotBeNull();
+            chainId.ShouldBeOfType(typeof(int));
+            
+            _testOutputHelper.WriteLine(chainId.ToString());
         }
 
         #endregion

@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,5 +13,16 @@
     
     <ItemGroup>
         <PackageReference Include="AElf.Types" Version="0.8.3" />
+        <PackageReference Include="AElf.Cryptography" Version="0.8.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Protobuf\Generated" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="Protobuf\Proto\AElfSdk.proto">
+        <OutputDir>Protobuf/Generated/</OutputDir>
+      </Protobuf>
     </ItemGroup>
 </Project>

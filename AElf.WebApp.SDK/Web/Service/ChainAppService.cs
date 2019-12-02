@@ -13,6 +13,8 @@ namespace AElf.WebApp.SDK.Web.Service
         Task<RoundDto> GetCurrentRoundInformationAsync();
 
         Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync();
+
+        Task<int> GetChainIdAsync();
     }
 
     public partial class AElfWebService : IChainAppService
@@ -39,6 +41,16 @@ namespace AElf.WebApp.SDK.Web.Service
         {
             var url = GetRequestUrl(ApiMethods.GetTaskQueueStatus);
             return await _httpService.GetResponseAsync<List<TaskQueueInfoDto>>(url);
+        }
+
+        public async Task<int> GetChainIdAsync()
+        {
+            var url = GetRequestUrl(ApiMethods.GetChainStatus);
+            var statusDto = await _httpService.GetResponseAsync<ChainStatusDto>(url);
+            var base58ChainId = statusDto.ChainId;
+            var chainId = ChainHelper.ConvertBase58ToChainId(base58ChainId);
+
+            return chainId;
         }
     }
 }

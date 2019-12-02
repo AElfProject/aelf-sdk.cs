@@ -10,6 +10,18 @@ using Newtonsoft.Json.Serialization;
 
 namespace AElf.WebApp.SDK.Web.Service
 {
+    public interface IHttpService
+    {
+        Task<T> GetResponseAsync<T>(string url, string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+
+        Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
+            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+
+        Task<T> DeleteResponseAsObjectAsync<T>(string url, string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+    }
+
     public class HttpService : IHttpService
     {
         private HttpClient Client { get; set; }
