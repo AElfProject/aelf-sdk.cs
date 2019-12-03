@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -425,21 +424,21 @@ namespace AElf.WebApp.SDK.Test
 
             _testOutputHelper.WriteLine(chainId.ToString());
         }
-        
+
         [Fact]
         public async Task IsConnected_Test()
         {
             var isConnected = await WebService.IsConnected();
             isConnected.ShouldBeTrue();
         }
-        
+
         [Fact]
         public async Task GetAccountFromPrivateKeyAsync_Test()
         {
             var address = await WebService.GetAccountFromPrivateKeyAsync(PrivateKey);
             Assert.True(address == Account);
         }
-        
+
         [Fact]
         public async Task GetAccountFromPubKeyAsync_Test()
         {
@@ -453,6 +452,10 @@ namespace AElf.WebApp.SDK.Test
         {
             var genesisAddress = await WebService.GetGenesisContractAddressAsync();
             genesisAddress.ShouldNotBeEmpty();
+
+            var address = await WebService.GetContractAddressByName(Hash.Empty, PrivateKey);
+            var genesisAddress2 = address.GetFormatted();
+            Assert.True(genesisAddress == genesisAddress2);
         }
 
         #endregion

@@ -16,7 +16,7 @@ namespace AElf.WebApp.SDK.Web.Service
         Task<string> GetAccountFromPubKeyAsync(string pubKey);
         Task<string> GetPublicKey(string privateKeyHex);
         Task<string> GetGenesisContractAddressAsync();
-        Task<Address> GetContractAddressByName(string contractName, string privateKeyHex);
+        Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex);
     }
 
     public partial class AElfWebService : INodeManager
@@ -61,12 +61,11 @@ namespace AElf.WebApp.SDK.Web.Service
             return genesisAddress;
         }
 
-        public async Task<Address> GetContractAddressByName(string contractName, string privateKeyHex)
+        public async Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex)
         {
-            var hash = Hash.FromString(contractName);
             var from = await GetAccountFromPrivateKeyAsync(privateKeyHex);
             var to = await GetGenesisContractAddressAsync();
-            var transaction = await GenerateTransaction(from, to, "GetContractAddressByName", hash);
+            var transaction = await GenerateTransaction(from, to, "GetContractAddressByName", contractNameHash);
             var txWithSig = await SignTransaction(privateKeyHex, transaction);
 
             var response = await ExecuteTransactionAsync(new ExecuteTransactionDto
