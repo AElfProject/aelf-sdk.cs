@@ -30,6 +30,10 @@ namespace AElf.Net.SDK.Infrastructure.Service
             RequestUrl = requestUrl;
         }
 
+        /// <summary>
+        /// Verify whether this sdk successfully connects the chain.
+        /// </summary>
+        /// <returns>IsConnected or not</returns>
         public async Task<bool> IsConnected()
         {
             try
@@ -43,12 +47,22 @@ namespace AElf.Net.SDK.Infrastructure.Service
             }
         }
 
+        /// <summary>
+        /// Get the account address through the private key.
+        /// </summary>
+        /// <param name="privateKeyHex"></param>
+        /// <returns></returns>
         public Task<string> GetAccountFromPrivateKey(string privateKeyHex)
         {
             var address = Address.FromPublicKey(GetAElfKeyPair(privateKeyHex).PublicKey);
             return Task.FromResult(address.GetFormatted());
         }
 
+        /// <summary>
+        /// Get the account address through the public key.
+        /// </summary>
+        /// <param name="pubKey"></param>
+        /// <returns>Account</returns>
         public Task<string> GetAccountFromPubKey(string pubKey)
         {
             var publicKey = ByteArrayHelper.HexStringToByteArray(pubKey);
@@ -62,6 +76,10 @@ namespace AElf.Net.SDK.Infrastructure.Service
             return Task.FromResult(keyPair.PublicKey.ToHex());
         }
 
+        /// <summary>
+        /// Get the address of genesis contract.
+        /// </summary>
+        /// <returns>Address</returns>
         public async Task<string> GetGenesisContractAddressAsync()
         {
             var statusDto = await GetChainStatusAsync();
@@ -70,6 +88,12 @@ namespace AElf.Net.SDK.Infrastructure.Service
             return genesisAddress;
         }
 
+        /// <summary>
+        /// Get address of a contract by given contractNameHash.
+        /// </summary>
+        /// <param name="contractNameHash"></param>
+        /// <param name="privateKeyHex"></param>
+        /// <returns>Address</returns>
         public async Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex)
         {
             var from = await GetAccountFromPrivateKey(privateKeyHex);
@@ -87,8 +111,14 @@ namespace AElf.Net.SDK.Infrastructure.Service
             return address;
         }
 
-        #region private methods
-
+        /// <summary>
+        /// Build a transaction from the input parameters.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="methodName"></param>
+        /// <param name="input"></param>
+        /// <returns>Transaction unsigned</returns>
         public async Task<Transaction> GenerateTransaction(string from, string to,
             string methodName, IMessage input)
         {
@@ -114,6 +144,12 @@ namespace AElf.Net.SDK.Infrastructure.Service
             }
         }
 
+        /// <summary>
+        /// Sign a transaction using private key.
+        /// </summary>
+        /// <param name="privateKeyHex"></param>
+        /// <param name="transaction"></param>
+        /// <returns>Transaction signed</returns>
         public Task<Transaction> SignTransaction(string privateKeyHex, Transaction transaction)
         {
             var transactionData = transaction.GetHash().ToByteArray();
@@ -125,6 +161,18 @@ namespace AElf.Net.SDK.Infrastructure.Service
 
             return Task.FromResult(transaction);
         }
+
+        public string GetFormattedAddress(Address address)
+        {
+            return address.GetFormatted();
+        }
+
+        public Address GetBase58String(string base58String)
+        {
+            return AddressHelper.Base58StringToAddress(base58String);
+        }
+
+        #region private methods
 
         private ECKeyPair GetAElfKeyPair(string privateKeyHex)
         {

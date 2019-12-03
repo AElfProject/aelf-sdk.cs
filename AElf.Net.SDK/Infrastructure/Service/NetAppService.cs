@@ -17,6 +17,11 @@ namespace AElf.Net.SDK.Infrastructure.Service
     
     public partial class AElfService : INetAppService
     {
+        /// <summary>
+        /// Attempt to add a node to the connected network nodes.Input parameter contains the ipAddress of the node.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns>Add successfully or not</returns>
         public async Task<bool> AddPeerAsync(AddPeerInput input)
         { 
             var url = $"{RequestUrl}/api/net/peer";
@@ -28,18 +33,32 @@ namespace AElf.Net.SDK.Infrastructure.Service
             return await _httpService.PostResponseAsync<bool>(url, parameters);
         }
 
+        /// <summary>
+        /// Attempt to remove a node from the connected network nodes by given the ipAddress.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns>Delete successfully or not</returns>
         public async Task<bool> RemovePeerAsync(string address)
         {
             var url = $"{RequestUrl}/api/net/peer?address={address}";
             return await _httpService.DeleteResponseAsObjectAsync<bool>(url);
         }
 
+        /// <summary>
+        /// Gets information about the peer nodes of the current node.Optional whether to include metrics.
+        /// </summary>
+        /// <param name="withMetrics"></param>
+        /// <returns>Information about the peer nodes</returns>
         public async Task<List<PeerDto>> GetPeersAsync(bool withMetrics)
         {
             var url = $"{RequestUrl}/api/net/peers?withMetrics={withMetrics}";
             return await _httpService.GetResponseAsync<List<PeerDto>>(url);
         }
 
+        /// <summary>
+        /// Get the node's network information.
+        /// </summary>
+        /// <returns>Network information</returns>
         public async Task<NetworkInfoOutput> GetNetworkInfoAsync()
         {
             var url = $"{RequestUrl}/api/net/networkInfo";
