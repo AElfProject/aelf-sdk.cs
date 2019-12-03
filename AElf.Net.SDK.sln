@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Net.SDK", "AElf.Net.SDK\AElf.Net.SDK.csproj", "{8812E67B-3177-4370-B8FE-7D9C77CDAACD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Net.SDK.Test", "AElf.Net.SDK.Test\AElf.Net.SDK.Test.csproj", "{5201BCB2-AF90-408F-A830-9879B889C89A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3149BCAC-24BE-469C-88A5-139680B4DE1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1FF8D171-87A5-4D4C-B8B4-82F0B4D9260D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8812E67B-3177-4370-B8FE-7D9C77CDAACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8812E67B-3177-4370-B8FE-7D9C77CDAACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8812E67B-3177-4370-B8FE-7D9C77CDAACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8812E67B-3177-4370-B8FE-7D9C77CDAACD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5201BCB2-AF90-408F-A830-9879B889C89A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5201BCB2-AF90-408F-A830-9879B889C89A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5201BCB2-AF90-408F-A830-9879B889C89A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5201BCB2-AF90-408F-A830-9879B889C89A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5201BCB2-AF90-408F-A830-9879B889C89A} = {3149BCAC-24BE-469C-88A5-139680B4DE1E}
+		{8812E67B-3177-4370-B8FE-7D9C77CDAACD} = {1FF8D171-87A5-4D4C-B8B4-82F0B4D9260D}
+	EndGlobalSection
+EndGlobal

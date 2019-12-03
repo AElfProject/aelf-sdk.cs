@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.7.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AElf.Types" Version="0.8.3" />
+        <PackageReference Include="AElf.Cryptography" Version="0.8.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Protobuf\Generated" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="Protobuf\Proto\AElfSdk.proto" AfterTargets="Build">
+            <OutputDir>Protobuf/Generated/</OutputDir>
+        </Protobuf>
+    </ItemGroup>
+
+</Project>
