@@ -15,7 +15,7 @@ namespace AElf.Client.Service
         Task<NetworkInfoOutput> GetNetworkInfoAsync();
     }
 
-    public partial class AElfService : INetAppService
+    public partial class AElfClient : INetAppService
     {
         /// <summary>
         /// Attempt to add a node to the connected network nodes.Input parameter contains the ipAddress of the node.
