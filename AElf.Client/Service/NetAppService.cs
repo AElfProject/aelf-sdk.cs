@@ -6,7 +6,7 @@ namespace AElf.Client.Service
 {
     public interface INetAppService
     {
-        Task<bool> AddPeerAsync(AddPeerInput input);
+        Task<bool> AddPeerAsync(string address);
 
         Task<bool> RemovePeerAsync(string address);
 
@@ -20,14 +20,14 @@ namespace AElf.Client.Service
         /// <summary>
         /// Attempt to add a node to the connected network nodes.Input parameter contains the ipAddress of the node.
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="address"></param>
         /// <returns>Add successfully or not</returns>
-        public async Task<bool> AddPeerAsync(AddPeerInput input)
+        public async Task<bool> AddPeerAsync(string address)
         {
             var url = GetRequestUrl(BaseUrl, "api/net/peer");
             var parameters = new Dictionary<string, string>
             {
-                {"address", input.Address}
+                {"address", address}
             };
 
             return await _httpService.PostResponseAsync<bool>(url, parameters);
