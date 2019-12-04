@@ -98,7 +98,21 @@ Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
 
 ### Test
 
-This module contains tests for all services provided by AElfClient. You can see how to properly use services provided by AElfClient here.
+This module contains tests for all services provided by AElfClient. You can see how to properly use services provided by AElfClient here. 
+
+You need to firstly set necessary parameters to make sure tests can run successfully.
+
+1. Set baseUrl to your target url.
+
+   ```c#
+   private const string BaseUrl = "Http://127.0.0.1:8001";
+   ```
+
+2. Give privateKey of a running node.
+
+   ```c#
+   private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
+   ```
 
 ### Note
 
