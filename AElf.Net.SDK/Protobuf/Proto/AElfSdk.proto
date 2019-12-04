@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-option csharp_namespace = "AElfSdk";
-
-message FileDescriptorSet {
-    repeated bytes file = 1;
-}

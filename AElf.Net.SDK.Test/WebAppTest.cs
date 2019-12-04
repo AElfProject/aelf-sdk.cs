@@ -7,7 +7,7 @@ using AElf.Types;
 using AElf.Net.SDK.Infrastructure;
 using AElf.Net.SDK.Infrastructure.Dto;
 using AElf.Net.SDK.Infrastructure.Service;
-using AElfSdk;
+using AElf.Runtime.CSharp;
 using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

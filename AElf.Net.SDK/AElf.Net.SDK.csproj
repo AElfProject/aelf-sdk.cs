@@ -20,14 +20,4 @@
         <PackageReference Include="AElf.Cryptography" Version="0.8.3" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Protobuf\Generated" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Protobuf Include="Protobuf\Proto\AElfSdk.proto" AfterTargets="Build">
-            <OutputDir>Protobuf/Generated/</OutputDir>
-        </Protobuf>
-    </ItemGroup>
-
 </Project>
