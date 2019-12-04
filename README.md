@@ -18,7 +18,7 @@ var height = await AElfClient.GetBlockHeightAsync();
 
 ### Interface
 
-The interface methods can be easily available by instance "AElfClient" shown in basic usage. The following is a list of input parameters and type of output for each method. Check out the [Web api reference](https://docs.aelf.io/v/dev/reference) for detailed Interface description.
+The interface methods can be easily available by instance "AElfClient" shown in basic usage. The following is a list of input parameters and output for each method. Check out the [Web api reference](https://docs.aelf.io/v/dev/reference) for detailed Interface description.
 
 #### IBlockAppService
 
@@ -98,7 +98,7 @@ Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
 
 ### Test
 
-This module contains tests for all services provided by AElfClient. In this module, you can see how to properly use services provided by AElfClient. 
+This module contains tests for all services provided by AElfClient. You can see how to properly use services provided by AElfClient here.
 
 ### Note
 
