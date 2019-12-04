@@ -19,20 +19,15 @@ namespace AElf.Client.Service
         Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex);
     }
 
-    public partial class AElfService : IClientService
+    public partial class AelfClient : IClientService
     {
         private readonly IHttpService _httpService;
         private string BaseUrl { get; set; }
 
-        public AElfService(IHttpService httpService, string baseUrl)
+        public AelfClient(string baseUrl, int timeOut = 60, int retryTimes = 3)
         {
-            _httpService = httpService;
+            _httpService = new HttpService(timeOut, retryTimes);
             BaseUrl = baseUrl;
-        }
-
-        private string GetRequestUrl(string baseUrl, string relativeUrl)
-        {
-            return new Uri(new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), relativeUrl).ToString();
         }
 
         /// <summary>
@@ -185,6 +180,11 @@ namespace AElf.Client.Service
             var keyPair = CryptoHelper.FromPrivateKey(privateKey);
 
             return keyPair;
+        }
+        
+        private string GetRequestUrl(string baseUrl, string relativeUrl)
+        {
+            return new Uri(new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), relativeUrl).ToString();
         }
 
         #endregion

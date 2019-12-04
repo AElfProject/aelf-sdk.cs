@@ -17,7 +17,7 @@ namespace AElf.Client.Service
         Task<int> GetChainIdAsync();
     }
 
-    public partial class AElfService : IChainAppService
+    public partial class AelfClient : IChainAppService
     {
         /// <summary>
         /// Get the current status of the block chain.

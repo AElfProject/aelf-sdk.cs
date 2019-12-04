@@ -12,7 +12,7 @@ namespace AElf.Client.Service
         Task<BlockDto> GetBlockByHeightAsync(long blockHeight, bool includeTransactions = false);
     }
 
-    public partial class AElfService : IBlockAppService
+    public partial class AelfClient : IBlockAppService
     {
         /// <summary>
         /// Get height of the current chain.

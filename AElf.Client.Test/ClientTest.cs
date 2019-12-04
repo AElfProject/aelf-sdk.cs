@@ -20,30 +20,27 @@ namespace AElf.Client.Test
     public class ClientTest
     {
         private const string BaseUrl = "Http://127.0.0.1:8001";
-        private const int RetryTimes = 3;
-        private const int TimeOut = 60;
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
+        
+        // example contract-method-name
         private string ContractMethodName => "GetContractAddressByName";
 
         // Info of a running node.
         private readonly string _account;
         private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
-        private AElfService AElfClient { get; }
-        private readonly IHttpService _httpService;
+        private AelfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
 
         public ClientTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
-
-            _httpService = new HttpService(TimeOut, RetryTimes);
-            AElfClient = new AElfService(_httpService, BaseUrl);
+            Client = new AelfClient(BaseUrl);
             
             // To get account's address from privateKey.
-            _account = AsyncHelper.RunSync(() => AElfClient.GetAccountFromPrivateKey(PrivateKey));
+            _account = AsyncHelper.RunSync(() => Client.GetAccountFromPrivateKey(PrivateKey));
         }
 
         #region block
@@ -51,7 +48,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetBlockHeightTest()
         {
-            var height = await AElfClient.GetBlockHeightAsync();
+            var height = await Client.GetBlockHeightAsync();
             height.ShouldNotBeNull();
             _testOutputHelper.WriteLine(height.ToString());
         }
@@ -59,8 +56,8 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetBlock_ByHeightAsyncTest()
         {
-            var height = await AElfClient.GetBlockHeightAsync();
-            var blockDto = await AElfClient.GetBlockByHeightAsync(height);
+            var height = await Client.GetBlockHeightAsync();
+            var blockDto = await Client.GetBlockByHeightAsync(height);
             Assert.True(blockDto != null);
 
             var block = JsonConvert.SerializeObject(blockDto, Formatting.Indented);
@@ -70,8 +67,11 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetBlockByHeight_Failed_Test()
         {
+            const int retryTimes = 3;
+            const int timeOut = 60;
+            var httpService = new HttpService(timeOut, retryTimes);
             const int heightNotExist = int.MaxValue;
-            var errorResponse = await _httpService.GetResponseAsync<WebAppErrorResponse>(
+            var errorResponse = await httpService.GetResponseAsync<WebAppErrorResponse>(
                 $"{BaseUrl}/api/blockChain/blockByHeight?blockHeight={heightNotExist}&includeTransactions=false",
                 expectedStatusCode: HttpStatusCode.Forbidden);
             errorResponse.Error.Code.ShouldBe(Error.NotFound.ToString());
@@ -83,10 +83,10 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetBlockAsync_Success_Test()
         {
-            var chainStatusDto = await AElfClient.GetChainStatusAsync();
+            var chainStatusDto = await Client.GetChainStatusAsync();
             var genesisHash = chainStatusDto.GenesisBlockHash;
 
-            var blockDto = await AElfClient.GetBlockByHashAsync(genesisHash, true);
+            var blockDto = await Client.GetBlockByHashAsync(genesisHash, true);
             Assert.True(blockDto != null);
 
             var block = JsonConvert.SerializeObject(blockDto, Formatting.Indented);
@@ -100,7 +100,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetChainStatusAsync_Test()
         {
-            var chainStatusDto = await AElfClient.GetChainStatusAsync();
+            var chainStatusDto = await Client.GetChainStatusAsync();
             Assert.True(chainStatusDto != null);
 
             var chainStatus = JsonConvert.SerializeObject(chainStatusDto, Formatting.Indented);
@@ -111,7 +111,7 @@ namespace AElf.Client.Test
         public async Task GetContractFileDescriptorSetAsync_Test()
         {
             var contractAddress = GenesisAddress;
-            var fileDescriptorBytes = await AElfClient.GetContractFileDescriptorSetAsync(contractAddress);
+            var fileDescriptorBytes = await Client.GetContractFileDescriptorSetAsync(contractAddress);
             var descriptorSet = FileDescriptorSet.Parser.ParseFrom(fileDescriptorBytes);
             descriptorSet.ShouldNotBeNull();
         }
@@ -119,8 +119,7 @@ namespace AElf.Client.Test
         [Fact(Skip = "Redo this later.")]
         public async Task GetCurrentRoundInformationAsync_Test()
         {
-            var httpService = new HttpService(60, 5);
-            var webAppService = new AElfService(httpService, BaseUrl);
+            var webAppService = new AelfClient(BaseUrl, 60, 5);
             var roundDto = await webAppService.GetCurrentRoundInformationAsync();
             roundDto.ShouldNotBeNull();
 
@@ -139,13 +138,13 @@ namespace AElf.Client.Test
         [Fact(Skip = "Redo this later.")]
         public async Task AddPeerAsync_Test()
         {
-            var peers = await AElfClient.GetPeersAsync(false);
+            var peers = await Client.GetPeersAsync(false);
             peers.ShouldNotBeEmpty();
             Assert.True(peers.Count >= 1);
 
             // remove the last ipAddress
             var peerToRemoveAddress = peers[^1].IpAddress;
-            var removeSuccess = await AElfClient.RemovePeerAsync(peerToRemoveAddress);
+            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress);
             removeSuccess.ShouldBeTrue();
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
 
@@ -154,7 +153,7 @@ namespace AElf.Client.Test
             {
                 Address = peerToRemoveAddress
             };
-            var addSuccess = await AElfClient.AddPeerAsync(peerInput);
+            var addSuccess = await Client.AddPeerAsync(peerInput);
             addSuccess.ShouldBeTrue();
             _testOutputHelper.WriteLine($"Added ipAddress: {peerInput.Address}");
         }
@@ -162,11 +161,11 @@ namespace AElf.Client.Test
         [Fact(Skip = "Redo this later.")]
         public async Task RemovePeerAsync_Test()
         {
-            var peers = await AElfClient.GetPeersAsync(false);
+            var peers = await Client.GetPeersAsync(false);
             peers.ShouldNotBeEmpty();
 
             var peerToRemoveAddress = peers[0].IpAddress;
-            var removeSuccess = await AElfClient.RemovePeerAsync(peerToRemoveAddress);
+            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress);
             Assert.True(removeSuccess);
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
         }
@@ -174,7 +173,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetPeersAsync_Test()
         {
-            var peers = await AElfClient.GetPeersAsync(false);
+            var peers = await Client.GetPeersAsync(false);
             Assert.True(peers != null);
             var peersInfo = JsonConvert.SerializeObject(peers, Formatting.Indented);
             _testOutputHelper.WriteLine(peersInfo);
@@ -183,7 +182,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetNetworkInfoAsync_Test()
         {
-            var netWorkInfo = await AElfClient.GetNetworkInfoAsync();
+            var netWorkInfo = await Client.GetNetworkInfoAsync();
             Assert.True(netWorkInfo != null);
             var info = JsonConvert.SerializeObject(netWorkInfo, Formatting.Indented);
             _testOutputHelper.WriteLine(info);
@@ -196,7 +195,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetTaskQueueStatusAsync_Test()
         {
-            var taskQueueStatus = await AElfClient.GetTaskQueueStatusAsync();
+            var taskQueueStatus = await Client.GetTaskQueueStatusAsync();
             taskQueueStatus.ShouldNotBeEmpty();
 
             var queueStatus = JsonConvert.SerializeObject(taskQueueStatus, Formatting.Indented);
@@ -206,7 +205,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetTransactionPoolStatusAsync_Test()
         {
-            var poolStatus = await AElfClient.GetTransactionPoolStatusAsync();
+            var poolStatus = await Client.GetTransactionPoolStatusAsync();
             Assert.True(poolStatus != null);
 
             var status = JsonConvert.SerializeObject(poolStatus, Formatting.Indented);
@@ -220,17 +219,17 @@ namespace AElf.Client.Test
             var methodName = ContractMethodName;
             var param = Hash.FromString("AElf.ContractNames.TokenConverter");
 
-            var transaction = await AElfClient.GenerateTransaction(_account, toAddress, methodName, param);
-            var txWithSign = await AElfClient.SignTransaction(PrivateKey, transaction);
+            var transaction = await Client.GenerateTransaction(_account, toAddress, methodName, param);
+            var txWithSign = await Client.SignTransaction(PrivateKey, transaction);
 
-            var transactionResult = await AElfClient.ExecuteTransactionAsync(new ExecuteTransactionDto
+            var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
             {
                 RawTransaction = txWithSign.ToByteArray().ToHex()
             });
             Assert.True(transactionResult != null);
 
             var addressResult = Address.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
-            var address = await AElfClient.GetContractAddressByName(param, PrivateKey);
+            var address = await Client.GetContractAddressByName(param, PrivateKey);
             Assert.True(address == addressResult);
         }
 
@@ -238,11 +237,11 @@ namespace AElf.Client.Test
         public async Task CreateRawTransactionAsync_Test()
         {
             var address = GenesisAddress;
-            var status = await AElfClient.GetChainStatusAsync();
+            var status = await Client.GetChainStatusAsync();
             var height = status.BestChainHeight;
             var blockHash = status.BestChainHash;
 
-            var createRaw = await AElfClient.CreateRawTransactionAsync(new CreateRawTransactionInput
+            var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
                 From = _account,
                 To = address,
@@ -262,11 +261,11 @@ namespace AElf.Client.Test
         public async Task ExecuteRawTransactionAsync_Test()
         {
             var address = GenesisAddress;
-            var status = await AElfClient.GetChainStatusAsync();
+            var status = await Client.GetChainStatusAsync();
             var height = status.BestChainHeight;
             var blockHash = status.BestChainHash;
 
-            var createRaw = await AElfClient.CreateRawTransactionAsync(new CreateRawTransactionInput
+            var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
                 From = _account,
                 To = address,
@@ -281,7 +280,7 @@ namespace AElf.Client.Test
 
             var transactionId = Hash.FromRawBytes(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
             var signature = GetSignatureWith(PrivateKey, transactionId.ToByteArray()).ToHex();
-            var rawTransactionResult = await AElfClient.ExecuteRawTransactionAsync(new ExecuteRawTransactionDto
+            var rawTransactionResult = await Client.ExecuteRawTransactionAsync(new ExecuteRawTransactionDto
             {
                 RawTransaction = createRaw.RawTransaction,
                 Signature = signature
@@ -289,7 +288,7 @@ namespace AElf.Client.Test
 
             rawTransactionResult.ShouldNotBeEmpty();
             var consensusAddress =
-                (await AElfClient.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus"), PrivateKey))
+                (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus"), PrivateKey))
                 .GetFormatted();
 
             Assert.True(rawTransactionResult == $"\"{consensusAddress}\"");
@@ -299,11 +298,11 @@ namespace AElf.Client.Test
         public async Task SendRawTransactionAsync_Test()
         {
             var toAddress = GenesisAddress;
-            var status = await AElfClient.GetChainStatusAsync();
+            var status = await Client.GetChainStatusAsync();
             var height = status.BestChainHeight;
             var blockHash = status.BestChainHash;
 
-            var createRaw = await AElfClient.CreateRawTransactionAsync(new CreateRawTransactionInput
+            var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
                 From = _account,
                 To = toAddress,
@@ -320,7 +319,7 @@ namespace AElf.Client.Test
             var transactionId = Hash.FromRawBytes(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
             var signature = GetSignatureWith(PrivateKey, transactionId.ToByteArray()).ToHex();
 
-            var rawTransactionResult = await AElfClient.SendRawTransactionAsync(new SendRawTransactionInput
+            var rawTransactionResult = await Client.SendRawTransactionAsync(new SendRawTransactionInput
             {
                 Transaction = createRaw.RawTransaction,
                 Signature = signature,
@@ -340,10 +339,10 @@ namespace AElf.Client.Test
             var methodName = ContractMethodName;
             var param = Hash.FromString("AElf.ContractNames.Vote");
 
-            var transaction = await AElfClient.GenerateTransaction(_account, toAddress, methodName, param);
-            var txWithSign = await AElfClient.SignTransaction(PrivateKey, transaction);
+            var transaction = await Client.GenerateTransaction(_account, toAddress, methodName, param);
+            var txWithSign = await Client.SignTransaction(PrivateKey, transaction);
 
-            var result = await AElfClient.SendTransactionAsync(new SendTransactionInput
+            var result = await Client.SendTransactionAsync(new SendTransactionInput
             {
                 RawTransaction = txWithSign.ToByteArray().ToHex()
             });
@@ -365,20 +364,20 @@ namespace AElf.Client.Test
 
             foreach (var param in parameters)
             {
-                var tx = await AElfClient.GenerateTransaction(_account, toAddress, methodName, param);
-                var txWithSign = await AElfClient.SignTransaction(PrivateKey, tx);
+                var tx = await Client.GenerateTransaction(_account, toAddress, methodName, param);
+                var txWithSign = await Client.SignTransaction(PrivateKey, tx);
 
                 transactions.Add(txWithSign);
             }
 
-            var result1 = await AElfClient.SendTransactionAsync(new SendTransactionInput
+            var result1 = await Client.SendTransactionAsync(new SendTransactionInput
             {
                 RawTransaction = transactions[0].ToByteArray().ToHex()
             });
 
             Assert.True(result1 != null);
 
-            var result2 = await AElfClient.SendTransactionAsync(new SendTransactionInput
+            var result2 = await Client.SendTransactionAsync(new SendTransactionInput
             {
                 RawTransaction = transactions[1].ToByteArray().ToHex()
             });
@@ -390,20 +389,20 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetTransactionResultAsync_Test()
         {
-            var firstBlockDto = await AElfClient.GetBlockByHeightAsync(1, true);
+            var firstBlockDto = await Client.GetBlockByHeightAsync(1, true);
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
 
-            var transactionResultDto = await AElfClient.GetTransactionResultAsync(transactionId);
+            var transactionResultDto = await Client.GetTransactionResultAsync(transactionId);
             Assert.True(transactionResultDto.Status == TransactionResultStatus.Mined.ToString().ToUpper());
         }
 
         [Fact]
         public async Task GetTransactionResultsAsync_Test()
         {
-            var firstBlockDto = await AElfClient.GetBlockByHeightAsync(1, true);
+            var firstBlockDto = await Client.GetBlockByHeightAsync(1, true);
             var blockHash = firstBlockDto.BlockHash;
 
-            var transactionResults = await AElfClient.GetTransactionResultsAsync(blockHash, 0, 2);
+            var transactionResults = await Client.GetTransactionResultsAsync(blockHash, 0, 2);
             foreach (var transaction in transactionResults)
             {
                 Assert.True(transaction.Status == TransactionResultStatus.Mined.ToString());
@@ -413,9 +412,9 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetMerklePathByTransactionIdAsync_Test()
         {
-            var firstBlockDto = await AElfClient.GetBlockByHeightAsync(1, true);
+            var firstBlockDto = await Client.GetBlockByHeightAsync(1, true);
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
-            var merklePathDto = await AElfClient.GetMerklePathByTransactionIdAsync(transactionId);
+            var merklePathDto = await Client.GetMerklePathByTransactionIdAsync(transactionId);
             Assert.True(merklePathDto != null);
 
             var merklePath = JsonConvert.SerializeObject(merklePathDto, Formatting.Indented);
@@ -427,7 +426,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetChainIdAsync_Test()
         {
-            var chainId = await AElfClient.GetChainIdAsync();
+            var chainId = await Client.GetChainIdAsync();
             chainId.ShouldNotBeNull();
             chainId.ShouldBeOfType(typeof(int));
 
@@ -437,25 +436,25 @@ namespace AElf.Client.Test
         [Fact]
         public async Task IsConnected_Test()
         {
-            var isConnected = await AElfClient.IsConnected();
+            var isConnected = await Client.IsConnected();
             isConnected.ShouldBeTrue();
         }
 
         [Fact]
         public async Task GetAccountFromPubKeyAsync_Test()
         {
-            var pubKey = await AElfClient.GetPublicKey(PrivateKey);
-            var address = await AElfClient.GetAccountFromPubKey(pubKey);
+            var pubKey = await Client.GetPublicKey(PrivateKey);
+            var address = await Client.GetAccountFromPubKey(pubKey);
             Assert.True(address == _account);
         }
 
         [Fact]
         public async Task GetGenesisContractAddressAsync_Test()
         {
-            var genesisAddress = await AElfClient.GetGenesisContractAddressAsync();
+            var genesisAddress = await Client.GetGenesisContractAddressAsync();
             genesisAddress.ShouldNotBeEmpty();
 
-            var address = await AElfClient.GetContractAddressByName(Hash.Empty, PrivateKey);
+            var address = await Client.GetContractAddressByName(Hash.Empty, PrivateKey);
             var genesisAddress2 = address.GetFormatted();
             Assert.True(genesisAddress == genesisAddress2);
         }
@@ -468,7 +467,7 @@ namespace AElf.Client.Test
         {
             if (_genesisAddress != null) return _genesisAddress;
 
-            var statusDto = AsyncHelper.RunSync(AElfClient.GetChainStatusAsync);
+            var statusDto = AsyncHelper.RunSync(Client.GetChainStatusAsync);
             _genesisAddress = statusDto.GenesisContractAddress;
 
             return _genesisAddress;

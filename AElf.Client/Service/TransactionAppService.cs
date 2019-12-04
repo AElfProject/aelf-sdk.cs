@@ -28,7 +28,7 @@ namespace AElf.Client.Service
         Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
     }
 
-    public partial class AElfService : ITransactionAppService
+    public partial class AelfClient : ITransactionAppService
     {
         /// <summary>
         /// Get information about the current transaction pool.
