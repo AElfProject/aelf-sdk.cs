@@ -2,23 +2,23 @@
 
 ## Introduction
 
-This is a C# client library, used to communicate with the AElf API.
+This is a C# client library, used to communicate with the [AElf](https://github.com/AElfProject/AElf)  API.
 
 ### Basic usage
 
 ``` c#
 private const int TimeOut = 60;
 private const int RetryTimes = 3;
-private const string RequestUrl = "Http://127.0.0.1:8100";
+private const string BaseUrl = "Http://127.0.0.1:8100";
 
-// usage
-var AElfClient = new AElfService(new HttpService(TimeOut, RetryTimes), RequestUrl);
+// get client instance
+var AElfClient = new AElfService(new HttpService(TimeOut, RetryTimes), BaseUrl);
 var height = await AElfClient.GetBlockHeightAsync();
 ```
 
 ### Interface
 
-The interface methods can be easily available by instance "AElfClient" shown in basic usage. The following is a description of the input parameters and output types for each method. More details about custom types can be get in directory named "Dto" .
+The interface methods can be easily available by instance "AElfClient" shown in basic usage. The following is a list of input parameters and type of output for each method. Check out the [Web api reference](https://docs.aelf.io/v/dev/reference) for detailed Interface description.
 
 #### IBlockAppService
 
@@ -80,10 +80,26 @@ Task<List<TransactionResultDto>> GetTransactionResultsAsync(string blockHash, in
 Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
 ```
 
+#### IClientService
+
+```c#
+ Task<bool> IsConnected();
+
+ Task<string> GetAccountFromPrivateKey(string privateKeyHex);
+
+ Task<string> GetAccountFromPubKey(string pubKey);
+
+ Task<string> GetPublicKey(string privateKeyHex);
+
+ Task<string> GetGenesisContractAddressAsync();
+
+ Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex);
+```
+
 ### Test
 
-This module contains tests for all services provided by AElfClient. The usage of various services is described in detail in the test code.
+This module contains tests for all services provided by AElfClient. In this module, you can see how to properly use services provided by AElfClient. 
 
 ### Note
 
-You need to run a local or remote AElf node to run the unit test successfully.If you're not familiar with how to run a node or multiple nodes, please see [Running a node](https://docs.aelf.io/v/dev/main/main/run-node) for more information.
+You need to run a local or remote AElf node to run the unit test successfully.If you're not familiar with how to run a node or multiple nodes, please see [Running a node](https://docs.aelf.io/v/dev/main/main/run-node) /[Running multiple nodes](https://docs.aelf.io/v/dev/main/main/multi-nodes) for more information.

@@ -20,7 +20,7 @@ namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string RequestUrl = "Http://127.0.0.1:8001";
+        private const string BaseUrl = "Http://127.0.0.1:8001";
         private const int RetryTimes = 3;
         private const int TimeOut = 60;
 
@@ -41,7 +41,7 @@ namespace AElf.Client.Test
             _testOutputHelper = testOutputHelper;
 
             _httpService = new HttpService(TimeOut, RetryTimes);
-            AElfClient = new AElfService(_httpService, RequestUrl);
+            AElfClient = new AElfService(_httpService, BaseUrl);
             
             // To get account's address from privateKey.
             _account = AsyncHelper.RunSync(() => AElfClient.GetAccountFromPrivateKey(PrivateKey));
@@ -73,7 +73,7 @@ namespace AElf.Client.Test
         {
             const int heightNotExist = int.MaxValue;
             var errorResponse = await _httpService.GetResponseAsync<WebAppErrorResponse>(
-                $"{RequestUrl}/api/blockChain/blockByHeight?blockHeight={heightNotExist}&includeTransactions=false",
+                $"{BaseUrl}/api/blockChain/blockByHeight?blockHeight={heightNotExist}&includeTransactions=false",
                 expectedStatusCode: HttpStatusCode.Forbidden);
             errorResponse.Error.Code.ShouldBe(Error.NotFound.ToString());
             errorResponse.Error.Message.ShouldBe(Error.Message[Error.NotFound]);
@@ -121,7 +121,7 @@ namespace AElf.Client.Test
         public async Task GetCurrentRoundInformationAsync_Test()
         {
             var httpService = new HttpService(60, 5);
-            var webAppService = new AElfService(httpService, RequestUrl);
+            var webAppService = new AElfService(httpService, BaseUrl);
             var roundDto = await webAppService.GetCurrentRoundInformationAsync();
             roundDto.ShouldNotBeNull();
 

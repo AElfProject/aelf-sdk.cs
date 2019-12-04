@@ -22,12 +22,17 @@ namespace AElf.Client.Infrastructure.Service
     public partial class AElfService : IClientService
     {
         private readonly IHttpService _httpService;
-        private string RequestUrl { get; set; }
+        private string BaseUrl { get; set; }
 
-        public AElfService(IHttpService httpService, string requestUrl)
+        public AElfService(IHttpService httpService, string baseUrl)
         {
             _httpService = httpService;
-            RequestUrl = requestUrl;
+            BaseUrl = baseUrl;
+        }
+
+        private string GetRequestUrl(string baseUrl, string relativeUrl)
+        {
+            return new Uri(new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), relativeUrl).ToString();
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace AElf.Client.Infrastructure.Service
 
         Task<NetworkInfoOutput> GetNetworkInfoAsync();
     }
-    
+
     public partial class AElfService : INetAppService
     {
         /// <summary>
@@ -23,8 +23,8 @@ namespace AElf.Client.Infrastructure.Service
         /// <param name="input"></param>
         /// <returns>Add successfully or not</returns>
         public async Task<bool> AddPeerAsync(AddPeerInput input)
-        { 
-            var url = $"{RequestUrl}/api/net/peer";
+        {
+            var url = GetRequestUrl(BaseUrl, "api/net/peer");
             var parameters = new Dictionary<string, string>
             {
                 {"address", input.Address}
@@ -40,7 +40,7 @@ namespace AElf.Client.Infrastructure.Service
         /// <returns>Delete successfully or not</returns>
         public async Task<bool> RemovePeerAsync(string address)
         {
-            var url = $"{RequestUrl}/api/net/peer?address={address}";
+            var url = GetRequestUrl(BaseUrl, $"api/net/peer?address={address}");
             return await _httpService.DeleteResponseAsObjectAsync<bool>(url);
         }
 
@@ -51,7 +51,7 @@ namespace AElf.Client.Infrastructure.Service
         /// <returns>Information about the peer nodes</returns>
         public async Task<List<PeerDto>> GetPeersAsync(bool withMetrics)
         {
-            var url = $"{RequestUrl}/api/net/peers?withMetrics={withMetrics}";
+            var url = GetRequestUrl(BaseUrl, $"api/net/peers?withMetrics={withMetrics}");
             return await _httpService.GetResponseAsync<List<PeerDto>>(url);
         }
 
@@ -61,7 +61,7 @@ namespace AElf.Client.Infrastructure.Service
         /// <returns>Network information</returns>
         public async Task<NetworkInfoOutput> GetNetworkInfoAsync()
         {
-            var url = $"{RequestUrl}/api/net/networkInfo";
+            var url = GetRequestUrl(BaseUrl, "api/net/networkInfo");
             return await _httpService.GetResponseAsync<NetworkInfoOutput>(url);
         }
     }
