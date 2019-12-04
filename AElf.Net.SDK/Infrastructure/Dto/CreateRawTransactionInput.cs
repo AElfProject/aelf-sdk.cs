@@ -41,7 +41,6 @@ namespace AElf.Net.SDK.Infrastructure.Dto
         [Required]
         public string Params { get; set; }
 
-        // TODO validate
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();

@@ -2,6 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
+        <PackageId>AElf.Client</PackageId>
+        <PackageDescription>This is a C# client library, used to communicate with the AElf API.</PackageDescription>
+        <Version>0.1.0</Version>
+        <Company>AElf</Company>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
