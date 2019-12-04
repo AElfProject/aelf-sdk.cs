@@ -10,7 +10,7 @@ This is a C# client library, used to communicate with the [AElf](https://github.
 private const string BaseUrl = "Http://127.0.0.1:8100";
 
 // get client instance
-AelfClient aelfClient = new AelfClient(BaseUrl);
+AElfClient aelfClient = new AElfClient(BaseUrl);
 var height = await aelfClient.GetBlockHeightAsync();
 ```
 
@@ -96,7 +96,7 @@ Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
 
 ### Test
 
-This module contains tests for all services provided by AelfClient. You can see how to properly use services provided by AelfClient here.
+This module contains tests for all services provided by AElfClient. You can see how to properly use services provided by AElfClient here.
 
 You need to firstly set necessary parameters to make sure tests can run successfully.
 

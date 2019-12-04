@@ -19,12 +19,12 @@ namespace AElf.Client.Service
         Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex);
     }
 
-    public partial class AelfClient : IClientService
+    public partial class AElfClient : IClientService
     {
         private readonly IHttpService _httpService;
         private string BaseUrl { get; set; }
 
-        public AelfClient(string baseUrl, int timeOut = 60, int retryTimes = 3)
+        public AElfClient(string baseUrl, int timeOut = 60, int retryTimes = 3)
         {
             _httpService = new HttpService(timeOut, retryTimes);
             BaseUrl = baseUrl;

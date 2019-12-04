@@ -31,13 +31,13 @@ namespace AElf.Client.Test
         private readonly string _account;
         private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
-        private AelfClient Client { get; }
+        private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
 
         public ClientTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
-            Client = new AelfClient(BaseUrl);
+            Client = new AElfClient(BaseUrl);
             
             // To get account's address from privateKey.
             _account = AsyncHelper.RunSync(() => Client.GetAccountFromPrivateKey(PrivateKey));
@@ -119,7 +119,7 @@ namespace AElf.Client.Test
         [Fact(Skip = "Redo this later.")]
         public async Task GetCurrentRoundInformationAsync_Test()
         {
-            var webAppService = new AelfClient(BaseUrl, 60, 5);
+            var webAppService = new AElfClient(BaseUrl, 60, 5);
             var roundDto = await webAppService.GetCurrentRoundInformationAsync();
             roundDto.ShouldNotBeNull();
 
