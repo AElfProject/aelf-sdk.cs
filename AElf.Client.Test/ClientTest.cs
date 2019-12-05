@@ -19,7 +19,7 @@ namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string BaseUrl = "Http://127.0.0.1:8001";
+        private const string BaseUrl = "Http://127.0.0.1:8400";
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
@@ -27,9 +27,9 @@ namespace AElf.Client.Test
         // example contract-method-name
         private string ContractMethodName => "GetContractAddressByName";
 
-        // Info of a running node.
-        private readonly string _account;
-        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
+        // Address and privateKey of a node.
+        private readonly string _address;
+        private const string PrivateKey = "b0f4cb4a82c09c7d718e98b740f4b0e93a4d70ad184a6fc9cf27c37b4d9e5865";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -39,8 +39,8 @@ namespace AElf.Client.Test
             _testOutputHelper = testOutputHelper;
             Client = new AElfClient(BaseUrl);
             
-            // To get account's address from privateKey.
-            _account = AsyncHelper.RunSync(() => Client.GetAccountFromPrivateKey(PrivateKey));
+            // To get address from privateKey.s
+            _address = AsyncHelper.RunSync(() => Client.GetAccountFromPrivateKey(PrivateKey));
         }
 
         #region block
@@ -149,13 +149,11 @@ namespace AElf.Client.Test
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
 
             // add removed ipAddress
-            var peerInput = new AddPeerInput
-            {
-                Address = peerToRemoveAddress
-            };
-            var addSuccess = await Client.AddPeerAsync(peerInput);
+            var addressToAdd = peerToRemoveAddress;
+
+            var addSuccess = await Client.AddPeerAsync(addressToAdd);
             addSuccess.ShouldBeTrue();
-            _testOutputHelper.WriteLine($"Added ipAddress: {peerInput.Address}");
+            _testOutputHelper.WriteLine($"Added ipAddress: {addressToAdd}");
         }
 
         [Fact(Skip = "Redo this later.")]
@@ -219,7 +217,7 @@ namespace AElf.Client.Test
             var methodName = ContractMethodName;
             var param = Hash.FromString("AElf.ContractNames.TokenConverter");
 
-            var transaction = await Client.GenerateTransaction(_account, toAddress, methodName, param);
+            var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
             var txWithSign = await Client.SignTransaction(PrivateKey, transaction);
 
             var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
@@ -229,7 +227,7 @@ namespace AElf.Client.Test
             Assert.True(transactionResult != null);
 
             var addressResult = Address.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
-            var address = await Client.GetContractAddressByName(param, PrivateKey);
+            var address = await Client.GetContractAddressByName(param);
             Assert.True(address == addressResult);
         }
 
@@ -243,7 +241,7 @@ namespace AElf.Client.Test
 
             var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
-                From = _account,
+                From = _address,
                 To = address,
                 MethodName = ContractMethodName,
                 Params = new JObject
@@ -267,7 +265,7 @@ namespace AElf.Client.Test
 
             var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
-                From = _account,
+                From = _address,
                 To = address,
                 MethodName = ContractMethodName,
                 Params = new JObject
@@ -288,7 +286,7 @@ namespace AElf.Client.Test
 
             rawTransactionResult.ShouldNotBeEmpty();
             var consensusAddress =
-                (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus"), PrivateKey))
+                (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus")))
                 .GetFormatted();
 
             Assert.True(rawTransactionResult == $"\"{consensusAddress}\"");
@@ -304,7 +302,7 @@ namespace AElf.Client.Test
 
             var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
             {
-                From = _account,
+                From = _address,
                 To = toAddress,
                 MethodName = ContractMethodName,
                 Params = new JObject
@@ -339,7 +337,7 @@ namespace AElf.Client.Test
             var methodName = ContractMethodName;
             var param = Hash.FromString("AElf.ContractNames.Vote");
 
-            var transaction = await Client.GenerateTransaction(_account, toAddress, methodName, param);
+            var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
             var txWithSign = await Client.SignTransaction(PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
@@ -364,7 +362,7 @@ namespace AElf.Client.Test
 
             foreach (var param in parameters)
             {
-                var tx = await Client.GenerateTransaction(_account, toAddress, methodName, param);
+                var tx = await Client.GenerateTransaction(_address, toAddress, methodName, param);
                 var txWithSign = await Client.SignTransaction(PrivateKey, tx);
 
                 transactions.Add(txWithSign);
@@ -441,22 +439,22 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetAccountFromPubKeyAsync_Test()
-        {
-            var pubKey = await Client.GetPublicKey(PrivateKey);
-            var address = await Client.GetAccountFromPubKey(pubKey);
-            Assert.True(address == _account);
-        }
-
-        [Fact]
         public async Task GetGenesisContractAddressAsync_Test()
         {
             var genesisAddress = await Client.GetGenesisContractAddressAsync();
             genesisAddress.ShouldNotBeEmpty();
 
-            var address = await Client.GetContractAddressByName(Hash.Empty, PrivateKey);
+            var address = await Client.GetContractAddressByName(Hash.Empty);
             var genesisAddress2 = address.GetFormatted();
             Assert.True(genesisAddress == genesisAddress2);
+        }
+
+        [Fact]
+        public async Task GetFormattedAddress_Test()
+        {
+            var result = await Client.GetFormattedAddress(AddressHelper.Base58StringToAddress(_address));
+            _testOutputHelper.WriteLine(result);
+            Assert.True(result == "ELF_2h4QDNiD2hZgytafmxqip57hvBUqq3QYUxR79bUN39V5PjQDER_AELF");
         }
 
         #endregion

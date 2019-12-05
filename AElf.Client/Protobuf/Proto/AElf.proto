@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option csharp_namespace = "AElf.proto";
+
+message TokenInfo {
+    string symbol = 1;
+    string tokenName = 2;
+    sint64 supply = 3;
+    sint64 totalSupply = 4;
+    sint32 decimals = 5;
+}

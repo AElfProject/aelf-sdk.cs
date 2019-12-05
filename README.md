@@ -45,7 +45,7 @@ Interface methods can be easily available by the instance "aelfClient" shown in 
 #### INetAppService
 
 ```c#
- Task<bool> AddPeerAsync(AddPeerInput input);
+ Task<bool> AddPeerAsync(string address);
 
  Task<bool> RemovePeerAsync(string address);
 
@@ -83,15 +83,13 @@ Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
 ```c#
  Task<bool> IsConnected();
 
- Task<string> GetAccountFromPrivateKey(string privateKeyHex);
+ Task<string> GetFormattedAddress(Address address);
 
- Task<string> GetAccountFromPubKey(string pubKey);
-
- Task<string> GetPublicKey(string privateKeyHex);
+ Task<string> GetAddressFromPubKey(string pubKey);
 
  Task<string> GetGenesisContractAddressAsync();
 
- Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex);
+ Task<Address> GetContractAddressByName(Hash contractNameHash);
 ```
 
 ### Test
@@ -106,7 +104,7 @@ You need to firstly set necessary parameters to make sure tests can run successf
    private const string BaseUrl = "Http://127.0.0.1:8001";
    ```
 
-2. Give privateKey of a running node.
+2. Give a valid privateKey of a node.
 
    ```c#
    private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
