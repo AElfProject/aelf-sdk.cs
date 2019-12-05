@@ -142,6 +142,7 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
+Generated/
 
 # Publish Web Output
 *.[Pp]ublish.xml
