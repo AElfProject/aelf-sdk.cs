@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Protobuf\Generated" />
+        <Folder Include="Protobuf\Generated" />
     </ItemGroup>
 
 </Project>

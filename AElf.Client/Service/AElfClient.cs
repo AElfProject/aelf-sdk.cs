@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AElf.Client.Dto;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
-using AElf.proto;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;

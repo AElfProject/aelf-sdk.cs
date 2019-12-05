@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "AElf.proto";
+option csharp_namespace = "AElf.Client.Service";
 
 message TokenInfo {
     string symbol = 1;
