@@ -25,11 +25,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protobuf/Proto/client.proto">
+        <Protobuf Include="Protobuf/Proto/*.proto">
             <GrpcServices>none</GrpcServices>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <GrpcOutputDir>./Protobuf/Generated</GrpcOutputDir>
             <OutputDir>./Protobuf/Generated</OutputDir>
+            <ProtoRoot>Protobuf/Proto</ProtoRoot>
         </Protobuf>
     </ItemGroup>
 </Project>

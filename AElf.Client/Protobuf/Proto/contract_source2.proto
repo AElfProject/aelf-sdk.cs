@@ -1,0 +1,318 @@
+syntax = "proto3";
+
+option csharp_namespace = "AElf.Client.Proto";
+
+import "google/protobuf/timestamp.proto";
+import "client.proto";
+
+//election_contract
+
+message CandidateInformation {
+    string pubkey = 1;
+    repeated sint64 terms = 2;
+    sint64 produced_blocks = 3;
+    sint64 missed_time_slots = 4;
+    sint64 continual_appointment_count = 5;
+    client.Hash announcement_transaction_id = 6;
+    bool is_current_candidate = 7;
+}
+
+message TermSnapshot {
+    sint64 end_round_number = 1;
+    sint64 mined_blocks = 2;
+    map<string, sint64> election_result = 3;
+}
+
+message ElectionResult {
+    sint64 term_number = 1;
+    map<string, sint64> results = 2;
+    bool is_active = 3;
+}
+
+message ElectorVote {
+    repeated client.Hash active_voting_record_ids = 1;// Not withdrawn.
+    repeated client.Hash withdrawn_voting_record_ids = 2;
+    sint64 active_voted_votes_amount = 3;
+    sint64 all_voted_votes_amount = 4;
+    repeated ElectionVotingRecord active_voting_records = 5;
+    repeated ElectionVotingRecord withdrawn_votes_records = 6;
+    bytes pubkey = 7;
+}
+
+message ElectionVotingRecord {
+    client.Address voter = 1;
+    string candidate = 2;
+    sint64 amount = 3;
+    sint64 term_number = 4;
+    client.Hash vote_id = 5;
+    sint64 lock_time = 7;
+    google.protobuf.Timestamp unlock_timestamp = 10;
+    google.protobuf.Timestamp withdraw_timestamp = 11;
+    google.protobuf.Timestamp vote_timestamp = 12;
+    bool is_withdrawn = 13;
+    sint64 weight = 14;
+    bool is_change_target = 15;
+}
+
+message CandidateVote {
+    repeated client.Hash obtained_active_voting_record_ids = 1;
+    repeated client.Hash obtained_withdrawn_voting_record_ids = 2;
+    sint64 obtained_active_voted_votes_amount = 3;
+    sint64 all_obtained_voted_votes_amount = 4;
+    repeated ElectionVotingRecord obtained_active_voting_records = 5;
+    repeated ElectionVotingRecord obtained_withdrawn_votes_records = 6;
+    bytes pubkey = 7;
+}
+
+//parliament_auth
+message ProposalIdList{
+    repeated client.Hash proposal_ids = 1;
+}
+
+//profit_contract
+message CreatedSchemeIds {
+    repeated client.Hash scheme_ids = 1;
+}
+
+message GetManagingSchemeIdsInput {
+    client.Address manager = 1;
+}
+
+message SchemeBeneficiaryShare {
+    client.Hash scheme_id = 1;
+    sint64 shares = 2;
+}
+
+message Scheme {
+    client.Address virtual_address = 1;
+    sint64 total_shares = 2;
+    map<string, sint64> undistributed_profits = 3;// token symbol -> amount
+    sint64 current_period = 4;
+    repeated SchemeBeneficiaryShare sub_schemes = 5;
+    sint64 profit_receiving_due_period_count = 7;
+    bool is_release_all_balance_every_time_by_default = 8;
+    client.Hash scheme_id = 9;
+    sint32 delay_distribute_period_count = 10;
+    map<sint64, sint64> cached_delay_total_shares = 11;// period -> total shares, max elements count should be delay_distribute_period_count
+    client.Address manager = 12;
+}
+
+message SchemePeriod {
+    client.Hash scheme_id = 1;
+    sint64 period = 2;
+}
+
+message DistributedProfitsInfo {
+    sint64 total_shares = 1;
+    map<string, sint64> profits_amount = 2;
+    bool is_released = 3;
+}
+
+message ProfitDetails {
+    repeated ProfitDetail details = 1;
+}
+
+message ProfitDetail {
+    sint64 start_period = 1;
+    sint64 end_period = 2;
+    sint64 shares = 3;
+    sint64 last_profit_period = 4;
+    bool is_weight_removed = 5;
+}
+
+message ClaimProfitsInput {
+    client.Hash scheme_id = 1;
+    string symbol = 2;
+}
+
+//referendum_auth
+
+//resource_contract
+message ResourceId {
+    ResourceType type = 1;
+}
+
+enum ResourceType {
+    UNDEFINED_RESOURCE_TYPE = 0;
+    RAM = 1;
+    CPU = 2;
+    NET = 3;
+    STO = 4;
+}
+
+message Converter {
+    sint64 res_balance = 1;
+    sint64 elf_balance = 2;
+    sint64 res_weight = 3; // Weight based on MAX of 1,000,000
+    sint64 elf_weight = 4; // Weight based on MAX of 1,000,000
+    ResourceType type = 5;
+}
+
+message UserResourceId {
+    client.Address address = 1;
+    ResourceType type = 2;
+}
+
+//tokenContract
+message TokenInfo {
+    string symbol = 1;
+    string tokenName = 2;
+    sint64 supply = 3;
+    sint64 totalSupply = 4;
+    sint32 decimals = 5;
+    client.Address issuer = 6;
+    bool is_burnable = 7;
+    bool is_transfer_disabled = 8;
+    sint32 issue_chain_id = 9;
+    sint64 burned = 10;
+}
+
+message GetTokenInfoInput {
+    string symbol = 1;
+}
+
+message TokenInfoList {
+    repeated TokenInfo value = 1;
+}
+
+message GetBalanceInput {
+    string symbol = 1;
+    client.Address owner = 2;
+}
+
+message GetBalanceOutput {
+    string symbol = 1;
+    client.Address owner = 2;
+    sint64 balance = 3;
+}
+
+message GetAllowanceInput {
+    string symbol = 1;
+    client.Address owner = 2;
+    client.Address spender = 3;
+}
+
+message GetAllowanceOutput {
+    string symbol = 1;
+    client.Address owner = 2;
+    client.Address spender = 3;
+    sint64 allowance = 4;
+}
+
+message IsInWhiteListInput {
+    string symbol = 1;
+    client.Address address = 2;
+}
+
+message ProfitReceivingInformation {
+    client.Address contract_address = 1;
+    client.Address profit_receiver_address = 2;
+    sint32 donation_parts_per_hundred = 3;
+}
+
+message GetLockedAmountInput {
+    client.Address address = 1;
+    string symbol = 3;
+    client.Hash lock_id = 4;
+}
+
+message GetLockedAmountOutput {
+    client.Address address = 1;
+    string symbol = 3;
+    client.Hash lock_id = 4;
+    sint64 amount = 5;
+}
+
+message GetVirtualAddressForLockingInput {
+    client.Address address = 1;
+    client.Hash lock_id = 3;
+}
+
+message GetCrossChainTransferTokenContractAddressInput {
+    int32 chainId = 1;
+}
+
+//token converter
+message TokenSymbol {
+    string symbol = 1;
+}
+
+message Connector {
+    string symbol = 1;
+    sint64 virtual_balance = 2;
+    string weight = 3;
+    bool is_virtual_balance_enabled = 4; // true if virtual balance is enabled, false if not
+    bool is_purchase_enabled = 5;
+}
+
+//treasury_contract
+message GetWelfareRewardAmountSampleInput {
+    repeated sint64 value = 1;
+}
+
+message GetWelfareRewardAmountSampleOutput {
+    repeated sint64 value = 1;
+}
+
+//vote_contract
+message GetVotingItemInput {
+    client.Hash voting_item_id = 1;
+}
+
+message VotingItem {
+    client.Hash voting_item_id = 1;
+    string accepted_currency = 2;
+    bool is_lock_token = 3;
+    sint64 current_snapshot_number = 4;
+    sint64 total_snapshot_number = 5;
+    repeated string options = 6;
+    google.protobuf.Timestamp register_timestamp = 7;
+    google.protobuf.Timestamp start_timestamp = 8;
+    google.protobuf.Timestamp end_timestamp = 9;
+    google.protobuf.Timestamp current_snapshot_start_timestamp = 10;
+    client.Address sponsor = 11;
+}
+
+message GetVotingResultInput {
+    client.Hash voting_item_id = 1;
+    sint64 snapshot_number = 2;
+}
+
+message VotingResult {
+    client.Hash voting_item_id = 1;
+    map<string, sint64> results = 2; // option -> amount
+    sint64 snapshot_number = 3;
+    sint64 voters_count = 4;
+    google.protobuf.Timestamp snapshot_start_timestamp = 5;
+    google.protobuf.Timestamp snapshot_end_timestamp = 6;
+    sint64 votes_amount = 7;
+}
+
+message VotingRecord {
+    client.Hash voting_item_id = 1;
+    client.Address voter = 2;
+    sint64 snapshot_number = 3;
+    sint64 amount = 4;
+    google.protobuf.Timestamp withdraw_timestamp = 5;
+    google.protobuf.Timestamp vote_timestamp = 6;
+    bool is_withdrawn = 7;
+    string option = 8;
+    bool is_change_target = 9;
+}
+
+message GetVotingRecordsInput {
+    repeated client.Hash ids = 1;
+}
+
+message VotingRecords {
+    repeated VotingRecord records = 1;
+}
+
+message VotedItems {
+    map<string, VotedIds> voted_item_vote_ids = 1;
+}
+
+message VotedIds {
+    repeated client.Hash active_votes = 1;
+    repeated client.Hash withdrawn_votes = 2;
+}

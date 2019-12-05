@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+option csharp_namespace = "AElf.Client.Proto";
+
+import public "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "client.proto";
+
+message ContractInfo
+{
+    uint64 serial_number = 1;
+    int32 category = 3;
+    client.Hash code_hash = 4;
+    bool is_system_contract = 5;
+}
+
+message MethodFees {
+    string method_name = 1;
+    repeated MethodFee fees = 3;
+}
+
+message MethodFee {
+    string symbol = 1;
+    sint64 basic_fee = 2;
+}
+
+message ResourceInfo {
+    repeated client.ScopedStatePath paths = 1;
+    bool non_parallelizable = 2;
+}
+
+// acs3
+message ProposalOutput {
+    client.Hash proposal_id = 1;
+    string contract_method_name = 2;
+    client.Address to_address = 3;
+    bytes params = 4;
+    google.protobuf.Timestamp expired_time = 5;
+    client.Address organization_address = 6;
+    client.Address proposer = 7;
+    bool to_be_released = 8;
+}
+
+//acs4
+message ConsensusCommand {
+    int32 limit_milliseconds_of_mining_block = 2;// Time limit of mining next block.
+    bytes hint = 3;// Context of Hint is diverse according to the consensus protocol we choose, so we use bytes.
+    google.protobuf.Timestamp arranged_mining_time = 4;
+    google.protobuf.Timestamp mining_due_time = 5;
+}
+
+message ValidationResult {
+    bool success = 1;
+    string message = 2;
+}
+
+message TransactionList {
+    //repeated aelf.Transaction transactions = 1;
+}
+
+//acs5
+message MethodCallingThreshold {
+    map<string, sint64> symbol_to_amount = 1;// The order matters.
+    ThresholdCheckType threshold_check_type = 2;
+}
+
+message SetMethodCallingThresholdInput {
+    string method = 1;
+    map<string, sint64> symbol_to_amount = 2;// The order matters.
+    ThresholdCheckType threshold_check_type = 3;
+}
+
+enum ThresholdCheckType {
+    BALANCE = 0;
+    ALLOWANCE = 1;
+}
+
+//acs6
+message RandomNumberOrder {
+    sint64 block_height = 1;// Orderer is possible to get a random number after this height.
+    client.Hash token_hash = 2;// Token to get the random number.
+}
+
+//acs7
+message SideChainBlockData {
+    int64 height = 1;
+    client.Hash block_header_hash = 2;
+    client.Hash transaction_status_merkle_tree_root = 3;
+    int32 chain_id = 4;
+}
+
+message ParentChainBlockData {
+    int64 height = 1;
+    CrossChainExtraData cross_chain_extra_data = 2;
+    int32 chain_id = 3;
+    client.Hash transaction_status_merkle_tree_root = 4;
+
+    // Indexed block height from side chain and merkle path for this side chain block
+    map<int64, client.MerklePath> indexed_merkle_path = 5;
+    map<string, bytes> extra_data = 6;
+}
+
+message CrossChainExtraData {
+    // Merkle tree root of side chain block transaction status root
+    client.Hash transaction_status_merkle_tree_root = 1;
+}
+
+message SideChainIndexingInformationList {
+    repeated SideChainIndexingInformation indexing_information_list = 1;
+}
+
+message SideChainIndexingInformation {
+    int32 chain_id = 1;
+    int64 indexed_height = 2;
+    int64 to_be_indexed_count = 3;
+}
+
+message SideChainIdAndHeightDict {
+    map<int32, int64> id_height_dict = 1;
+}
+
+message CrossChainBlockData {
+    repeated SideChainBlockData side_chain_block_data = 1;
+    repeated ParentChainBlockData parent_chain_block_data = 2;
+    int64 previous_block_height = 3;
+}
+
+message CrossChainMerkleProofContext {
+    int64 bound_parent_chain_height = 1;
+    client.MerklePath merkle_path_from_parent_chain = 2;
+}
+
+message ChainInitializationData {
+    int32 chain_id = 1;
+    client.Address creator = 2;
+    google.protobuf.Timestamp creation_timestamp = 3;
+    repeated bytes extra_information = 4;
+    int64 creation_height_on_parent_chain = 5;
+    bool chain_creator_privilege_preserved = 6;
+    string side_chain_token_symbol = 7;
+}
+
+//acs8
+message BuyResourceTokenInput {
+    string symbol = 1;
+    sint64 amount = 2;
+    sint64 pay_limit = 3; // No buy if paying more than this, 0 if no limit
+}
+
+// acs8_plugin_test_contract.prot
+message NetConsumingMethodInput {
+    google.protobuf.BytesValue blob = 1;
+}
+
+//aedpos_contract
+message MinerList {
+    repeated bytes pubkeys = 1;
+}
+
+message PubkeyList {
+    repeated string pubkeys = 1;
+}
+
+message MinerListWithRoundNumber {
+    MinerList miner_list = 1;
+    sint64 round_number = 2;
+}
+
+message Round {
+    sint64 round_number = 1;
+    map<string, MinerInRound> real_time_miners_information = 2;
+    sint64 main_chain_miners_round_number = 3;
+    sint64 blockchain_age = 4;
+    string extra_block_producer_of_previous_round = 7;
+    sint64 term_number = 8;
+    sint64 confirmed_irreversible_block_height = 9;
+    sint64 confirmed_irreversible_block_round_number = 10;
+    bool is_miner_list_just_changed = 11;
+    sint64 round_id_for_validation = 12;
+}
+
+// The information of a miner in a specific round.
+message MinerInRound {
+    sint32 order = 1;
+    bool is_extra_block_producer = 2;
+    client.Hash in_value = 3;
+    client.Hash out_value = 4;
+    client.Hash signature = 5;
+    google.protobuf.Timestamp expected_mining_time = 6;
+    sint64 produced_blocks = 7;
+    sint64 missed_time_slots = 8;
+    string pubkey = 9;
+    client.Hash previous_in_value = 12;
+    sint32 supposed_order_of_next_round = 13;
+    sint32 final_order_of_next_round = 14;
+    repeated google.protobuf.Timestamp actual_mining_times = 15;// Miners must fill actual mining time when they do the mining.
+    map<string, bytes> encrypted_pieces = 16;
+    map<string, bytes> decrypted_pieces = 17;
+    sint32 produced_tiny_blocks = 18;
+    sint64 implied_irreversible_block_height = 19;
+}
+
+// association_auth_contract
+message Organization{
+    int32 release_threshold = 1;
+    repeated Reviewer reviewers = 2;
+    int32 proposer_threshold = 3;
+    client.Address organization_address = 4;
+    client.Hash organization_hash = 5;
+}
+
+message Reviewer {
+    client.Address address  = 1;
+    int32 weight = 2;
+}
+
+//cross_chain_contract
+message VerifyTransactionInput {
+    client.Hash transaction_id = 1;
+    client.MerklePath path = 2;
+    sint64 parent_chain_height = 3;
+    int32 verified_chain_id = 4;
+}
+
+//fileDescriptor_equivalent
+message FileDescriptorSet {
+    repeated bytes file = 1;
+}

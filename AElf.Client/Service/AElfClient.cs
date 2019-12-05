@@ -2,11 +2,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
+using AElf.Client.Proto;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Address = AElf.Types.Address;
+using Hash = AElf.Types.Hash;
 
 namespace AElf.Client.Service
 {

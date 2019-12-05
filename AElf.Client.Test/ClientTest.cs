@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
+using AElf.Client.Proto;
 using AElf.Client.Service;
-using AElf.Runtime.CSharp;
 using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,12 +14,14 @@ using Shouldly;
 using Volo.Abp.Threading;
 using Xunit;
 using Xunit.Abstractions;
+using Address = AElf.Types.Address;
+using Hash = AElf.Types.Hash;
 
 namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string BaseUrl = "Http://127.0.0.1:8400";
+        private const string BaseUrl = "Http://127.0.0.1:8001";
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
