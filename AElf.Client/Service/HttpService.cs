@@ -118,7 +118,7 @@ namespace AElf.Client.Service
             {
                 retryTimes++;
                 if (retryTimes > RetryTimes) throw new AElfWebAppException(ex.Message);
-                await Task.Delay(1000);
+                await Task.Delay(500);
                 return await GetResponseAsync(url, version, expectedStatusCode, retryTimes);
             }
         }
@@ -170,7 +170,7 @@ namespace AElf.Client.Service
                 retryTimes++;
                 if (retryTimes > RetryTimes) throw new AElfWebAppException(ex.Message);
 
-                await Task.Delay(5000);
+                await Task.Delay(500);
                 return await PostResponseAsync(url, parameters, version, useApplicationJson, expectedStatusCode,
                     retryTimes);
             }

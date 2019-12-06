@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -32,7 +31,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "b0f4cb4a82c09c7d718e98b740f4b0e93a4d70ad184a6fc9cf27c37b4d9e5865";
+        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
