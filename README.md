@@ -4,6 +4,10 @@
 
 This is a C# client library, used to communicate with the [AElf](https://github.com/AElfProject/AElf)  API.
 
+### Getting Started
+
+You should build the "AElf.Client" project first to get files defined in protos, which will be generated in the directory named "Protobuf/Generated".
+
 ### Basic usage
 
 ``` c#

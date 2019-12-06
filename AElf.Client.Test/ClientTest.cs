@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
-using AElf.Client.Proto;
+using AElf.Client.Runtime;
 using AElf.Client.Service;
 using Google.Protobuf;
 using Newtonsoft.Json;

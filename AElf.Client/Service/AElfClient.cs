@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
-using AElf.Client.Proto;
+using AElf.Client.MultiToken;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
 using AElf.Types;
@@ -33,6 +33,7 @@ namespace AElf.Client.Service
         {
             _httpService = new HttpService(timeOut, retryTimes);
             BaseUrl = baseUrl;
+            
         }
 
         /// <summary>
