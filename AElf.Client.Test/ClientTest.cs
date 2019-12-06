@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -42,7 +43,7 @@ namespace AElf.Client.Test
             Client = new AElfClient(BaseUrl);
             
             // To get address from privateKey.s
-            _address = AsyncHelper.RunSync(() => Client.GetAccountFromPrivateKey(PrivateKey));
+            _address = AsyncHelper.RunSync(() => Client.GetAddressFromPrivateKey(PrivateKey));
         }
 
         #region block
@@ -454,9 +455,9 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetFormattedAddress_Test()
         {
-            var result = await Client.GetFormattedAddress(AddressHelper.Base58StringToAddress(_address));
+            var result = await Client.GetFormattedAddress(PrivateKey);
             _testOutputHelper.WriteLine(result);
-            Assert.True(result == "ELF_2h4QDNiD2hZgytafmxqip57hvBUqq3QYUxR79bUN39V5PjQDER_AELF");
+            Assert.True(result == $"ELF_{_address}_AELF");
         }
 
         #endregion
