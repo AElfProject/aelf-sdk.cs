@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
+using AElf.Client.Runtime;
 using AElf.Client.Service;
-using AElf.Runtime.CSharp;
 using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,12 +14,14 @@ using Shouldly;
 using Volo.Abp.Threading;
 using Xunit;
 using Xunit.Abstractions;
+using Address = AElf.Types.Address;
+using Hash = AElf.Types.Hash;
 
 namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string BaseUrl = "Http://127.0.0.1:8400";
+        private const string BaseUrl = "Http://127.0.0.1:8001";
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
@@ -29,7 +31,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "b0f4cb4a82c09c7d718e98b740f4b0e93a4d70ad184a6fc9cf27c37b4d9e5865";
+        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -40,7 +42,7 @@ namespace AElf.Client.Test
             Client = new AElfClient(BaseUrl);
             
             // To get address from privateKey.s
-            _address = AsyncHelper.RunSync(() => Client.GetAccountFromPrivateKey(PrivateKey));
+            _address = AsyncHelper.RunSync(() => Client.GetAddressFromPrivateKey(PrivateKey));
         }
 
         #region block
@@ -452,9 +454,9 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetFormattedAddress_Test()
         {
-            var result = await Client.GetFormattedAddress(AddressHelper.Base58StringToAddress(_address));
+            var result = await Client.GetFormattedAddress(PrivateKey);
             _testOutputHelper.WriteLine(result);
-            Assert.True(result == "ELF_2h4QDNiD2hZgytafmxqip57hvBUqq3QYUxR79bUN39V5PjQDER_AELF");
+            Assert.True(result == $"ELF_{_address}_AELF");
         }
 
         #endregion

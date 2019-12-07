@@ -2,19 +2,21 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
+using AElf.Client.MultiToken;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
-using AElf.proto;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Address = AElf.Types.Address;
+using Hash = AElf.Types.Hash;
 
 namespace AElf.Client.Service
 {
     public interface IClientService
     {
         Task<bool> IsConnected();
-        Task<string> GetFormattedAddress(Address address);
+        Task<string> GetFormattedAddress(string privateKeyHex);
         Task<string> GetAddressFromPubKey(string pubKey);
         Task<string> GetGenesisContractAddressAsync();
         Task<Address> GetContractAddressByName(Hash contractNameHash);
@@ -31,6 +33,7 @@ namespace AElf.Client.Service
         {
             _httpService = new HttpService(timeOut, retryTimes);
             BaseUrl = baseUrl;
+            
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace AElf.Client.Service
         /// <returns>Address</returns>
         public async Task<Address> GetContractAddressByName(Hash contractNameHash)
         {
-            var from = await GetAccountFromPrivateKey(ExamplePrivateKey);
+            var from = await GetAddressFromPrivateKey(ExamplePrivateKey);
             var to = await GetGenesisContractAddressAsync();
             var transaction = await GenerateTransaction(from, to, "GetContractAddressByName", contractNameHash);
             var txWithSig = await SignTransaction(ExamplePrivateKey, transaction);
@@ -153,22 +156,22 @@ namespace AElf.Client.Service
         /// </summary>
         /// <param name="privateKeyHex"></param>
         /// <returns></returns>
-        public Task<string> GetAccountFromPrivateKey(string privateKeyHex)
+        public Task<string> GetAddressFromPrivateKey(string privateKeyHex)
         {
             var address = Address.FromPublicKey(GetAElfKeyPair(privateKeyHex).PublicKey);
             return Task.FromResult(address.GetFormatted());
         }
 
-        public async Task<string> GetFormattedAddress(Address address)
+        public async Task<string> GetFormattedAddress(string privateKeyHex)
         {
             var tokenContractAddress = await GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
-            var fromAddress = await GetAccountFromPrivateKey(ExamplePrivateKey);
+            var fromAddress = await GetAddressFromPrivateKey(privateKeyHex);
             var toAddress = tokenContractAddress.GetFormatted();
             var methodName = "GetNativeTokenInfo";
             var param = new Empty();
 
             var transaction = await GenerateTransaction(fromAddress, toAddress, methodName, param);
-            var txWithSign = await SignTransaction(ExamplePrivateKey, transaction);
+            var txWithSign = await SignTransaction(privateKeyHex, transaction);
 
             var result = await ExecuteTransactionAsync(new ExecuteTransactionDto
             {
@@ -180,7 +183,7 @@ namespace AElf.Client.Service
             var symbol = tokenInfo.Symbol;
             var chainIdString = (await GetChainStatusAsync()).ChainId;
 
-            return $"{symbol}_{address.GetFormatted()}_{chainIdString}";
+            return $"{symbol}_{fromAddress}_{chainIdString}";
         }
 
         public Address GetBase58String(string base58String)
