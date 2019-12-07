@@ -36,6 +36,7 @@ namespace AElf.Client.Service
         /// <returns>Definitions of proto-buff</returns>
         public async Task<byte[]> GetContractFileDescriptorSetAsync(string address)
         {
+            AssertValidAddress(address);
             var url = GetRequestUrl(BaseUrl, $"api/blockChain/contractFileDescriptorSet?address={address}");
             return await _httpService.GetResponseAsync<byte[]>(url);
         }

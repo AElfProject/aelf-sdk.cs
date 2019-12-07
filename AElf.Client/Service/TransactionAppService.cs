@@ -148,6 +148,7 @@ namespace AElf.Client.Service
         /// <returns>TransactionResultDto</returns>
         public async Task<TransactionResultDto> GetTransactionResultAsync(string transactionId)
         {
+            AssertValidTransactionId(transactionId);
             var url = GetRequestUrl(BaseUrl, $"api/blockChain/transactionResult?transactionId={transactionId}");
             return await _httpService.GetResponseAsync<TransactionResultDto>(url);
         }
@@ -162,6 +163,7 @@ namespace AElf.Client.Service
         public async Task<List<TransactionResultDto>> GetTransactionResultsAsync(string blockHash, int offset = 0,
             int limit = 10)
         {
+            AssertValidHash(blockHash);
             var url = GetRequestUrl(BaseUrl,
                 $"api/blockChain/transactionResults?blockHash={blockHash}&offset={offset}&limit={limit}");
             return await _httpService.GetResponseAsync<List<TransactionResultDto>>(url);
@@ -174,6 +176,7 @@ namespace AElf.Client.Service
         /// <returns>MerklePathDto</returns>
         public async Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId)
         {
+            AssertValidTransactionId(transactionId);
             var url = GetRequestUrl(BaseUrl, $"api/blockChain/merklePathByTransactionId?transactionId={transactionId}");
             return await _httpService.GetResponseAsync<MerklePathDto>(url);
         }

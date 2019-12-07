@@ -32,6 +32,7 @@ namespace AElf.Client.Service
         /// <returns>Block information</returns>
         public async Task<BlockDto> GetBlockByHashAsync(string blockHash, bool includeTransactions = false)
         {
+            AssertValidHash(blockHash);
             var url = GetRequestUrl(BaseUrl,
                 $"api/blockChain/block?blockHash={blockHash}&includeTransactions={includeTransactions}");
             return await _httpService.GetResponseAsync<BlockDto>(url);
