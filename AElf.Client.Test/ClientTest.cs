@@ -42,7 +42,7 @@ namespace AElf.Client.Test
             Client = new AElfClient(BaseUrl);
             
             // To get address from privateKey.s
-            _address = AsyncHelper.RunSync(() => Client.GetAddressFromPrivateKey(PrivateKey));
+            _address = Client.GetAddressFromPrivateKey(PrivateKey);
         }
 
         #region block
@@ -69,9 +69,8 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetBlockByHeight_Failed_Test()
         {
-            const int retryTimes = 3;
             const int timeOut = 60;
-            var httpService = new HttpService(timeOut, retryTimes);
+            var httpService = new HttpService(timeOut);
             const int heightNotExist = int.MaxValue;
             var errorResponse = await httpService.GetResponseAsync<WebAppErrorResponse>(
                 $"{BaseUrl}/api/blockChain/blockByHeight?blockHeight={heightNotExist}&includeTransactions=false",
@@ -121,7 +120,7 @@ namespace AElf.Client.Test
         [Fact(Skip = "Redo this later.")]
         public async Task GetCurrentRoundInformationAsync_Test()
         {
-            var webAppService = new AElfClient(BaseUrl, 60, 5);
+            var webAppService = new AElfClient(BaseUrl, 60);
             var roundDto = await webAppService.GetCurrentRoundInformationAsync();
             roundDto.ShouldNotBeNull();
 
@@ -220,7 +219,7 @@ namespace AElf.Client.Test
             var param = Hash.FromString("AElf.ContractNames.TokenConverter");
 
             var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
-            var txWithSign = await Client.SignTransaction(PrivateKey, transaction);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
             {
@@ -340,7 +339,7 @@ namespace AElf.Client.Test
             var param = Hash.FromString("AElf.ContractNames.Vote");
 
             var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
-            var txWithSign = await Client.SignTransaction(PrivateKey, transaction);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
             {
@@ -365,7 +364,7 @@ namespace AElf.Client.Test
             foreach (var param in parameters)
             {
                 var tx = await Client.GenerateTransaction(_address, toAddress, methodName, param);
-                var txWithSign = await Client.SignTransaction(PrivateKey, tx);
+                var txWithSign = Client.SignTransaction(PrivateKey, tx);
 
                 transactions.Add(txWithSign);
             }
@@ -454,7 +453,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetFormattedAddress_Test()
         {
-            var result = await Client.GetFormattedAddress(PrivateKey);
+            var result = await Client.GetFormattedAddress(AddressHelper.Base58StringToAddress(_address));
             _testOutputHelper.WriteLine(result);
             Assert.True(result == $"ELF_{_address}_AELF");
         }

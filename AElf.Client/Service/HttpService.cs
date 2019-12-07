@@ -25,13 +25,11 @@ namespace AElf.Client.Service
     public class HttpService : IHttpService
     {
         private HttpClient Client { get; set; }
-        private int RetryTimes { get; }
         private int TimeoutSeconds { get; }
 
-        public HttpService(int timeoutSeconds, int retryTimes)
+        public HttpService(int timeoutSeconds)
         {
             TimeoutSeconds = timeoutSeconds;
-            RetryTimes = retryTimes;
         }
 
         /// <summary>
@@ -101,7 +99,7 @@ namespace AElf.Client.Service
         }
 
         private async Task<HttpResponseMessage> GetResponseAsync(string url, string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK, int retryTimes = 0)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
 
@@ -112,14 +110,11 @@ namespace AElf.Client.Service
                 if (response.StatusCode == expectedStatusCode)
                     return response;
                 var message = await response.Content.ReadAsStringAsync();
-                throw new AElfWebAppException(message);
+                throw new AElfClientException(message);
             }
             catch (Exception ex)
             {
-                retryTimes++;
-                if (retryTimes > RetryTimes) throw new AElfWebAppException(ex.Message);
-                await Task.Delay(500);
-                return await GetResponseAsync(url, version, expectedStatusCode, retryTimes);
+                throw new AElfClientException(ex.Message);
             }
         }
 
@@ -137,7 +132,7 @@ namespace AElf.Client.Service
         private async Task<HttpResponseMessage> PostResponseAsync(string url,
             Dictionary<string, string> parameters,
             string version = null, bool useApplicationJson = false,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK, int retryTimes = 0)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
             var client = GetHttpClient(version);
@@ -167,12 +162,7 @@ namespace AElf.Client.Service
             }
             catch (Exception ex)
             {
-                retryTimes++;
-                if (retryTimes > RetryTimes) throw new AElfWebAppException(ex.Message);
-
-                await Task.Delay(500);
-                return await PostResponseAsync(url, parameters, version, useApplicationJson, expectedStatusCode,
-                    retryTimes);
+                throw new AElfClientException(ex.Message);
             }
         }
 
@@ -188,7 +178,7 @@ namespace AElf.Client.Service
         }
 
         private async Task<HttpResponseMessage> DeleteResponseAsync(string url, string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK, int retryTimes = 0)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
             var client = GetHttpClient(version);
@@ -198,14 +188,11 @@ namespace AElf.Client.Service
                 if (response.StatusCode == expectedStatusCode)
                     return response;
                 var message = await response.Content.ReadAsStringAsync();
-                throw new AElfWebAppException(message);
+                throw new AElfClientException(message);
             }
             catch (Exception ex)
             {
-                retryTimes++;
-                if (retryTimes > RetryTimes) throw new AElfWebAppException(ex.Message);
-                await Task.Delay(500);
-                return await DeleteResponseAsync(url, version, expectedStatusCode);
+                throw new AElfClientException(ex.Message);
             }
         }
 

@@ -24,6 +24,7 @@ namespace AElf.Client.Service
         /// <returns>Add successfully or not</returns>
         public async Task<bool> AddPeerAsync(string address)
         {
+            AssertValidAddress(address);
             var url = GetRequestUrl(BaseUrl, "api/net/peer");
             var parameters = new Dictionary<string, string>
             {
@@ -40,6 +41,7 @@ namespace AElf.Client.Service
         /// <returns>Delete successfully or not</returns>
         public async Task<bool> RemovePeerAsync(string address)
         {
+            AssertValidAddress(address);
             var url = GetRequestUrl(BaseUrl, $"api/net/peer?address={address}");
             return await _httpService.DeleteResponseAsObjectAsync<bool>(url);
         }

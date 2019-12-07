@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
-using AElf.Client.MultiToken;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
 using AElf.Types;
@@ -16,10 +15,10 @@ namespace AElf.Client.Service
     public interface IClientService
     {
         Task<bool> IsConnected();
-        Task<string> GetFormattedAddress(string privateKeyHex);
-        Task<string> GetAddressFromPubKey(string pubKey);
+        Task<string> GetFormattedAddress(Address address);
         Task<string> GetGenesisContractAddressAsync();
         Task<Address> GetContractAddressByName(Hash contractNameHash);
+        string GetAddressFromPubKey(string pubKey);
     }
 
     public partial class AElfClient : IClientService
@@ -29,9 +28,9 @@ namespace AElf.Client.Service
 
         private const string ExamplePrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
-        public AElfClient(string baseUrl, int timeOut = 60, int retryTimes = 3)
+        public AElfClient(string baseUrl, int timeOut = 60)
         {
-            _httpService = new HttpService(timeOut, retryTimes);
+            _httpService = new HttpService(timeOut);
             BaseUrl = baseUrl;
             
         }
@@ -54,18 +53,6 @@ namespace AElf.Client.Service
         }
 
         /// <summary>
-        /// Get the account address through the public key.
-        /// </summary>
-        /// <param name="pubKey"></param>
-        /// <returns>Account</returns>
-        public Task<string> GetAddressFromPubKey(string pubKey)
-        {
-            var publicKey = ByteArrayHelper.HexStringToByteArray(pubKey);
-            var address = Address.FromPublicKey(publicKey);
-            return Task.FromResult(address.GetFormatted());
-        }
-
-        /// <summary>
         /// Get the address of genesis contract.
         /// </summary>
         /// <returns>Address</returns>
@@ -85,10 +72,10 @@ namespace AElf.Client.Service
         /// <returns>Address</returns>
         public async Task<Address> GetContractAddressByName(Hash contractNameHash)
         {
-            var from = await GetAddressFromPrivateKey(ExamplePrivateKey);
+            var from = GetAddressFromPrivateKey(ExamplePrivateKey);
             var to = await GetGenesisContractAddressAsync();
             var transaction = await GenerateTransaction(from, to, "GetContractAddressByName", contractNameHash);
-            var txWithSig = await SignTransaction(ExamplePrivateKey, transaction);
+            var txWithSig = SignTransaction(ExamplePrivateKey, transaction);
 
             var response = await ExecuteTransactionAsync(new ExecuteTransactionDto
             {
@@ -113,6 +100,7 @@ namespace AElf.Client.Service
         {
             try
             {
+                AssertValidAddress(from, to);
                 var chainStatus = await GetChainStatusAsync();
                 var transaction = new Transaction
                 {
@@ -134,12 +122,39 @@ namespace AElf.Client.Service
         }
 
         /// <summary>
+        /// Convert the Address to the displayed string：symbol_base58-string_base58-string-chain-id
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public async Task<string> GetFormattedAddress(Address address)
+        {
+            var tokenContractAddress = await GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var fromAddress = GetAddressFromPrivateKey(ExamplePrivateKey);
+            var toAddress = tokenContractAddress.GetFormatted();
+            var methodName = "GetPrimaryTokenSymbol";
+            var param = new Empty();
+
+            var transaction = await GenerateTransaction(fromAddress, toAddress, methodName, param);
+            var txWithSign = SignTransaction(ExamplePrivateKey, transaction);
+
+            var result = await ExecuteTransactionAsync(new ExecuteTransactionDto
+            {
+                RawTransaction = txWithSign.ToByteArray().ToHex()
+            });
+
+            var symbol = StringValue.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(result));
+            var chainIdString = (await GetChainStatusAsync()).ChainId;
+
+            return $"{symbol.Value}_{fromAddress}_{chainIdString}";
+        }
+
+        /// <summary>
         /// Sign a transaction using private key.
         /// </summary>
         /// <param name="privateKeyHex"></param>
         /// <param name="transaction"></param>
         /// <returns>Transaction signed</returns>
-        public Task<Transaction> SignTransaction(string privateKeyHex, Transaction transaction)
+        public Transaction SignTransaction(string privateKeyHex, Transaction transaction)
         {
             var transactionData = transaction.GetHash().ToByteArray();
 
@@ -148,42 +163,30 @@ namespace AElf.Client.Service
             var signature = CryptoHelper.SignWithPrivateKey(privateKey, transactionData);
             transaction.Signature = ByteString.CopyFrom(signature);
 
-            return Task.FromResult(transaction);
+            return transaction;
         }
 
+        /// <summary>
+        /// Get the account address through the public key.
+        /// </summary>
+        /// <param name="pubKey"></param>
+        /// <returns>Account</returns>
+        public string GetAddressFromPubKey(string pubKey)
+        {
+            var publicKey = ByteArrayHelper.HexStringToByteArray(pubKey);
+            var address = Address.FromPublicKey(publicKey);
+            return address.GetFormatted();
+        }
+        
         /// <summary>
         /// Get the account address through the private key.
         /// </summary>
         /// <param name="privateKeyHex"></param>
         /// <returns></returns>
-        public Task<string> GetAddressFromPrivateKey(string privateKeyHex)
+        public string GetAddressFromPrivateKey(string privateKeyHex)
         {
             var address = Address.FromPublicKey(GetAElfKeyPair(privateKeyHex).PublicKey);
-            return Task.FromResult(address.GetFormatted());
-        }
-
-        public async Task<string> GetFormattedAddress(string privateKeyHex)
-        {
-            var tokenContractAddress = await GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
-            var fromAddress = await GetAddressFromPrivateKey(privateKeyHex);
-            var toAddress = tokenContractAddress.GetFormatted();
-            var methodName = "GetNativeTokenInfo";
-            var param = new Empty();
-
-            var transaction = await GenerateTransaction(fromAddress, toAddress, methodName, param);
-            var txWithSign = await SignTransaction(privateKeyHex, transaction);
-
-            var result = await ExecuteTransactionAsync(new ExecuteTransactionDto
-            {
-                RawTransaction = txWithSign.ToByteArray().ToHex()
-            });
-
-            var tokenInfo = TokenInfo.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(result));
-
-            var symbol = tokenInfo.Symbol;
-            var chainIdString = (await GetChainStatusAsync()).ChainId;
-
-            return $"{symbol}_{fromAddress}_{chainIdString}";
+            return address.GetFormatted();
         }
 
         public Address GetBase58String(string base58String)
@@ -204,6 +207,51 @@ namespace AElf.Client.Service
         private string GetRequestUrl(string baseUrl, string relativeUrl)
         {
             return new Uri(new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), relativeUrl).ToString();
+        }
+
+        private void AssertValidAddress(params string[] addresses)
+        {
+            try
+            {
+                foreach (var address in addresses)
+                {
+                    AddressHelper.Base58StringToAddress(address);
+                }
+            }
+            catch (Exception)
+            {
+                throw new AElfClientException(Error.Message[Error.InvalidAddress]);
+            }
+        }
+
+        private void AssertValidHash(params string[] hashes)
+        {
+            try
+            {
+                foreach (var hash in hashes)
+                {
+                    HashHelper.HexStringToHash(hash);
+                }
+            }
+            catch (Exception)
+            {
+                throw new AElfClientException(Error.Message[Error.InvalidBlockHash]);
+            }
+        }
+        
+        private void AssertValidTransactionId(params string[] transactionIds)
+        {
+            try
+            {
+                foreach (var transactionId in transactionIds)
+                {
+                    HashHelper.HexStringToHash(transactionId);
+                }
+            }
+            catch (Exception)
+            {
+                throw new AElfClientException(Error.Message[Error.InvalidTransactionId]);
+            }
         }
 
         #endregion
