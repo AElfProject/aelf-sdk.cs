@@ -16,14 +16,12 @@ dotnet restore AElf.Client.sln
 
 echo '---- build '${src_path}
 
-for name in `ls -lh | grep ^d | grep AElf | grep -v Tests | awk '{print $NF}'`;
+name=AElf.Client
 do
-    if [[ -f ${name}/${name}.csproj ]] && [[ 1 -eq $(grep -c "GeneratePackageOnBuild" ${name}/${name}.csproj) ]];then
-        echo ${name}/${name}.csproj
-        dotnet build ${name}/${name}.csproj /clp:ErrorsOnly --configuration Release -P:Version=${VERSION} -P:Authors=AElf -o ${build_output}
+    echo ${name}/${name}.csproj
+    dotnet build ${name}/${name}.csproj /clp:ErrorsOnly --configuration Release -P:Version=${VERSION} -P:Authors=AElf -o ${build_output}
 
-        echo `ls ${build_output}/${name}.${VERSION}.nupkg`
-        dotnet nuget push ${build_output}/${name}.${VERSION}.nupkg -k ${NUGET_API_KEY} -s https://api.nuget.org/v3/index.json
-    fi
+    echo `ls ${build_output}/${name}.${VERSION}.nupkg`
+    dotnet nuget push ${build_output}/${name}.${VERSION}.nupkg -k ${NUGET_API_KEY} -s https://api.nuget.org/v3/index.json
 done
 cd ../
