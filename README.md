@@ -4,21 +4,23 @@
 
 This is a C# client library, used to communicate with the [AElf](https://github.com/AElfProject/AElf)  API.
 
+### Getting Started
+
+You should build the "AElf.Client" project first to get files defined in protos, which will be generated in the directory named "Protobuf/Generated".
+
 ### Basic usage
 
 ``` c#
-private const int TimeOut = 60;
-private const int RetryTimes = 3;
 private const string BaseUrl = "Http://127.0.0.1:8100";
 
 // get client instance
-var AElfClient = new AElfService(new HttpService(TimeOut, RetryTimes), BaseUrl);
-var height = await AElfClient.GetBlockHeightAsync();
+AElfClient aelfClient = new AElfClient(BaseUrl);
+var height = await aelfClient.GetBlockHeightAsync();
 ```
 
 ### Interface
 
-The interface methods can be easily available by instance "AElfClient" shown in basic usage. The following is a list of input parameters and output for each method. Check out the [Web api reference](https://docs.aelf.io/v/dev/reference) for detailed Interface description.
+Interface methods can be easily available by the instance "aelfClient" shown in basic usage. The following is a list of input parameters and output for each method. Check out the [Web api reference](https://docs.aelf.io/v/dev/reference) for detailed Interface description.
 
 #### IBlockAppService
 
@@ -47,7 +49,7 @@ The interface methods can be easily available by instance "AElfClient" shown in 
 #### INetAppService
 
 ```c#
- Task<bool> AddPeerAsync(AddPeerInput input);
+ Task<bool> AddPeerAsync(string address);
 
  Task<bool> RemovePeerAsync(string address);
 
@@ -85,20 +87,18 @@ Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId);
 ```c#
  Task<bool> IsConnected();
 
- Task<string> GetAccountFromPrivateKey(string privateKeyHex);
+ Task<string> GetFormattedAddress(Address address);
 
- Task<string> GetAccountFromPubKey(string pubKey);
-
- Task<string> GetPublicKey(string privateKeyHex);
+ Task<string> GetAddressFromPubKey(string pubKey);
 
  Task<string> GetGenesisContractAddressAsync();
 
- Task<Address> GetContractAddressByName(Hash contractNameHash, string privateKeyHex);
+ Task<Address> GetContractAddressByName(Hash contractNameHash);
 ```
 
 ### Test
 
-This module contains tests for all services provided by AElfClient. You can see how to properly use services provided by AElfClient here. 
+This module contains tests for all services provided by AElfClient. You can see how to properly use services provided by AElfClient here.
 
 You need to firstly set necessary parameters to make sure tests can run successfully.
 
@@ -108,7 +108,7 @@ You need to firstly set necessary parameters to make sure tests can run successf
    private const string BaseUrl = "Http://127.0.0.1:8001";
    ```
 
-2. Give privateKey of a running node.
+2. Give a valid privateKey of a node.
 
    ```c#
    private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
@@ -116,4 +116,4 @@ You need to firstly set necessary parameters to make sure tests can run successf
 
 ### Note
 
-You need to run a local or remote AElf node to run the unit test successfully.If you're not familiar with how to run a node or multiple nodes, please see [Running a node](https://docs.aelf.io/v/dev/main/main/run-node) /[Running multiple nodes](https://docs.aelf.io/v/dev/main/main/multi-nodes) for more information.
+You need to run a local or remote AElf node to run the unit test successfully. If you're not familiar with how to run a node or multiple nodes, please see [Running a node](https://docs.aelf.io/v/dev/main/main/run-node) / [Running multiple nodes](https://docs.aelf.io/v/dev/main/main/multi-nodes) for more information.
