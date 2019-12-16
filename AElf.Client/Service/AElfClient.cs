@@ -24,7 +24,7 @@ namespace AElf.Client.Service
     public partial class AElfClient : IClientService
     {
         private readonly IHttpService _httpService;
-        private string BaseUrl { get; set; }
+        public string BaseUrl { get; set; }
 
         private const string ExamplePrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
