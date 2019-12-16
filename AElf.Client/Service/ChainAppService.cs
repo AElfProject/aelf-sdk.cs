@@ -25,7 +25,7 @@ namespace AElf.Client.Service
         /// <returns>Description of current status</returns>
         public async Task<ChainStatusDto> GetChainStatusAsync()
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/chainStatus");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/chainStatus");
             return await _httpService.GetResponseAsync<ChainStatusDto>(url);
         }
 
@@ -37,7 +37,7 @@ namespace AElf.Client.Service
         public async Task<byte[]> GetContractFileDescriptorSetAsync(string address)
         {
             AssertValidAddress(address);
-            var url = GetRequestUrl(BaseUrl, $"api/blockChain/contractFileDescriptorSet?address={address}");
+            var url = GetRequestUrl(_baseUrl, $"api/blockChain/contractFileDescriptorSet?address={address}");
             return await _httpService.GetResponseAsync<byte[]>(url);
         }
 
@@ -47,7 +47,7 @@ namespace AElf.Client.Service
         /// <returns>The latest round of consensus information</returns>
         public async Task<RoundDto> GetCurrentRoundInformationAsync()
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/currentRoundInformation");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/currentRoundInformation");
             return await _httpService.GetResponseAsync<RoundDto>(url);
         }
 
@@ -57,7 +57,7 @@ namespace AElf.Client.Service
         /// <returns>Information of the task queue</returns>
         public async Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync()
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/taskQueueStatus");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/taskQueueStatus");
             return await _httpService.GetResponseAsync<List<TaskQueueInfoDto>>(url);
         }
 
@@ -67,7 +67,7 @@ namespace AElf.Client.Service
         /// <returns>ChainId</returns>
         public async Task<int> GetChainIdAsync()
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/chainStatus");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/chainStatus");
             var statusDto = await _httpService.GetResponseAsync<ChainStatusDto>(url);
             var base58ChainId = statusDto.ChainId;
             var chainId = ChainHelper.ConvertBase58ToChainId(base58ChainId);
