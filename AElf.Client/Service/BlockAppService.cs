@@ -20,7 +20,7 @@ namespace AElf.Client.Service
         /// <returns>Height</returns>
         public async Task<long> GetBlockHeightAsync()
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/blockHeight");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/blockHeight");
             return await _httpService.GetResponseAsync<long>(url);
         }
 
@@ -33,7 +33,7 @@ namespace AElf.Client.Service
         public async Task<BlockDto> GetBlockByHashAsync(string blockHash, bool includeTransactions = false)
         {
             AssertValidHash(blockHash);
-            var url = GetRequestUrl(BaseUrl,
+            var url = GetRequestUrl(_baseUrl,
                 $"api/blockChain/block?blockHash={blockHash}&includeTransactions={includeTransactions}");
             return await _httpService.GetResponseAsync<BlockDto>(url);
         }
@@ -46,7 +46,7 @@ namespace AElf.Client.Service
         /// <returns>Block information</returns>
         public async Task<BlockDto> GetBlockByHeightAsync(long blockHeight, bool includeTransactions = false)
         {
-            var url = GetRequestUrl(BaseUrl,
+            var url = GetRequestUrl(_baseUrl,
                 $"api/blockChain/blockByHeight?blockHeight={blockHeight}&includeTransactions={includeTransactions}");
             return await _httpService.GetResponseAsync<BlockDto>(url);
         }

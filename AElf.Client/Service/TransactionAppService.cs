@@ -36,7 +36,7 @@ namespace AElf.Client.Service
         /// <returns>TransactionPoolStatusOutput</returns>
         public async Task<TransactionPoolStatusOutput> GetTransactionPoolStatusAsync()
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/transactionPoolStatus");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/transactionPoolStatus");
             return await _httpService.GetResponseAsync<TransactionPoolStatusOutput>(url);
         }
 
@@ -47,7 +47,7 @@ namespace AElf.Client.Service
         /// <returns></returns>
         public async Task<string> ExecuteTransactionAsync(ExecuteTransactionDto input)
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/executeTransaction");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/executeTransaction");
             var parameters = new Dictionary<string, string>
             {
                 {"RawTransaction", input.RawTransaction}
@@ -63,7 +63,7 @@ namespace AElf.Client.Service
         /// <returns>Serialized result</returns>
         public async Task<string> ExecuteRawTransactionAsync(ExecuteRawTransactionDto input)
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/executeRawTransaction");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/executeRawTransaction");
             var parameters = new Dictionary<string, string>
             {
                 {"RawTransaction", input.RawTransaction},
@@ -80,7 +80,7 @@ namespace AElf.Client.Service
         /// <returns>CreateRawTransactionOutput</returns>
         public async Task<CreateRawTransactionOutput> CreateRawTransactionAsync(CreateRawTransactionInput input)
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/rawTransaction");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/rawTransaction");
             var parameters = new Dictionary<string, string>
             {
                 {"From", input.From},
@@ -101,7 +101,7 @@ namespace AElf.Client.Service
         /// <returns>SendRawTransactionOutput</returns>
         public async Task<SendRawTransactionOutput> SendRawTransactionAsync(SendRawTransactionInput input)
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/sendRawTransaction");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/sendRawTransaction");
             var parameters = new Dictionary<string, string>
             {
                 {"Transaction", input.Transaction},
@@ -118,7 +118,7 @@ namespace AElf.Client.Service
         /// <returns>TransactionId</returns>
         public async Task<SendTransactionOutput> SendTransactionAsync(SendTransactionInput input)
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/sendTransaction");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/sendTransaction");
             var parameters = new Dictionary<string, string>
             {
                 {"RawTransaction", input.RawTransaction}
@@ -133,7 +133,7 @@ namespace AElf.Client.Service
         /// <returns>TransactionIds</returns>
         public async Task<string[]> SendTransactionsAsync(SendTransactionsInput input)
         {
-            var url = GetRequestUrl(BaseUrl, "api/blockChain/sendTransactions");
+            var url = GetRequestUrl(_baseUrl, "api/blockChain/sendTransactions");
             var parameters = new Dictionary<string, string>
             {
                 {"RawTransactions", input.RawTransactions}
@@ -149,7 +149,7 @@ namespace AElf.Client.Service
         public async Task<TransactionResultDto> GetTransactionResultAsync(string transactionId)
         {
             AssertValidTransactionId(transactionId);
-            var url = GetRequestUrl(BaseUrl, $"api/blockChain/transactionResult?transactionId={transactionId}");
+            var url = GetRequestUrl(_baseUrl, $"api/blockChain/transactionResult?transactionId={transactionId}");
             return await _httpService.GetResponseAsync<TransactionResultDto>(url);
         }
 
@@ -164,7 +164,7 @@ namespace AElf.Client.Service
             int limit = 10)
         {
             AssertValidHash(blockHash);
-            var url = GetRequestUrl(BaseUrl,
+            var url = GetRequestUrl(_baseUrl,
                 $"api/blockChain/transactionResults?blockHash={blockHash}&offset={offset}&limit={limit}");
             return await _httpService.GetResponseAsync<List<TransactionResultDto>>(url);
         }
@@ -177,7 +177,7 @@ namespace AElf.Client.Service
         public async Task<MerklePathDto> GetMerklePathByTransactionIdAsync(string transactionId)
         {
             AssertValidTransactionId(transactionId);
-            var url = GetRequestUrl(BaseUrl, $"api/blockChain/merklePathByTransactionId?transactionId={transactionId}");
+            var url = GetRequestUrl(_baseUrl, $"api/blockChain/merklePathByTransactionId?transactionId={transactionId}");
             return await _httpService.GetResponseAsync<MerklePathDto>(url);
         }
     }

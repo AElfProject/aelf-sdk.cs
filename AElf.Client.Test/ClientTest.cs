@@ -21,7 +21,7 @@ namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string BaseUrl = "Http://127.0.0.1:8001";
+        private const string BaseUrl = "Http://127.0.0.1:8200";
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
@@ -139,18 +139,8 @@ namespace AElf.Client.Test
         [Fact(Skip = "Redo this later.")]
         public async Task AddPeerAsync_Test()
         {
-            var peers = await Client.GetPeersAsync(false);
-            peers.ShouldNotBeEmpty();
-            Assert.True(peers.Count >= 1);
-
-            // remove the last ipAddress
-            var peerToRemoveAddress = peers[^1].IpAddress;
-            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress);
-            removeSuccess.ShouldBeTrue();
-            _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
-
-            // add removed ipAddress
-            var addressToAdd = peerToRemoveAddress;
+            // add ipAddress
+            var addressToAdd = "192.168.199.122:7003";
 
             var addSuccess = await Client.AddPeerAsync(addressToAdd);
             addSuccess.ShouldBeTrue();

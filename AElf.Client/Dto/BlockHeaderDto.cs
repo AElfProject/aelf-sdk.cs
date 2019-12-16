@@ -16,7 +16,7 @@ namespace AElf.Client.Dto
 
         public long Height { get; set; }
 
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
 
         public string ChainId { get; set; }
 

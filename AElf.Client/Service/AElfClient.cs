@@ -24,14 +24,20 @@ namespace AElf.Client.Service
     public partial class AElfClient : IClientService
     {
         private readonly IHttpService _httpService;
-        private string BaseUrl { get; set; }
+        private string _baseUrl;
+
+        public string BaseUrl
+        {
+            get => _baseUrl;
+            set => _baseUrl = value;
+        }
 
         private const string ExamplePrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
         public AElfClient(string baseUrl, int timeOut = 60)
         {
             _httpService = new HttpService(timeOut);
-            BaseUrl = baseUrl;
+            _baseUrl = baseUrl;
             
         }
 
@@ -145,7 +151,7 @@ namespace AElf.Client.Service
             var symbol = StringValue.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(result));
             var chainIdString = (await GetChainStatusAsync()).ChainId;
 
-            return $"{symbol.Value}_{fromAddress}_{chainIdString}";
+            return $"{symbol.Value}_{address.GetFormatted()}_{chainIdString}";
         }
 
         /// <summary>
@@ -238,7 +244,7 @@ namespace AElf.Client.Service
                 throw new AElfClientException(Error.Message[Error.InvalidBlockHash]);
             }
         }
-        
+
         private void AssertValidTransactionId(params string[] transactionIds)
         {
             try
