@@ -448,6 +448,14 @@ namespace AElf.Client.Test
             Assert.True(result == $"ELF_{_address}_AELF");
         }
 
+        [Fact]
+        public void GetNewKeyPairInfo_Test()
+        {
+            var output = Client.GenerateKeyPairInfo();
+            var addressOutput = JsonConvert.SerializeObject(output);
+            _testOutputHelper.WriteLine(addressOutput);
+        }
+
         #endregion
 
         #region private methods
