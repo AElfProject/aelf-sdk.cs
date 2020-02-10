@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
+using AElf.Client.Model;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
 using AElf.Types;
@@ -19,6 +20,7 @@ namespace AElf.Client.Service
         Task<string> GetGenesisContractAddressAsync();
         Task<Address> GetContractAddressByName(Hash contractNameHash);
         string GetAddressFromPubKey(string pubKey);
+        KeyPairInfo GenerateKeyPairInfo();
     }
 
     public partial class AElfClient : IClientService
@@ -200,6 +202,21 @@ namespace AElf.Client.Service
             return AddressHelper.Base58StringToAddress(base58String);
         }
 
+        public KeyPairInfo GenerateKeyPairInfo()
+        {
+            var keyPair = CryptoHelper.GenerateKeyPair();
+            var privateKey = keyPair.PrivateKey.ToHex();
+            var publicKey = keyPair.PublicKey.ToHex();
+            var address = GetAddressFromPrivateKey(privateKey);
+
+            return new KeyPairInfo
+            {
+                PrivateKey = privateKey,
+                PublicKey = publicKey,
+                Address = address
+            };
+        }
+
         #region private methods
 
         private ECKeyPair GetAElfKeyPair(string privateKeyHex)
@@ -209,7 +226,7 @@ namespace AElf.Client.Service
 
             return keyPair;
         }
-        
+
         private string GetRequestUrl(string baseUrl, string relativeUrl)
         {
             return new Uri(new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), relativeUrl).ToString();

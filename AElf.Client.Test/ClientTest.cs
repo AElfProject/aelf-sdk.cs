@@ -117,17 +117,6 @@ namespace AElf.Client.Test
             descriptorSet.ShouldNotBeNull();
         }
 
-        [Fact(Skip = "Redo this later.")]
-        public async Task GetCurrentRoundInformationAsync_Test()
-        {
-            var webAppService = new AElfClient(BaseUrl, 60);
-            var roundDto = await webAppService.GetCurrentRoundInformationAsync();
-            roundDto.ShouldNotBeNull();
-
-            var currentRoundInformation = JsonConvert.SerializeObject(roundDto);
-            _testOutputHelper.WriteLine(currentRoundInformation);
-        }
-
         #endregion
 
         #region net
@@ -446,6 +435,14 @@ namespace AElf.Client.Test
             var result = await Client.GetFormattedAddress(AddressHelper.Base58StringToAddress(_address));
             _testOutputHelper.WriteLine(result);
             Assert.True(result == $"ELF_{_address}_AELF");
+        }
+
+        [Fact]
+        public void GetNewKeyPairInfo_Test()
+        {
+            var output = Client.GenerateKeyPairInfo();
+            var addressOutput = JsonConvert.SerializeObject(output);
+            _testOutputHelper.WriteLine(addressOutput);
         }
 
         #endregion
