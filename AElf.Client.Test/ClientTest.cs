@@ -117,17 +117,6 @@ namespace AElf.Client.Test
             descriptorSet.ShouldNotBeNull();
         }
 
-        [Fact(Skip = "Redo this later.")]
-        public async Task GetCurrentRoundInformationAsync_Test()
-        {
-            var webAppService = new AElfClient(BaseUrl, 60);
-            var roundDto = await webAppService.GetCurrentRoundInformationAsync();
-            roundDto.ShouldNotBeNull();
-
-            var currentRoundInformation = JsonConvert.SerializeObject(roundDto);
-            _testOutputHelper.WriteLine(currentRoundInformation);
-        }
-
         #endregion
 
         #region net

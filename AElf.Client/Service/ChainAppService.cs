@@ -10,8 +10,6 @@ namespace AElf.Client.Service
 
         Task<byte[]> GetContractFileDescriptorSetAsync(string address);
 
-        Task<RoundDto> GetCurrentRoundInformationAsync();
-
         Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync();
 
         Task<int> GetChainIdAsync();
@@ -39,16 +37,6 @@ namespace AElf.Client.Service
             AssertValidAddress(address);
             var url = GetRequestUrl(_baseUrl, $"api/blockChain/contractFileDescriptorSet?address={address}");
             return await _httpService.GetResponseAsync<byte[]>(url);
-        }
-
-        /// <summary>
-        /// Get the latest round of consensus information from data on the last blockHeader of best-chain.
-        /// </summary>
-        /// <returns>The latest round of consensus information</returns>
-        public async Task<RoundDto> GetCurrentRoundInformationAsync()
-        {
-            var url = GetRequestUrl(_baseUrl, "api/blockChain/currentRoundInformation");
-            return await _httpService.GetResponseAsync<RoundDto>(url);
         }
 
         /// <summary>
