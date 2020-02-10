@@ -46,12 +46,6 @@ message SmartContractRegistration {
     Hash code_hash = 3;
 }
 
-message KeyPairInfo{
-    string private_key = 1;
-    string public_key = 2;
-    string address = 3;
-}
-
 //acs0
 message ContractInfo
 {

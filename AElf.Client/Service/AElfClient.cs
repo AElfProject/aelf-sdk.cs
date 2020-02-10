@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
-using AElf.Client.Proto;
+using AElf.Client.Model;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
 using AElf.Types;
