@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
-using AElf.Client.Runtime;
 using AElf.Client.Service;
 using Google.Protobuf;
 using Newtonsoft.Json;
@@ -21,7 +20,7 @@ namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string BaseUrl = "Http://127.0.0.1:8200";
+        private const string BaseUrl = "Http://127.0.0.1:8001";
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
@@ -106,15 +105,6 @@ namespace AElf.Client.Test
 
             var chainStatus = JsonConvert.SerializeObject(chainStatusDto, Formatting.Indented);
             _testOutputHelper.WriteLine(chainStatus);
-        }
-
-        [Fact]
-        public async Task GetContractFileDescriptorSetAsync_Test()
-        {
-            var contractAddress = GenesisAddress;
-            var fileDescriptorBytes = await Client.GetContractFileDescriptorSetAsync(contractAddress);
-            var descriptorSet = FileDescriptorSet.Parser.ParseFrom(fileDescriptorBytes);
-            descriptorSet.ShouldNotBeNull();
         }
 
         #endregion
