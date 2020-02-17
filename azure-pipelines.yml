@@ -1,34 +1,49 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-trigger:
-- master
-
-pool:
-  vmImage: 'windows-latest'
-
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-
-steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+jobs:
+# All tasks on Windows....
+- job: build_all_windows
+  displayName: Build all tasks (Windows)
+  pool:
+    vmImage: windows-2019
+  variables:
+    CI_TEST: true
+  steps:
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '3.1.101'
+  - powershell: dotnet tool install --global Cake.Tool
+  - powershell: dotnet tool restore
+  - powershell: dotnet cake ./build.cake --target=build
+# All tasks on Linux
+- job: build_all_linux
+  displayName: Build all tasks (Linux)
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '3.1.101'
+  - script: dotnet tool install --global Cake.Tool
+    displayName: 'Install "Cake.Tool" .NET Core global tool'
+  - script: export PATH="$PATH:$HOME/.dotnet/tools"
+  - script: export PATH="$HOME/.dotnet:$PATH"
+  - script: dotnet tool restore
+  - script: dotnet cake ./build.cake --target=build
+  - script: cd  singlecp && bash deploy_aelf.sh
+  - script: dotnet cake ./build.cake --target=test
+# All tasks on macOS
+- job: build_all_darwin
+  displayName: Build all tasks (macOS)
+  pool:
+    vmImage: macos-10.13
+  variables:
+    CI_TEST: true
+  steps:
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '3.1.101' 
+  - script: dotnet tool install --global Cake.Tool
+    displayName: 'Install "Cake.Tool" .NET Core global tool'
+  - script: export PATH="$PATH:$HOME/.dotnet/tools"
+  - script: export PATH="$HOME/.dotnet:$PATH"
+  - script: dotnet tool restore
+  - script: dotnet cake ./build.cake --target=build
