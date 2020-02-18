@@ -1,18 +1,4 @@
 jobs:
-# All tasks on Windows....
-- job: build_all_windows
-  displayName: Build all tasks (Windows)
-  pool:
-    vmImage: windows-2019
-  variables:
-    CI_TEST: true
-  steps:
-  - task: DotNetCoreInstaller@0
-    inputs:
-      version: '3.1.101'
-  - powershell: dotnet tool install --global Cake.Tool
-  - powershell: dotnet tool restore
-  - powershell: dotnet cake ./build.cake --target=build
 # All tasks on Linux
 - job: build_all_linux
   displayName: Build all tasks (Linux)
@@ -30,20 +16,3 @@ jobs:
   - script: dotnet cake ./build.cake --target=build
   - script: cd  singlecp && bash deploy_aelf.sh
   - script: dotnet cake ./build.cake --target=test
-# All tasks on macOS
-- job: build_all_darwin
-  displayName: Build all tasks (macOS)
-  pool:
-    vmImage: macos-10.13
-  variables:
-    CI_TEST: true
-  steps:
-  - task: DotNetCoreInstaller@0
-    inputs:
-      version: '3.1.101' 
-  - script: dotnet tool install --global Cake.Tool
-    displayName: 'Install "Cake.Tool" .NET Core global tool'
-  - script: export PATH="$PATH:$HOME/.dotnet/tools"
-  - script: export PATH="$HOME/.dotnet:$PATH"
-  - script: dotnet tool restore
-  - script: dotnet cake ./build.cake --target=build
