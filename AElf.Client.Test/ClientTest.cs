@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
+using AElf.Client.Extension;
+using AElf.Client.MultiToken;
 using AElf.Client.Service;
 using Google.Protobuf;
 using Newtonsoft.Json;
@@ -30,7 +32,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
+        private const string PrivateKey = "cd86ab6347d8e52bbbe8532141fc59ce596268143a308d1d40fedf385528b458";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -433,6 +435,62 @@ namespace AElf.Client.Test
             var output = Client.GenerateKeyPairInfo();
             var addressOutput = JsonConvert.SerializeObject(output);
             _testOutputHelper.WriteLine(addressOutput);
+        }
+
+        [Fact]
+        public async Task GetAccountBalance_Test()
+        {
+            var tokenAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var methodName = "GetBalance";
+            var param = new GetBalanceInput
+            {
+                Symbol = "ELF",
+                Owner = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value}
+            };
+
+            var transaction =
+                await Client.GenerateTransaction(_address, tokenAddress.GetFormatted(), methodName, param);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
+
+            var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
+            {
+                RawTransaction = txWithSign.ToByteArray().ToHex()
+            });
+            Assert.True(transactionResult != null);
+
+            var balance = GetBalanceOutput.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
+            _testOutputHelper.WriteLine($"Balance of {_address} = {balance.Balance} {balance.Symbol}");
+        }
+
+        [Fact(Skip = "Redo this later.")]
+        public async Task GetTransactionFee_Test()
+        {
+            var toAccount = "2DyzHMD1DqurK9hhiPa91mTBEtcPNrPvY5Uh7tnqRMXGnB381R";
+            var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var methodName = "TransferFrom";
+            var param = new TransferFromInput
+            {
+                From = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value},
+                To = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value},
+                Symbol = "ELF",
+                Amount = 10000
+            };
+
+            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
+
+            var result = await Client.SendTransactionAsync(new SendTransactionInput
+            {
+                RawTransaction = txWithSign.ToByteArray().ToHex()
+            });
+
+            result.ShouldNotBeNull();
+            _testOutputHelper.WriteLine(result.TransactionId);
+
+            await Task.Delay(2000);
+            var transactionResult = await Client.GetTransactionResultAsync(result.TransactionId);
+            var res = transactionResult.GetAllTokensFee();
+            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(res, Formatting.Indented));
         }
 
         #endregion

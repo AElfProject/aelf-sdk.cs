@@ -83,4 +83,11 @@ message GetCrossChainTransferTokenContractAddressInput {
     int32 chainId = 1;
 }
 
+message TransferFromInput {
+    client.Address from = 1;
+    client.Address to = 2;
+    string symbol = 3;
+    sint64 amount = 4;
+    string memo = 5;
+}
 
