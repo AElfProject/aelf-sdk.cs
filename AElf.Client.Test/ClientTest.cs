@@ -33,7 +33,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "cd86ab6347d8e52bbbe8532141fc59ce596268143a308d1d40fedf385528b458";
+        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -484,7 +484,7 @@ namespace AElf.Client.Test
 
             await Task.Delay(2000);
             var transactionResult = await Client.GetTransactionResultAsync(result.TransactionId);
-            var res = transactionResult.GetAllTokensFee();
+            var res = transactionResult.GetTransactionFees();
             _testOutputHelper.WriteLine(JsonConvert.SerializeObject(res, Formatting.Indented));
         }
 
