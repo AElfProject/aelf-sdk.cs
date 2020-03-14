@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
@@ -261,6 +262,7 @@ namespace AElf.Client.Test
                 (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus")))
                 .GetFormatted();
 
+            _testOutputHelper.WriteLine(rawTransactionResult);
             Assert.True(rawTransactionResult == $"\"{consensusAddress}\"");
         }
 
@@ -330,30 +332,23 @@ namespace AElf.Client.Test
             var param2 = Hash.FromString("AElf.ContractNames.Vote");
 
             var parameters = new List<Hash> {param1, param2};
-            var transactions = new List<Transaction>();
+            var sb = new StringBuilder();
 
             foreach (var param in parameters)
             {
                 var tx = await Client.GenerateTransaction(_address, toAddress, methodName, param);
                 var txWithSign = Client.SignTransaction(PrivateKey, tx);
-
-                transactions.Add(txWithSign);
+                sb.Append(txWithSign.ToByteArray().ToHex() + ',');
             }
 
-            var result1 = await Client.SendTransactionAsync(new SendTransactionInput
+            var result1 = await Client.SendTransactionsAsync(new SendTransactionsInput
             {
-                RawTransaction = transactions[0].ToByteArray().ToHex()
+                RawTransactions = sb.ToString().Substring(0, sb.Length - 1)
             });
 
             Assert.True(result1 != null);
+            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(result1));
 
-            var result2 = await Client.SendTransactionAsync(new SendTransactionInput
-            {
-                RawTransaction = transactions[1].ToByteArray().ToHex()
-            });
-
-            Assert.True(result2 != null);
-            _testOutputHelper.WriteLine(result1.TransactionId + "\r\n" + result2.TransactionId);
         }
 
         [Fact]
