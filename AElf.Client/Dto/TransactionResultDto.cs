@@ -17,11 +17,7 @@ namespace AElf.Client.Dto
         public TransactionDto Transaction { get; set; }
         
         public string ReturnValue { get; set; }
-        
-        public string ReadableReturnValue { get; set; }
-        
-        public string Error { get; set; }
 
-        public TransactionFeeDto TransactionFee { get; set; }
+        public string Error { get; set; }
     }
 }

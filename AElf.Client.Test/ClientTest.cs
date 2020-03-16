@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
+using AElf.Client.Extension;
+using AElf.Client.MultiToken;
 using AElf.Client.Service;
 using Google.Protobuf;
 using Newtonsoft.Json;
@@ -259,6 +262,7 @@ namespace AElf.Client.Test
                 (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus")))
                 .GetFormatted();
 
+            _testOutputHelper.WriteLine(rawTransactionResult);
             Assert.True(rawTransactionResult == $"\"{consensusAddress}\"");
         }
 
@@ -328,30 +332,23 @@ namespace AElf.Client.Test
             var param2 = Hash.FromString("AElf.ContractNames.Vote");
 
             var parameters = new List<Hash> {param1, param2};
-            var transactions = new List<Transaction>();
+            var sb = new StringBuilder();
 
             foreach (var param in parameters)
             {
                 var tx = await Client.GenerateTransaction(_address, toAddress, methodName, param);
                 var txWithSign = Client.SignTransaction(PrivateKey, tx);
-
-                transactions.Add(txWithSign);
+                sb.Append(txWithSign.ToByteArray().ToHex() + ',');
             }
 
-            var result1 = await Client.SendTransactionAsync(new SendTransactionInput
+            var result1 = await Client.SendTransactionsAsync(new SendTransactionsInput
             {
-                RawTransaction = transactions[0].ToByteArray().ToHex()
+                RawTransactions = sb.ToString().Substring(0, sb.Length - 1)
             });
 
             Assert.True(result1 != null);
+            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(result1));
 
-            var result2 = await Client.SendTransactionAsync(new SendTransactionInput
-            {
-                RawTransaction = transactions[1].ToByteArray().ToHex()
-            });
-
-            Assert.True(result2 != null);
-            _testOutputHelper.WriteLine(result1.TransactionId + "\r\n" + result2.TransactionId);
         }
 
         [Fact]
@@ -433,6 +430,62 @@ namespace AElf.Client.Test
             var output = Client.GenerateKeyPairInfo();
             var addressOutput = JsonConvert.SerializeObject(output);
             _testOutputHelper.WriteLine(addressOutput);
+        }
+
+        [Fact]
+        public async Task GetAccountBalance_Test()
+        {
+            var tokenAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var methodName = "GetBalance";
+            var param = new GetBalanceInput
+            {
+                Symbol = "ELF",
+                Owner = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value}
+            };
+
+            var transaction =
+                await Client.GenerateTransaction(_address, tokenAddress.GetFormatted(), methodName, param);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
+
+            var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
+            {
+                RawTransaction = txWithSign.ToByteArray().ToHex()
+            });
+            Assert.True(transactionResult != null);
+
+            var balance = GetBalanceOutput.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
+            _testOutputHelper.WriteLine($"Balance of {_address} = {balance.Balance} {balance.Symbol}");
+        }
+
+        [Fact(Skip = "Redo this later.")]
+        public async Task GetTransactionFee_Test()
+        {
+            var toAccount = "2DyzHMD1DqurK9hhiPa91mTBEtcPNrPvY5Uh7tnqRMXGnB381R";
+            var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var methodName = "TransferFrom";
+            var param = new TransferFromInput
+            {
+                From = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value},
+                To = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value},
+                Symbol = "ELF",
+                Amount = 10000
+            };
+
+            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
+
+            var result = await Client.SendTransactionAsync(new SendTransactionInput
+            {
+                RawTransaction = txWithSign.ToByteArray().ToHex()
+            });
+
+            result.ShouldNotBeNull();
+            _testOutputHelper.WriteLine(result.TransactionId);
+
+            await Task.Delay(2000);
+            var transactionResult = await Client.GetTransactionResultAsync(result.TransactionId);
+            var res = transactionResult.GetTransactionFees();
+            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(res, Formatting.Indented));
         }
 
         #endregion
