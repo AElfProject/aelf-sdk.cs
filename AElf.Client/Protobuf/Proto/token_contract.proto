@@ -91,3 +91,9 @@ message TransferFromInput {
     string memo = 5;
 }
 
+message TransferInput {
+    client.Address to = 1;
+    string symbol = 2;
+    sint64 amount = 3;
+    string memo = 4;
+}

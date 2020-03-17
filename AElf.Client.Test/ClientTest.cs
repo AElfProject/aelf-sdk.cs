@@ -33,7 +33,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
+        private const string PrivateKey = "85447a83ce2ed09a4a2424304e54f9e3dbf5f2c1d28a4554447f868a6ff3565a";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -457,18 +457,17 @@ namespace AElf.Client.Test
             _testOutputHelper.WriteLine($"Balance of {_address} = {balance.Balance} {balance.Symbol}");
         }
 
-        [Fact(Skip = "Redo this later.")]
+        [Fact]
         public async Task GetTransactionFee_Test()
         {
             var toAccount = "2DyzHMD1DqurK9hhiPa91mTBEtcPNrPvY5Uh7tnqRMXGnB381R";
             var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
-            var methodName = "TransferFrom";
-            var param = new TransferFromInput
+            var methodName = "Transfer";
+            var param = new TransferInput
             {
-                From = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value},
                 To = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value},
                 Symbol = "ELF",
-                Amount = 10000
+                Amount = 1000
             };
 
             var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
@@ -482,10 +481,14 @@ namespace AElf.Client.Test
             result.ShouldNotBeNull();
             _testOutputHelper.WriteLine(result.TransactionId);
 
-            await Task.Delay(2000);
+            await Task.Delay(4000);
             var transactionResult = await Client.GetTransactionResultAsync(result.TransactionId);
-            var res = transactionResult.GetTransactionFees();
-            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(res, Formatting.Indented));
+            transactionResult.Status.ShouldBe(TransactionResultStatus.Mined.ToString().ToUpper());
+            var transactionFees = transactionResult.GetTransactionFees();
+            transactionFees.Count.ShouldBe(1);
+            transactionFees.First().Key.ShouldBe("ELF");
+            transactionFees.First().Value.ShouldBe(25760000L);
+            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(transactionFees, Formatting.Indented));
         }
 
         #endregion
