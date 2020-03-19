@@ -34,7 +34,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "85447a83ce2ed09a4a2424304e54f9e3dbf5f2c1d28a4554447f868a6ff3565a";
+        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -461,6 +461,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task TransactionFee_Test()
         {
+            var key = Client.GenerateKeyPairInfo();
             var toAccount = Client.GenerateKeyPairInfo().Address;
             var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
             var methodName = "Transfer";
@@ -471,8 +472,8 @@ namespace AElf.Client.Test
                 Amount = 1000
             };
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
-            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
+            var transaction = await Client.GenerateTransaction(key.Address, toAddress.GetFormatted(), methodName, param);
+            var txWithSign = Client.SignTransaction(key.PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
             {
