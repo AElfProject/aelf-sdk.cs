@@ -460,7 +460,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetTransactionFee_Test()
         {
-            var toAccount = "2DyzHMD1DqurK9hhiPa91mTBEtcPNrPvY5Uh7tnqRMXGnB381R";
+            var toAccount = Client.GenerateKeyPairInfo().Address;
             var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
             var methodName = "Transfer";
             var param = new TransferInput
