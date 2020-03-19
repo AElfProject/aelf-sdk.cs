@@ -506,14 +506,25 @@ namespace AElf.Client.Test
                     {
                         Name = "ResourceTokenCharged",
                         NonIndexed = Convert.ToBase64String((new ResourceTokenCharged {Symbol = "READ", Amount = 800}).ToByteArray())
+                    },
+                    new LogEventDto
+                    {
+                        Name = "ResourceTokenCharged",
+                        NonIndexed = Convert.ToBase64String((new ResourceTokenCharged {Symbol = "WRITE", Amount = 600}).ToByteArray())
+                    },
+                    new LogEventDto
+                    {
+                        Name = "ResourceTokenOwned",
+                        NonIndexed = Convert.ToBase64String((new ResourceTokenOwned {Symbol = "READ", Amount = 200}).ToByteArray())
                     }
                 }
             };
 
             var transactionFees = transactionResultDto.GetTransactionFees();
-            transactionFees.Count.ShouldBe(2);
+            transactionFees.Count.ShouldBe(3);
             transactionFees["ELF"].ShouldBe(1000);
             transactionFees["READ"].ShouldBe(800);
+            transactionFees["WRITE"].ShouldBe(600);
         }
 
         #endregion
