@@ -10,14 +10,31 @@ namespace AElf.Client.Extension
     {
         public static Dictionary<string, long> GetTransactionFees(this TransactionResultDto transactionResultDto)
         {
-            var relatedLogs = transactionResultDto.Logs?.Where(l => l.Name == nameof(TransactionFeeCharged)).ToList();
-            if (relatedLogs == null || !relatedLogs.Any())
+            var result = new Dictionary<string, long>();
+
+            var transactionFeeLogs =
+                transactionResultDto.Logs?.Where(l => l.Name == nameof(TransactionFeeCharged)).ToList();
+            if (transactionFeeLogs != null)
             {
-                return new Dictionary<string, long>();
+                foreach (var transactionFee in transactionFeeLogs.Select(transactionFeeLog =>
+                    TransactionFeeCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+                {
+                    result.Add(transactionFee.Symbol, transactionFee.Amount);
+                }
             }
 
-            return relatedLogs.Select(l => TransactionFeeCharged.Parser.ParseFrom(ByteString.FromBase64(l.NonIndexed)))
-                .ToDictionary(e => e.Symbol, e => e.Amount);
+            var resourceTokenLogs =
+                transactionResultDto.Logs?.Where(l => l.Name == nameof(ResourceTokenCharged)).ToList();
+            if (resourceTokenLogs != null)
+            {
+                foreach (var resourceToken in resourceTokenLogs.Select(transactionFeeLog =>
+                    ResourceTokenCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+                {
+                    result.Add(resourceToken.Symbol, resourceToken.Amount);
+                }
+            }
+
+            return result;
         }
     }
 }

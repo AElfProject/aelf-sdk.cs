@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -458,7 +459,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetTransactionFee_Test()
+        public async Task TransactionFee_Test()
         {
             var toAccount = Client.GenerateKeyPairInfo().Address;
             var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
@@ -483,12 +484,36 @@ namespace AElf.Client.Test
 
             await Task.Delay(4000);
             var transactionResult = await Client.GetTransactionResultAsync(result.TransactionId);
-            transactionResult.Status.ShouldBe(TransactionResultStatus.Mined.ToString().ToUpper());
             var transactionFees = transactionResult.GetTransactionFees();
-            transactionFees.Count.ShouldBe(1);
             transactionFees.First().Key.ShouldBe("ELF");
             transactionFees.First().Value.ShouldBe(25760000L);
             _testOutputHelper.WriteLine(JsonConvert.SerializeObject(transactionFees, Formatting.Indented));
+        }
+
+        [Fact]
+        public async Task GetTransactionFee_Test()
+        {
+            var transactionResultDto = new TransactionResultDto
+            {
+                Logs = new[]
+                {
+                    new LogEventDto
+                    {
+                        Name = "TransactionFeeCharged",
+                        NonIndexed = Convert.ToBase64String((new TransactionFeeCharged {Symbol = "ELF", Amount = 1000}).ToByteArray())
+                    },
+                    new LogEventDto
+                    {
+                        Name = "ResourceTokenCharged",
+                        NonIndexed = Convert.ToBase64String((new ResourceTokenCharged {Symbol = "READ", Amount = 800}).ToByteArray())
+                    }
+                }
+            };
+
+            var transactionFees = transactionResultDto.GetTransactionFees();
+            transactionFees.Count.ShouldBe(2);
+            transactionFees["ELF"].ShouldBe(1000);
+            transactionFees["READ"].ShouldBe(800);
         }
 
         #endregion
