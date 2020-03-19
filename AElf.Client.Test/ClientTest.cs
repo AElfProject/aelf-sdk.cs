@@ -461,7 +461,6 @@ namespace AElf.Client.Test
         [Fact]
         public async Task TransactionFee_Test()
         {
-            var key = Client.GenerateKeyPairInfo();
             var toAccount = Client.GenerateKeyPairInfo().Address;
             var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
             var methodName = "Transfer";
@@ -472,8 +471,8 @@ namespace AElf.Client.Test
                 Amount = 1000
             };
 
-            var transaction = await Client.GenerateTransaction(key.Address, toAddress.GetFormatted(), methodName, param);
-            var txWithSign = Client.SignTransaction(key.PrivateKey, transaction);
+            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
+            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
             {
