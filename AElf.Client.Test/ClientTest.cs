@@ -525,6 +525,11 @@ namespace AElf.Client.Test
             transactionFees["ELF"].ShouldBe(1000);
             transactionFees["READ"].ShouldBe(800);
             transactionFees["WRITE"].ShouldBe(600);
+
+
+            transactionResultDto = new TransactionResultDto();
+            transactionFees = transactionResultDto.GetTransactionFees();
+            transactionFees.Count.ShouldBe(0);
         }
 
         #endregion
