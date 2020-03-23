@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -33,7 +34,7 @@ namespace AElf.Client.Test
 
         // Address and privateKey of a node.
         private readonly string _address;
-        private const string PrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
+        private const string PrivateKey = "cd86ab6347d8e52bbbe8532141fc59ce596268143a308d1d40fedf385528b458";
 
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -53,18 +54,25 @@ namespace AElf.Client.Test
         public async Task GetBlockHeightTest()
         {
             var height = await Client.GetBlockHeightAsync();
-            height.ShouldNotBeNull();
+            height.ShouldBeGreaterThanOrEqualTo(1);
             _testOutputHelper.WriteLine(height.ToString());
         }
 
         [Fact]
-        public async Task GetBlock_ByHeightAsyncTest()
+        public async Task GetBlock_Test()
         {
             var height = await Client.GetBlockHeightAsync();
-            var blockDto = await Client.GetBlockByHeightAsync(height);
-            Assert.True(blockDto != null);
-
-            var block = JsonConvert.SerializeObject(blockDto, Formatting.Indented);
+            var blockByHeight = await Client.GetBlockByHeightAsync(height);
+            var blockByHash = await Client.GetBlockByHashAsync(blockByHeight.BlockHash);
+            
+            var blockByHeightSerialized =JsonConvert.SerializeObject(blockByHeight, Formatting.Indented);
+            var blockByHashSerialized =JsonConvert.SerializeObject(blockByHash, Formatting.Indented);
+            
+            blockByHeightSerialized.ShouldBe(blockByHashSerialized);
+            blockByHeight.Header.Height.ShouldBe(height);
+            blockByHeight.IsComplete().ShouldBeTrue();
+            
+            var block = JsonConvert.SerializeObject(blockByHeight, Formatting.Indented);
             _testOutputHelper.WriteLine(block);
         }
 
@@ -83,29 +91,28 @@ namespace AElf.Client.Test
             _testOutputHelper.WriteLine(str);
         }
 
-        [Fact]
-        public async Task GetBlockAsync_Success_Test()
-        {
-            var chainStatusDto = await Client.GetChainStatusAsync();
-            var genesisHash = chainStatusDto.GenesisBlockHash;
-
-            var blockDto = await Client.GetBlockByHashAsync(genesisHash, true);
-            Assert.True(blockDto != null);
-
-            var block = JsonConvert.SerializeObject(blockDto, Formatting.Indented);
-            _testOutputHelper.WriteLine(block);
-        }
-
         #endregion
 
         #region chain
 
         [Fact]
-        public async Task GetChainStatusAsync_Test()
+        public async Task GetChainStatus_Test()
         {
             var chainStatusDto = await Client.GetChainStatusAsync();
-            Assert.True(chainStatusDto != null);
-
+            
+            chainStatusDto.Branches.Count.ShouldBeGreaterThanOrEqualTo(1);
+            chainStatusDto.Branches.First().Key.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.Branches.First().Value.ShouldBeGreaterThanOrEqualTo(1);
+            chainStatusDto.ChainId.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.BestChainHash.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.BestChainHeight.ShouldBeGreaterThanOrEqualTo(1);
+            chainStatusDto.GenesisBlockHash.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.GenesisContractAddress.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.LongestChainHash.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.LongestChainHeight.ShouldBeGreaterThanOrEqualTo(1);
+            chainStatusDto.LastIrreversibleBlockHash.ShouldNotBeNullOrWhiteSpace();
+            chainStatusDto.LastIrreversibleBlockHeight.ShouldBeGreaterThanOrEqualTo(1);
+            
             var chainStatus = JsonConvert.SerializeObject(chainStatusDto, Formatting.Indented);
             _testOutputHelper.WriteLine(chainStatus);
         }
@@ -119,7 +126,7 @@ namespace AElf.Client.Test
         /// </summary>
         /// <returns></returns>
         [Fact(Skip = "Redo this later.")]
-        public async Task AddPeerAsync_Test()
+        public async Task AddPeer_Test()
         {
             // add ipAddress
             var addressToAdd = "192.168.199.122:7003";
@@ -130,7 +137,7 @@ namespace AElf.Client.Test
         }
 
         [Fact(Skip = "Redo this later.")]
-        public async Task RemovePeerAsync_Test()
+        public async Task RemovePeer_Test()
         {
             var peers = await Client.GetPeersAsync(false);
             peers.ShouldNotBeEmpty();
@@ -142,7 +149,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetPeersAsync_Test()
+        public async Task GetPeers_Test()
         {
             var peers = await Client.GetPeersAsync(false);
             Assert.True(peers != null);
@@ -151,7 +158,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetNetworkInfoAsync_Test()
+        public async Task GetNetworkInfo_Test()
         {
             var netWorkInfo = await Client.GetNetworkInfoAsync();
             Assert.True(netWorkInfo != null);
@@ -164,7 +171,7 @@ namespace AElf.Client.Test
         #region transaction
 
         [Fact]
-        public async Task GetTaskQueueStatusAsync_Test()
+        public async Task GetTaskQueueStatus_Test()
         {
             var taskQueueStatus = await Client.GetTaskQueueStatusAsync();
             taskQueueStatus.ShouldNotBeEmpty();
@@ -174,7 +181,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetTransactionPoolStatusAsync_Test()
+        public async Task GetTransactionPoolStatus_Test()
         {
             var poolStatus = await Client.GetTransactionPoolStatusAsync();
             Assert.True(poolStatus != null);
@@ -184,7 +191,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task ExecuteTransactionAsync_Test()
+        public async Task ExecuteTransaction_Test()
         {
             var toAddress = GenesisAddress;
             var methodName = ContractMethodName;
@@ -205,7 +212,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task CreateRawTransactionAsync_Test()
+        public async Task CreateRawTransaction_Test()
         {
             var address = GenesisAddress;
             var status = await Client.GetChainStatusAsync();
@@ -229,7 +236,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task ExecuteRawTransactionAsync_Test()
+        public async Task ExecuteRawTransaction_Test()
         {
             var address = GenesisAddress;
             var status = await Client.GetChainStatusAsync();
@@ -262,12 +269,13 @@ namespace AElf.Client.Test
                 (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus")))
                 .GetFormatted();
 
+            var addressResult = Address.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(rawTransactionResult));
             _testOutputHelper.WriteLine(rawTransactionResult);
-            Assert.True(rawTransactionResult == $"\"{consensusAddress}\"");
+            Assert.True(addressResult.GetFormatted() == consensusAddress);
         }
 
         [Fact]
-        public async Task SendRawTransactionAsync_Test()
+        public async Task SendRawTransaction_Test()
         {
             var toAddress = GenesisAddress;
             var status = await Client.GetChainStatusAsync();
@@ -298,14 +306,16 @@ namespace AElf.Client.Test
                 ReturnTransaction = true
             });
 
-            Assert.True(rawTransactionResult != null);
+            rawTransactionResult.ShouldNotBeNull();
+            rawTransactionResult.Transaction.ShouldNotBeNull();
+            rawTransactionResult.TransactionId.ShouldNotBeNullOrWhiteSpace();
 
             var result = JsonConvert.SerializeObject(rawTransactionResult, Formatting.Indented);
             _testOutputHelper.WriteLine(result);
         }
 
         [Fact]
-        public async Task SendTransactionAsync_Test()
+        public async Task SendTransaction_Test()
         {
             var toAddress = GenesisAddress;
             var methodName = ContractMethodName;
@@ -320,11 +330,12 @@ namespace AElf.Client.Test
             });
 
             result.ShouldNotBeNull();
+            result.TransactionId.ShouldNotBeNull();
             _testOutputHelper.WriteLine(result.TransactionId);
         }
 
         [Fact]
-        public async Task SendTransactionsAsync_Test()
+        public async Task SendTransactions_Test()
         {
             var toAddress = GenesisAddress;
             var methodName = ContractMethodName;
@@ -347,12 +358,13 @@ namespace AElf.Client.Test
             });
 
             Assert.True(result1 != null);
+            result1.Length.ShouldBe(2);
             _testOutputHelper.WriteLine(JsonConvert.SerializeObject(result1));
 
         }
 
         [Fact]
-        public async Task GetTransactionResultAsync_Test()
+        public async Task GetTransactionResult_Test()
         {
             var firstBlockDto = await Client.GetBlockByHeightAsync(1, true);
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
@@ -362,7 +374,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetTransactionResultsAsync_Test()
+        public async Task GetTransactionResults_Test()
         {
             var firstBlockDto = await Client.GetBlockByHeightAsync(1, true);
             var blockHash = firstBlockDto.BlockHash;
@@ -375,7 +387,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetMerklePathByTransactionIdAsync_Test()
+        public async Task GetMerklePathByTransactionId_Test()
         {
             var firstBlockDto = await Client.GetBlockByHeightAsync(1, true);
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
@@ -389,13 +401,10 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetChainIdAsync_Test()
+        public async Task GetChainId_Test()
         {
             var chainId = await Client.GetChainIdAsync();
-            chainId.ShouldNotBeNull();
-            chainId.ShouldBeOfType(typeof(int));
-
-            _testOutputHelper.WriteLine(chainId.ToString());
+            chainId.ShouldBe(9992731);
         }
 
         [Fact]
@@ -406,7 +415,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetGenesisContractAddressAsync_Test()
+        public async Task GetGenesisContractAddress_Test()
         {
             var genesisAddress = await Client.GetGenesisContractAddressAsync();
             genesisAddress.ShouldNotBeEmpty();
@@ -433,42 +442,16 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetAccountBalance_Test()
+        public async Task Transfer_Test()
         {
-            var tokenAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
-            var methodName = "GetBalance";
-            var param = new GetBalanceInput
-            {
-                Symbol = "ELF",
-                Owner = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value}
-            };
-
-            var transaction =
-                await Client.GenerateTransaction(_address, tokenAddress.GetFormatted(), methodName, param);
-            var txWithSign = Client.SignTransaction(PrivateKey, transaction);
-
-            var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
-            {
-                RawTransaction = txWithSign.ToByteArray().ToHex()
-            });
-            Assert.True(transactionResult != null);
-
-            var balance = GetBalanceOutput.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
-            _testOutputHelper.WriteLine($"Balance of {_address} = {balance.Balance} {balance.Symbol}");
-        }
-
-        [Fact(Skip = "Redo this later.")]
-        public async Task GetTransactionFee_Test()
-        {
-            var toAccount = "2DyzHMD1DqurK9hhiPa91mTBEtcPNrPvY5Uh7tnqRMXGnB381R";
+            var toAccount = Client.GenerateKeyPairInfo().Address;
             var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
-            var methodName = "TransferFrom";
-            var param = new TransferFromInput
+            var methodName = "Transfer";
+            var param = new TransferInput
             {
-                From = new Proto.Address {Value = AddressHelper.Base58StringToAddress(_address).Value},
                 To = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value},
                 Symbol = "ELF",
-                Amount = 10000
+                Amount = 1000
             };
 
             var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
@@ -482,10 +465,75 @@ namespace AElf.Client.Test
             result.ShouldNotBeNull();
             _testOutputHelper.WriteLine(result.TransactionId);
 
-            await Task.Delay(2000);
+            await Task.Delay(4000);
             var transactionResult = await Client.GetTransactionResultAsync(result.TransactionId);
-            var res = transactionResult.GetTransactionFees();
-            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(res, Formatting.Indented));
+            transactionResult.Status.ShouldBe(TransactionResultStatus.Mined.ToString().ToUpper());
+            var transactionFees = transactionResult.GetTransactionFees();
+            transactionFees.First().Key.ShouldBe("ELF");
+            transactionFees.First().Value.ShouldBeGreaterThan(0L);
+            _testOutputHelper.WriteLine(JsonConvert.SerializeObject(transactionFees, Formatting.Indented));
+
+            var paramGetBalance = new GetBalanceInput
+            {
+                Symbol = "ELF",
+                Owner = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value}
+            };
+
+            var transactionGetBalance =
+                await Client.GenerateTransaction(_address, toAddress.GetFormatted(), "GetBalance", paramGetBalance);
+            var txWithSignGetBalance = Client.SignTransaction(PrivateKey, transactionGetBalance);
+
+            var transactionGetBalanceResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
+            {
+                RawTransaction = txWithSignGetBalance.ToByteArray().ToHex()
+            });
+            Assert.True(transactionResult != null);
+
+            var balance =
+                GetBalanceOutput.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionGetBalanceResult));
+            balance.Balance.ShouldBe(1000L);
+        }
+
+        [Fact]
+        public async Task GetTransactionFee_Test()
+        {
+            var transactionResultDto = new TransactionResultDto
+            {
+                Logs = new[]
+                {
+                    new LogEventDto
+                    {
+                        Name = "TransactionFeeCharged",
+                        NonIndexed = Convert.ToBase64String((new TransactionFeeCharged {Symbol = "ELF", Amount = 1000}).ToByteArray())
+                    },
+                    new LogEventDto
+                    {
+                        Name = "ResourceTokenCharged",
+                        NonIndexed = Convert.ToBase64String((new ResourceTokenCharged {Symbol = "READ", Amount = 800}).ToByteArray())
+                    },
+                    new LogEventDto
+                    {
+                        Name = "ResourceTokenCharged",
+                        NonIndexed = Convert.ToBase64String((new ResourceTokenCharged {Symbol = "WRITE", Amount = 600}).ToByteArray())
+                    },
+                    new LogEventDto
+                    {
+                        Name = "ResourceTokenOwned",
+                        NonIndexed = Convert.ToBase64String((new ResourceTokenOwned {Symbol = "READ", Amount = 200}).ToByteArray())
+                    }
+                }
+            };
+
+            var transactionFees = transactionResultDto.GetTransactionFees();
+            transactionFees.Count.ShouldBe(3);
+            transactionFees["ELF"].ShouldBe(1000);
+            transactionFees["READ"].ShouldBe(800);
+            transactionFees["WRITE"].ShouldBe(600);
+
+
+            transactionResultDto = new TransactionResultDto();
+            transactionFees = transactionResultDto.GetTransactionFees();
+            transactionFees.Count.ShouldBe(0);
         }
 
         #endregion

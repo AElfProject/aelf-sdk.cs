@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using AElf.Client.Dto;
 using AElf.Client.MultiToken;
 using Google.Protobuf;
@@ -9,19 +10,31 @@ namespace AElf.Client.Extension
     {
         public static Dictionary<string, long> GetTransactionFees(this TransactionResultDto transactionResultDto)
         {
-            var transactionFeesDict = new Dictionary<string, long>();
-            var eventLogs = transactionResultDto.Logs;
-            if (eventLogs == null) return transactionFeesDict;
-            foreach (var log in eventLogs)
+            var result = new Dictionary<string, long>();
+
+            var transactionFeeLogs =
+                transactionResultDto.Logs?.Where(l => l.Name == nameof(TransactionFeeCharged)).ToList();
+            if (transactionFeeLogs != null)
             {
-                if (log.Name == nameof(ResourceTokenCharged) || log.Name == nameof(TransactionFeeCharged))
+                foreach (var transactionFee in transactionFeeLogs.Select(transactionFeeLog =>
+                    TransactionFeeCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
                 {
-                    var info = TransactionFeeCharged.Parser.ParseFrom(ByteString.FromBase64(log.NonIndexed));
-                    transactionFeesDict.Add(info.Symbol, info.Amount);
+                    result.Add(transactionFee.Symbol, transactionFee.Amount);
                 }
             }
 
-            return transactionFeesDict;
+            var resourceTokenLogs =
+                transactionResultDto.Logs?.Where(l => l.Name == nameof(ResourceTokenCharged)).ToList();
+            if (resourceTokenLogs != null)
+            {
+                foreach (var resourceToken in resourceTokenLogs.Select(transactionFeeLog =>
+                    ResourceTokenCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+                {
+                    result.Add(resourceToken.Symbol, resourceToken.Amount);
+                }
+            }
+
+            return result;
         }
     }
 }

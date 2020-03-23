@@ -21,11 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Protobuf\Generated" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Protobuf Include="Protobuf/Proto/*.proto" CompileOutputs="false" BeforeTargets="BeforeBuild">
+        <Protobuf Include="Protobuf/Proto/*.proto" BeforeTargets="BeforeBuild">
             <GrpcServices>none</GrpcServices>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <GrpcOutputDir>./Protobuf/Generated</GrpcOutputDir>
