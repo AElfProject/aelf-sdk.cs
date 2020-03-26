@@ -13,9 +13,9 @@ message PubkeyList {
 
 message MinerListWithRoundNumber {
     MinerList miner_list = 1;
-    sint64 round_number = 2;
+    int64 round_number = 2;
 }
 
 message GetMinerListInput {
-    sint64 term_number = 1;
+    int64 term_number = 1;
 }
