@@ -11,6 +11,7 @@ using AElf.Client.Extension;
 using AElf.Client.MultiToken;
 using AElf.Client.Service;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shouldly;
@@ -193,11 +194,11 @@ namespace AElf.Client.Test
         [Fact]
         public async Task ExecuteTransaction_Test()
         {
-            var toAddress = GenesisAddress;
-            var methodName = ContractMethodName;
-            var param = Hash.FromString("AElf.ContractNames.TokenConverter");
+            var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var methodName = "GetNativeTokenInfo";
+            var param = new Empty();
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
+            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
@@ -206,9 +207,8 @@ namespace AElf.Client.Test
             });
             Assert.True(transactionResult != null);
 
-            var addressResult = Address.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
-            var address = await Client.GetContractAddressByName(param);
-            Assert.True(address == addressResult);
+            var tokenInfo = TokenInfo.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(transactionResult));
+            Assert.True(tokenInfo.Symbol == "ELF");
         }
 
         [Fact]
