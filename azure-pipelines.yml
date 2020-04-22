@@ -1,4 +1,17 @@
 jobs:
+- job: build_all_window
+  displayName: Build all tasks (window)
+  pool:
+    vmImage: 'windows-2019'
+  variables:
+    phpVersion: 7.2
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core SDK'
+    inputs:
+      version: 3.1.101
+  - powershell: ./scripts/aelf-node/start-window.ps1
+    displayName: 'Build and Test'
 # All tasks on Linux
 - job: build_all_linux
   displayName: Build all tasks (Linux)
@@ -8,12 +21,27 @@ jobs:
       ports:
       - 6379:6379
   pool:
-    vmImage: ubuntu-16.04
+    vmImage: ubuntu-18.04
   steps:
   - task: DotNetCoreInstaller@0
     inputs:
       version: '3.1.101'
   - script: cd scripts/aelf-node && bash start.sh
+    displayName: 'Deploy a full node'
+  - script: bash build.sh -target=test
+    displayName: 'build and test'
+# All tasks on macOS
+- job: build_all_macos
+  displayName: Build all tasks (macos)
+  pool:
+    vmImage: macos-latest
+  variables:
+    phpVersion: 7.2
+  steps:
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '3.1.101'
+  - script: cd scripts/aelf-node && bash start-mac.sh
     displayName: 'Deploy a full node'
   - script: bash build.sh -target=test
     displayName: 'build and test'
