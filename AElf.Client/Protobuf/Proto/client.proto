@@ -41,7 +41,7 @@ message StatePath {
 }
 
 message SmartContractRegistration {
-    int32 category = 1;
+    sint32 category = 1;
     bytes code = 2;
     Hash code_hash = 3;
 }
@@ -49,10 +49,12 @@ message SmartContractRegistration {
 //acs0
 message ContractInfo
 {
-    uint64 serial_number = 1;
-    int32 category = 3;
+    int64 serial_number = 1;
+    Address author = 2;
+    sint32 category = 3;
     Hash code_hash = 4;
     bool is_system_contract = 5;
+    int32 version = 6;
 }
 
 //acs1
@@ -63,7 +65,7 @@ message MethodFees {
 
 message MethodFee {
     string symbol = 1;
-    sint64 basic_fee = 2;
+    int64 basic_fee = 2;
 }
 
 //acs2
@@ -93,7 +95,7 @@ message ValidationResult {
 
 //acs5
 message MethodCallingThreshold {
-    map<string, sint64> symbol_to_amount = 1;// The order matters.
+    map<string, int64> symbol_to_amount = 1;// The order matters.
     ThresholdCheckType threshold_check_type = 2;
 }
 

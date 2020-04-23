@@ -8,14 +8,14 @@ option csharp_namespace = "AElf.Client.MultiToken";
 message TokenInfo {
     string symbol = 1;
     string tokenName = 2;
-    sint64 supply = 3;
-    sint64 totalSupply = 4;
-    sint32 decimals = 5;
+    int64 supply = 3;
+    int64 totalSupply = 4;
+    int64 decimals = 5;
     client.Address issuer = 6;
     bool is_burnable = 7;
     bool is_transfer_disabled = 8;
-    sint32 issue_chain_id = 9;
-    sint64 burned = 10;
+    int32 issue_chain_id = 9;
+    int32 burned = 10;
 }
 
 message GetTokenInfoInput {
@@ -34,7 +34,7 @@ message GetBalanceInput {
 message GetBalanceOutput {
     string symbol = 1;
     client.Address owner = 2;
-    sint64 balance = 3;
+    int64 balance = 3;
 }
 
 message GetAllowanceInput {
@@ -58,7 +58,7 @@ message IsInWhiteListInput {
 message ProfitReceivingInformation {
     client.Address contract_address = 1;
     client.Address profit_receiver_address = 2;
-    sint32 donation_parts_per_hundred = 3;
+    int32 donation_parts_per_hundred = 3;
 }
 
 message GetLockedAmountInput {
@@ -71,7 +71,7 @@ message GetLockedAmountOutput {
     client.Address address = 1;
     string symbol = 3;
     client.Hash lock_id = 4;
-    sint64 amount = 5;
+    int64 amount = 5;
 }
 
 message GetVirtualAddressForLockingInput {
@@ -87,13 +87,13 @@ message TransferFromInput {
     client.Address from = 1;
     client.Address to = 2;
     string symbol = 3;
-    sint64 amount = 4;
+    int64 amount = 4;
     string memo = 5;
 }
 
 message TransferInput {
     client.Address to = 1;
     string symbol = 2;
-    sint64 amount = 3;
+    int64 amount = 3;
     string memo = 4;
 }
