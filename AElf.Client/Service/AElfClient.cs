@@ -112,12 +112,12 @@ namespace AElf.Client.Service
                 var chainStatus = await GetChainStatusAsync();
                 var transaction = new Transaction
                 {
-                    From = AddressHelper.Base58StringToAddress(from),
-                    To = AddressHelper.Base58StringToAddress(to),
+                    From = Address.FromBase58(from),
+                    To = Address.FromBase58(to),
                     MethodName = methodName,
                     Params = input.ToByteString(),
                     RefBlockNumber = chainStatus.BestChainHeight,
-                    RefBlockPrefix = ByteString.CopyFrom(HashHelper.HexStringToHash(chainStatus.BestChainHash).Value
+                    RefBlockPrefix = ByteString.CopyFrom(Hash.LoadFromHex(chainStatus.BestChainHash).Value
                         .Take(4).ToArray())
                 };
 
@@ -136,9 +136,9 @@ namespace AElf.Client.Service
         /// <returns></returns>
         public async Task<string> GetFormattedAddress(Address address)
         {
-            var tokenContractAddress = await GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var tokenContractAddress = await GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
             var fromAddress = GetAddressFromPrivateKey(ExamplePrivateKey);
-            var toAddress = tokenContractAddress.GetFormatted();
+            var toAddress = tokenContractAddress.ToBase58();
             var methodName = "GetPrimaryTokenSymbol";
             var param = new Empty();
 
@@ -153,7 +153,7 @@ namespace AElf.Client.Service
             var symbol = StringValue.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(result));
             var chainIdString = (await GetChainStatusAsync()).ChainId;
 
-            return $"{symbol.Value}_{address.GetFormatted()}_{chainIdString}";
+            return $"{symbol.Value}_{address.ToBase58()}_{chainIdString}";
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace AElf.Client.Service
         {
             var publicKey = ByteArrayHelper.HexStringToByteArray(pubKey);
             var address = Address.FromPublicKey(publicKey);
-            return address.GetFormatted();
+            return address.ToBase58();
         }
         
         /// <summary>
@@ -194,12 +194,12 @@ namespace AElf.Client.Service
         public string GetAddressFromPrivateKey(string privateKeyHex)
         {
             var address = Address.FromPublicKey(GetAElfKeyPair(privateKeyHex).PublicKey);
-            return address.GetFormatted();
+            return address.ToBase58();
         }
 
         public Address GetBase58String(string base58String)
         {
-            return AddressHelper.Base58StringToAddress(base58String);
+            return Address.FromBase58(base58String);
         }
 
         public KeyPairInfo GenerateKeyPairInfo()
@@ -238,7 +238,7 @@ namespace AElf.Client.Service
             {
                 foreach (var address in addresses)
                 {
-                    AddressHelper.Base58StringToAddress(address);
+                    Types.Address.FromBase58(address);
                 }
             }
             catch (Exception)
@@ -253,7 +253,7 @@ namespace AElf.Client.Service
             {
                 foreach (var hash in hashes)
                 {
-                    HashHelper.HexStringToHash(hash);
+                    Hash.LoadFromHex(hash);
                 }
             }
             catch (Exception)
@@ -268,7 +268,7 @@ namespace AElf.Client.Service
             {
                 foreach (var transactionId in transactionIds)
                 {
-                    HashHelper.HexStringToHash(transactionId);
+                    Hash.LoadFromHex(transactionId);
                 }
             }
             catch (Exception)
