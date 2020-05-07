@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using AElf.Types;
 
 namespace AElf.Client.Dto
 {
@@ -46,7 +47,7 @@ namespace AElf.Client.Dto
             var validationResults = new List<ValidationResult>();
             try
             {
-                AddressHelper.Base58StringToAddress(From);
+                Address.FromBase58(From);
             }
             catch
             {
@@ -56,7 +57,7 @@ namespace AElf.Client.Dto
 
             try
             {
-                AddressHelper.Base58StringToAddress(To);
+                Address.FromBase58(To);
             }
             catch
             {
@@ -66,7 +67,7 @@ namespace AElf.Client.Dto
 
             try
             {
-                HashHelper.HexStringToHash(RefBlockHash);
+                Hash.LoadFromHex(RefBlockHash);
             }
             catch
             {

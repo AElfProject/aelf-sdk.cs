@@ -194,11 +194,11 @@ namespace AElf.Client.Test
         [Fact]
         public async Task ExecuteTransaction_Test()
         {
-            var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var toAddress = await Client.GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
             var methodName = "GetNativeTokenInfo";
             var param = new Empty();
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
+            var transaction = await Client.GenerateTransaction(_address, toAddress.ToBase58(), methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
@@ -226,7 +226,7 @@ namespace AElf.Client.Test
                 MethodName = ContractMethodName,
                 Params = new JObject
                 {
-                    ["value"] = Hash.FromString("AElf.ContractNames.Token").Value.ToBase64()
+                    ["value"] = HashHelper.ComputeFrom("AElf.ContractNames.Token").Value.ToBase64()
                 }.ToString(),
                 RefBlockNumber = height,
                 RefBlockHash = blockHash
@@ -250,13 +250,13 @@ namespace AElf.Client.Test
                 MethodName = ContractMethodName,
                 Params = new JObject
                 {
-                    ["value"] = Hash.FromString("AElf.ContractNames.Consensus").Value.ToBase64()
+                    ["value"] = HashHelper.ComputeFrom("AElf.ContractNames.Consensus").Value.ToBase64()
                 }.ToString(),
                 RefBlockNumber = height,
                 RefBlockHash = blockHash
             });
 
-            var transactionId = Hash.FromRawBytes(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
+            var transactionId = HashHelper.ComputeFrom(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
             var signature = GetSignatureWith(PrivateKey, transactionId.ToByteArray()).ToHex();
             var rawTransactionResult = await Client.ExecuteRawTransactionAsync(new ExecuteRawTransactionDto
             {
@@ -266,12 +266,12 @@ namespace AElf.Client.Test
 
             rawTransactionResult.ShouldNotBeEmpty();
             var consensusAddress =
-                (await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Consensus")))
-                .GetFormatted();
+                (await Client.GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Consensus")))
+                .ToBase58();
 
-            var addressResult = Address.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(rawTransactionResult));
+            var addressResult = rawTransactionResult.Trim('"');
             _testOutputHelper.WriteLine(rawTransactionResult);
-            Assert.True(addressResult.GetFormatted() == consensusAddress);
+            addressResult.ShouldBe(consensusAddress);
         }
 
         [Fact]
@@ -289,14 +289,14 @@ namespace AElf.Client.Test
                 MethodName = ContractMethodName,
                 Params = new JObject
                 {
-                    ["value"] = Hash.FromString("AElf.ContractNames.Token").Value.ToBase64()
+                    ["value"] = HashHelper.ComputeFrom("AElf.ContractNames.Token").Value.ToBase64()
                 }.ToString(),
                 RefBlockNumber = height,
                 RefBlockHash = blockHash
             });
             createRaw.RawTransaction.ShouldNotBeEmpty();
 
-            var transactionId = Hash.FromRawBytes(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
+            var transactionId = HashHelper.ComputeFrom(ByteArrayHelper.HexStringToByteArray(createRaw.RawTransaction));
             var signature = GetSignatureWith(PrivateKey, transactionId.ToByteArray()).ToHex();
 
             var rawTransactionResult = await Client.SendRawTransactionAsync(new SendRawTransactionInput
@@ -319,7 +319,7 @@ namespace AElf.Client.Test
         {
             var toAddress = GenesisAddress;
             var methodName = ContractMethodName;
-            var param = Hash.FromString("AElf.ContractNames.Vote");
+            var param = HashHelper.ComputeFrom("AElf.ContractNames.Vote");
 
             var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
@@ -339,8 +339,8 @@ namespace AElf.Client.Test
         {
             var toAddress = GenesisAddress;
             var methodName = ContractMethodName;
-            var param1 = Hash.FromString("AElf.ContractNames.Token");
-            var param2 = Hash.FromString("AElf.ContractNames.Vote");
+            var param1 = HashHelper.ComputeFrom("AElf.ContractNames.Token");
+            var param2 = HashHelper.ComputeFrom("AElf.ContractNames.Vote");
 
             var parameters = new List<Hash> {param1, param2};
             var sb = new StringBuilder();
@@ -421,14 +421,14 @@ namespace AElf.Client.Test
             genesisAddress.ShouldNotBeEmpty();
 
             var address = await Client.GetContractAddressByName(Hash.Empty);
-            var genesisAddress2 = address.GetFormatted();
+            var genesisAddress2 = address.ToBase58();
             Assert.True(genesisAddress == genesisAddress2);
         }
 
         [Fact]
         public async Task GetFormattedAddress_Test()
         {
-            var result = await Client.GetFormattedAddress(AddressHelper.Base58StringToAddress(_address));
+            var result = await Client.GetFormattedAddress(Address.FromBase58(_address));
             _testOutputHelper.WriteLine(result);
             Assert.True(result == $"ELF_{_address}_AELF");
         }
@@ -445,16 +445,16 @@ namespace AElf.Client.Test
         public async Task Transfer_Test()
         {
             var toAccount = Client.GenerateKeyPairInfo().Address;
-            var toAddress = await Client.GetContractAddressByName(Hash.FromString("AElf.ContractNames.Token"));
+            var toAddress = await Client.GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
             var methodName = "Transfer";
             var param = new TransferInput
             {
-                To = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value},
+                To = new Proto.Address {Value = Address.FromBase58(toAccount).Value},
                 Symbol = "ELF",
                 Amount = 1000
             };
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress.GetFormatted(), methodName, param);
+            var transaction = await Client.GenerateTransaction(_address, toAddress.ToBase58(), methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
@@ -476,11 +476,11 @@ namespace AElf.Client.Test
             var paramGetBalance = new GetBalanceInput
             {
                 Symbol = "ELF",
-                Owner = new Proto.Address {Value = AddressHelper.Base58StringToAddress(toAccount).Value}
+                Owner = new Proto.Address {Value = Address.FromBase58(toAccount).Value}
             };
 
             var transactionGetBalance =
-                await Client.GenerateTransaction(_address, toAddress.GetFormatted(), "GetBalance", paramGetBalance);
+                await Client.GenerateTransaction(_address, toAddress.ToBase58(), "GetBalance", paramGetBalance);
             var txWithSignGetBalance = Client.SignTransaction(PrivateKey, transactionGetBalance);
 
             var transactionGetBalanceResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
@@ -495,7 +495,7 @@ namespace AElf.Client.Test
         }
 
         [Fact]
-        public async Task GetTransactionFee_Test()
+        public void GetTransactionFee_Test()
         {
             var transactionResultDto = new TransactionResultDto
             {
