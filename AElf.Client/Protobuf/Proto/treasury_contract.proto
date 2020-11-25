@@ -4,9 +4,11 @@ option csharp_namespace = "AElf.Client.Treasury";
 
 //treasury_contract
 message GetWelfareRewardAmountSampleInput {
-    repeated sint64 value = 1;
+    // Token lock time.
+    repeated int64 value = 1;
 }
 
 message GetWelfareRewardAmountSampleOutput {
-    repeated sint64 value = 1;
+    // The weight calculated.
+    repeated int64 value = 1;
 }
