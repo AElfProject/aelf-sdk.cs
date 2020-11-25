@@ -3,6 +3,7 @@ syntax = "proto3";
 package client;
 
 import "options.proto";
+import "client.proto";
 
 option csharp_namespace = "AElf.Client.MultiToken";
 
@@ -32,10 +33,12 @@ message ResourceTokenCharged {
     option (client.is_event) = true;
     string symbol = 1;
     sint64 amount = 2;
+    Address contract_address = 3;
 }
 
 message ResourceTokenOwned {
     option (client.is_event) = true;
     string symbol = 1;
     sint64 amount = 2;
+    Address contract_address = 3;
 }
