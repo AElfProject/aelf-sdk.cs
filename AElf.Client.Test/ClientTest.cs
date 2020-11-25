@@ -382,7 +382,7 @@ namespace AElf.Client.Test
             var transactionResults = await Client.GetTransactionResultsAsync(blockHash, 0, 2);
             foreach (var transaction in transactionResults)
             {
-                Assert.True(transaction.Status == TransactionResultStatus.Mined.ToString());
+                Assert.True(transaction.Status == TransactionResultStatus.Mined.ToString().ToUpper());
             }
         }
 
