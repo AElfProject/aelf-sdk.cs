@@ -15,10 +15,10 @@ namespace AElf.Client.Service
 {
     public interface IClientService
     {
-        Task<bool> IsConnected();
-        Task<string> GetFormattedAddress(Address address);
+        Task<bool> IsConnectedAsync();
+        Task<string> GetFormattedAddressAsync(Address address);
         Task<string> GetGenesisContractAddressAsync();
-        Task<Address> GetContractAddressByName(Hash contractNameHash);
+        Task<Address> GetContractAddressByNameAsync(Hash contractNameHash);
         string GetAddressFromPubKey(string pubKey);
         KeyPairInfo GenerateKeyPairInfo();
     }
@@ -47,7 +47,7 @@ namespace AElf.Client.Service
         /// Verify whether this sdk successfully connects the chain.
         /// </summary>
         /// <returns>IsConnected or not</returns>
-        public async Task<bool> IsConnected()
+        public async Task<bool> IsConnectedAsync()
         {
             try
             {
@@ -78,11 +78,11 @@ namespace AElf.Client.Service
         /// <param name="contractNameHash"></param>
         /// <param name="privateKeyHex"></param>
         /// <returns>Address</returns>
-        public async Task<Address> GetContractAddressByName(Hash contractNameHash)
+        public async Task<Address> GetContractAddressByNameAsync(Hash contractNameHash)
         {
             var from = GetAddressFromPrivateKey(ExamplePrivateKey);
             var to = await GetGenesisContractAddressAsync();
-            var transaction = await GenerateTransaction(from, to, "GetContractAddressByName", contractNameHash);
+            var transaction = await GenerateTransactionAsync(from, to, "GetContractAddressByName", contractNameHash);
             var txWithSig = SignTransaction(ExamplePrivateKey, transaction);
 
             var response = await ExecuteTransactionAsync(new ExecuteTransactionDto
@@ -103,7 +103,7 @@ namespace AElf.Client.Service
         /// <param name="methodName"></param>
         /// <param name="input"></param>
         /// <returns>Transaction unsigned</returns>
-        public async Task<Transaction> GenerateTransaction(string from, string to,
+        public async Task<Transaction> GenerateTransactionAsync(string from, string to,
             string methodName, IMessage input)
         {
             try
@@ -134,15 +134,15 @@ namespace AElf.Client.Service
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>
-        public async Task<string> GetFormattedAddress(Address address)
+        public async Task<string> GetFormattedAddressAsync(Address address)
         {
-            var tokenContractAddress = await GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
+            var tokenContractAddress = await GetContractAddressByNameAsync(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
             var fromAddress = GetAddressFromPrivateKey(ExamplePrivateKey);
             var toAddress = tokenContractAddress.ToBase58();
             var methodName = "GetPrimaryTokenSymbol";
             var param = new Empty();
 
-            var transaction = await GenerateTransaction(fromAddress, toAddress, methodName, param);
+            var transaction = await GenerateTransactionAsync(fromAddress, toAddress, methodName, param);
             var txWithSign = SignTransaction(ExamplePrivateKey, transaction);
 
             var result = await ExecuteTransactionAsync(new ExecuteTransactionDto

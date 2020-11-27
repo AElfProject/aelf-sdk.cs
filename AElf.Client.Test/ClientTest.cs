@@ -194,11 +194,11 @@ namespace AElf.Client.Test
         [Fact]
         public async Task ExecuteTransaction_Test()
         {
-            var toAddress = await Client.GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
+            var toAddress = await Client.GetContractAddressByNameAsync(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
             var methodName = "GetNativeTokenInfo";
             var param = new Empty();
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress.ToBase58(), methodName, param);
+            var transaction = await Client.GenerateTransactionAsync(_address, toAddress.ToBase58(), methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var transactionResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
@@ -266,7 +266,7 @@ namespace AElf.Client.Test
 
             rawTransactionResult.ShouldNotBeEmpty();
             var consensusAddress =
-                (await Client.GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Consensus")))
+                (await Client.GetContractAddressByNameAsync(HashHelper.ComputeFrom("AElf.ContractNames.Consensus")))
                 .ToBase58();
 
             var addressResult = rawTransactionResult.Trim('"');
@@ -321,7 +321,7 @@ namespace AElf.Client.Test
             var methodName = ContractMethodName;
             var param = HashHelper.ComputeFrom("AElf.ContractNames.Vote");
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress, methodName, param);
+            var transaction = await Client.GenerateTransactionAsync(_address, toAddress, methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
@@ -347,7 +347,7 @@ namespace AElf.Client.Test
 
             foreach (var param in parameters)
             {
-                var tx = await Client.GenerateTransaction(_address, toAddress, methodName, param);
+                var tx = await Client.GenerateTransactionAsync(_address, toAddress, methodName, param);
                 var txWithSign = Client.SignTransaction(PrivateKey, tx);
                 sb.Append(txWithSign.ToByteArray().ToHex() + ',');
             }
@@ -410,7 +410,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task IsConnected_Test()
         {
-            var isConnected = await Client.IsConnected();
+            var isConnected = await Client.IsConnectedAsync();
             isConnected.ShouldBeTrue();
         }
 
@@ -420,7 +420,7 @@ namespace AElf.Client.Test
             var genesisAddress = await Client.GetGenesisContractAddressAsync();
             genesisAddress.ShouldNotBeEmpty();
 
-            var address = await Client.GetContractAddressByName(Hash.Empty);
+            var address = await Client.GetContractAddressByNameAsync(Hash.Empty);
             var genesisAddress2 = address.ToBase58();
             Assert.True(genesisAddress == genesisAddress2);
         }
@@ -428,7 +428,7 @@ namespace AElf.Client.Test
         [Fact]
         public async Task GetFormattedAddress_Test()
         {
-            var result = await Client.GetFormattedAddress(Address.FromBase58(_address));
+            var result = await Client.GetFormattedAddressAsync(Address.FromBase58(_address));
             _testOutputHelper.WriteLine(result);
             Assert.True(result == $"ELF_{_address}_AELF");
         }
@@ -445,7 +445,7 @@ namespace AElf.Client.Test
         public async Task Transfer_Test()
         {
             var toAccount = Client.GenerateKeyPairInfo().Address;
-            var toAddress = await Client.GetContractAddressByName(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
+            var toAddress = await Client.GetContractAddressByNameAsync(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
             var methodName = "Transfer";
             var param = new TransferInput
             {
@@ -454,7 +454,7 @@ namespace AElf.Client.Test
                 Amount = 1000
             };
 
-            var transaction = await Client.GenerateTransaction(_address, toAddress.ToBase58(), methodName, param);
+            var transaction = await Client.GenerateTransactionAsync(_address, toAddress.ToBase58(), methodName, param);
             var txWithSign = Client.SignTransaction(PrivateKey, transaction);
 
             var result = await Client.SendTransactionAsync(new SendTransactionInput
@@ -480,7 +480,7 @@ namespace AElf.Client.Test
             };
 
             var transactionGetBalance =
-                await Client.GenerateTransaction(_address, toAddress.ToBase58(), "GetBalance", paramGetBalance);
+                await Client.GenerateTransactionAsync(_address, toAddress.ToBase58(), "GetBalance", paramGetBalance);
             var txWithSignGetBalance = Client.SignTransaction(PrivateKey, transactionGetBalance);
 
             var transactionGetBalanceResult = await Client.ExecuteTransactionAsync(new ExecuteTransactionDto
