@@ -579,10 +579,9 @@ namespace AElf.Client.Test
             var transactionId = firstBlockDto.Body.Transactions.FirstOrDefault();
             var merklePathDto = await _client.GetMerklePathByTransactionIdAsync(transactionId);
             Assert.True(merklePathDto != null);
+            Assert.Equal(4, merklePathDto.MerklePathNodes.Count);
 
             var merklePath = JsonConvert.SerializeObject(merklePathDto, Formatting.Indented);
-            merklePath.ShouldNotBeEmpty();
-
             _testOutputHelper.WriteLine(merklePath);
         }
 
