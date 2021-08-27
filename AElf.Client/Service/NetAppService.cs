@@ -7,9 +7,9 @@ namespace AElf.Client.Service
 {
     public interface INetAppService
     {
-        Task<bool> AddPeerAsync(string ipAddress);
+        Task<bool> AddPeerAsync(string ipAddress,string username,string password);
 
-        Task<bool> RemovePeerAsync(string ipAddress);
+        Task<bool> RemovePeerAsync(string ipAddress,string username,string password);
 
         Task<List<PeerDto>> GetPeersAsync(bool withMetrics);
 
@@ -23,7 +23,7 @@ namespace AElf.Client.Service
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <returns>Add successfully or not</returns>
-        public async Task<bool> AddPeerAsync(string ipAddress)
+        public async Task<bool> AddPeerAsync(string ipAddress,string username,string password)
         {
             if (!EndpointHelper.TryParse(ipAddress, out var endpoint))
             {
@@ -36,7 +36,7 @@ namespace AElf.Client.Service
                 {"address", endpoint.ToString()}
             };
 
-            return await _httpService.PostResponseAsync<bool>(url, parameters);
+            return await _httpService.PostResponseAsync<bool>(url, parameters,username,password);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace AElf.Client.Service
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <returns>Delete successfully or not</returns>
-        public async Task<bool> RemovePeerAsync(string ipAddress)
+        public async Task<bool> RemovePeerAsync(string ipAddress,string username,string password)
         {
             if (!EndpointHelper.TryParse(ipAddress, out var endpoint))
             {
@@ -52,7 +52,7 @@ namespace AElf.Client.Service
             }
             
             var url = GetRequestUrl(_baseUrl, $"api/net/peer?address={endpoint}");
-            return await _httpService.DeleteResponseAsObjectAsync<bool>(url);
+            return await _httpService.DeleteResponseAsObjectAsync<bool>(url,username,password);
         }
 
         /// <summary>

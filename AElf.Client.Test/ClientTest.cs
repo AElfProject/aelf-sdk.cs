@@ -126,25 +126,28 @@ namespace AElf.Client.Test
         /// Work in multiple nodes.(>=2)
         /// </summary>
         /// <returns></returns>
-        [Fact(Skip = "Redo this later.")]
+        [Fact]
         public async Task AddPeer_Test()
         {
             // add ipAddress
             var addressToAdd = "192.168.199.122:7003";
-
-            var addSuccess = await Client.AddPeerAsync(addressToAdd);
+            string username = "name";
+            string password = "password";
+            var addSuccess = await Client.AddPeerAsync(addressToAdd,username,password);
             addSuccess.ShouldBeTrue();
             _testOutputHelper.WriteLine($"Added ipAddress: {addressToAdd}");
         }
 
-        [Fact(Skip = "Redo this later.")]
+        [Fact]
         public async Task RemovePeer_Test()
         {
             var peers = await Client.GetPeersAsync(false);
             peers.ShouldNotBeEmpty();
 
             var peerToRemoveAddress = peers[0].IpAddress;
-            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress);
+            string username = "name";
+            string password = "password";
+            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress,username,password);
             Assert.True(removeSuccess);
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
         }

@@ -18,7 +18,14 @@ namespace AElf.Client.Service
         Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
             string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
 
+        Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters, string username, string password,
+            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+        
+        
         Task<T> DeleteResponseAsObjectAsync<T>(string url, string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+        
+        Task<T> DeleteResponseAsObjectAsync<T>(string url, string username, string passeord, string version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
     }
 
@@ -69,6 +76,17 @@ namespace AElf.Client.Service
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
         }
+        
+        public async Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters, string username, string password,
+            string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+        {
+            var response = await PostResponseAsStringAsync(url, parameters, username, password, version, expectedStatusCode);
+            return JsonConvert.DeserializeObject<T>(response, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
 
         /// <summary>
         /// Delete request.
@@ -83,6 +101,16 @@ namespace AElf.Client.Service
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             var response = await DeleteResponseAsStringAsync(url, version, expectedStatusCode);
+            return JsonConvert.DeserializeObject<T>(response, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
+        
+        public async Task<T> DeleteResponseAsObjectAsync<T>(string url, string username, string password, string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+        {
+            var response = await DeleteResponseAsStringAsync(url, username, password, version, expectedStatusCode);
             return JsonConvert.DeserializeObject<T>(response, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -128,6 +156,13 @@ namespace AElf.Client.Service
             var response = await PostResponseAsync(url, parameters, version, true, expectedStatusCode);
             return await response.Content.ReadAsStringAsync();
         }
+        
+        private async Task<string> PostResponseAsStringAsync(string url, Dictionary<string, string> parameters, string username, string password,
+            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+        {
+            var response = await PostResponseAsync(url, parameters, username, password, version, true, expectedStatusCode);
+            return await response.Content.ReadAsStringAsync();
+        }
 
         private async Task<HttpResponseMessage> PostResponseAsync(string url,
             Dictionary<string, string> parameters,
@@ -137,6 +172,46 @@ namespace AElf.Client.Service
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
             var client = GetHttpClient(version);
 
+            HttpContent content;
+            if (useApplicationJson)
+            {
+                var paramsStr = JsonConvert.SerializeObject(parameters);
+                content = new StringContent(paramsStr, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = MediaTypeHeaderValue.Parse($"application/json{version}");
+            }
+
+            else
+            {
+                content = new FormUrlEncodedContent(parameters);
+                content.Headers.ContentType =
+                    MediaTypeHeaderValue.Parse($"application/x-www-form-urlencoded{version}");
+            }
+
+            try
+            {
+                var response = await client.PostAsync(url, content);
+                if (response.StatusCode == expectedStatusCode)
+                    return response;
+                var message = await response.Content.ReadAsStringAsync();
+                throw new HttpRequestException(message);
+            }
+            catch (Exception ex)
+            {
+                throw new AElfClientException(ex.Message);
+            }
+        }
+        
+        private async Task<HttpResponseMessage> PostResponseAsync(string url,
+            Dictionary<string, string> parameters, string username, string password,
+            string version = null, bool useApplicationJson = false,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+        {
+            version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
+            var client = GetHttpClient(version);
+
+            var byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+            
             HttpContent content;
             if (useApplicationJson)
             {
@@ -176,12 +251,42 @@ namespace AElf.Client.Service
             var response = await DeleteResponseAsync(url, version, expectedStatusCode);
             return await response.Content.ReadAsStringAsync();
         }
+        
+        private async Task<string> DeleteResponseAsStringAsync(string url, string username, string password, string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+        {
+            var response = await DeleteResponseAsync(url, username, password, version, expectedStatusCode);
+            return await response.Content.ReadAsStringAsync();
+        }
 
         private async Task<HttpResponseMessage> DeleteResponseAsync(string url, string version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
             var client = GetHttpClient(version);
+            try
+            {
+                var response = await client.DeleteAsync(url);
+                if (response.StatusCode == expectedStatusCode)
+                    return response;
+                var message = await response.Content.ReadAsStringAsync();
+                throw new AElfClientException(message);
+            }
+            catch (Exception ex)
+            {
+                throw new AElfClientException(ex.Message);
+            }
+        }
+        
+        private async Task<HttpResponseMessage> DeleteResponseAsync(string url, string username, string password, string version = null,
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+        {
+            version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
+            var client = GetHttpClient(version);
+            
+            var byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+            
             try
             {
                 var response = await client.DeleteAsync(url);
