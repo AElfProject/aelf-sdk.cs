@@ -27,6 +27,8 @@ namespace AElf.Client.Service
     {
         private readonly IHttpService _httpService;
         private string _baseUrl;
+        private readonly string _userName;
+        private readonly string _password;
 
         public string BaseUrl
         {
@@ -36,11 +38,12 @@ namespace AElf.Client.Service
 
         private const string ExamplePrivateKey = "09da44778f8db2e602fb484334f37df19e221c84c4582ce5b7770ccfbc3ddbef";
 
-        public AElfClient(string baseUrl, int timeOut = 60)
+        public AElfClient(string baseUrl, int timeOut = 60, string userName = null, string password = null)
         {
             _httpService = new HttpService(timeOut);
             _baseUrl = baseUrl;
-            
+            _userName = userName;
+            _password = password;
         }
 
         /// <summary>

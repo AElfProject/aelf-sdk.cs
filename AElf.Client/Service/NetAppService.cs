@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
 using AElf.Client.Helper;
@@ -7,9 +10,9 @@ namespace AElf.Client.Service
 {
     public interface INetAppService
     {
-        Task<bool> AddPeerAsync(string ipAddress);
+        Task<bool> AddPeerAsync(string ipAddress, string userName, string password);
 
-        Task<bool> RemovePeerAsync(string ipAddress);
+        Task<bool> RemovePeerAsync(string ipAddress, string userName, string password);
 
         Task<List<PeerDto>> GetPeersAsync(bool withMetrics);
 
@@ -22,8 +25,10 @@ namespace AElf.Client.Service
         /// Attempt to add a node to the connected network nodes.Input parameter contains the ipAddress of the node.
         /// </summary>
         /// <param name="ipAddress"></param>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
         /// <returns>Add successfully or not</returns>
-        public async Task<bool> AddPeerAsync(string ipAddress)
+        public async Task<bool> AddPeerAsync(string ipAddress, string userName, string password)
         {
             if (!EndpointHelper.TryParse(ipAddress, out var endpoint))
             {
@@ -36,23 +41,27 @@ namespace AElf.Client.Service
                 {"address", endpoint.ToString()}
             };
 
-            return await _httpService.PostResponseAsync<bool>(url, parameters);
+            return await _httpService.PostResponseAsync<bool>(url, parameters,
+                authenticationHeaderValue: GetAuthenticationHeaderValue());
         }
 
         /// <summary>
         /// Attempt to remove a node from the connected network nodes by given the ipAddress.
         /// </summary>
         /// <param name="ipAddress"></param>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
         /// <returns>Delete successfully or not</returns>
-        public async Task<bool> RemovePeerAsync(string ipAddress)
+        public async Task<bool> RemovePeerAsync(string ipAddress, string userName, string password)
         {
             if (!EndpointHelper.TryParse(ipAddress, out var endpoint))
             {
                 return false;
             }
-            
+
             var url = GetRequestUrl(_baseUrl, $"api/net/peer?address={endpoint}");
-            return await _httpService.DeleteResponseAsObjectAsync<bool>(url);
+            return await _httpService.DeleteResponseAsObjectAsync<bool>(url,
+                authenticationHeaderValue: GetAuthenticationHeaderValue());
         }
 
         /// <summary>
@@ -74,6 +83,12 @@ namespace AElf.Client.Service
         {
             var url = GetRequestUrl(_baseUrl, "api/net/networkInfo");
             return await _httpService.GetResponseAsync<NetworkInfoOutput>(url);
+        }
+
+        private AuthenticationHeaderValue GetAuthenticationHeaderValue()
+        {
+            var byteArray = Encoding.ASCII.GetBytes($"{_userName}:{_password}");
+            return new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
         }
     }
 }

@@ -16,10 +16,12 @@ namespace AElf.Client.Service
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
 
         Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
-            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null);
 
         Task<T> DeleteResponseAsObjectAsync<T>(string url, string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null);
     }
 
     public class HttpService : IHttpService
@@ -57,13 +59,16 @@ namespace AElf.Client.Service
         /// <param name="parameters"></param>
         /// <param name="version"></param>
         /// <param name="expectedStatusCode"></param>
+        /// <param name="authenticationHeaderValue"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public async Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
             string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null)
         {
-            var response = await PostResponseAsStringAsync(url, parameters, version, expectedStatusCode);
+            var response = await PostResponseAsStringAsync(url, parameters, version, expectedStatusCode,
+                authenticationHeaderValue);
             return JsonConvert.DeserializeObject<T>(response, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -80,9 +85,11 @@ namespace AElf.Client.Service
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public async Task<T> DeleteResponseAsObjectAsync<T>(string url, string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null)
         {
-            var response = await DeleteResponseAsStringAsync(url, version, expectedStatusCode);
+            var response =
+                await DeleteResponseAsStringAsync(url, version, expectedStatusCode, authenticationHeaderValue);
             return JsonConvert.DeserializeObject<T>(response, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -109,8 +116,7 @@ namespace AElf.Client.Service
                 var response = await client.GetAsync(url);
                 if (response.StatusCode == expectedStatusCode)
                     return response;
-                var message = await response.Content.ReadAsStringAsync();
-                throw new AElfClientException(message);
+                throw new AElfClientException(response.ToString());
             }
             catch (Exception ex)
             {
@@ -123,19 +129,27 @@ namespace AElf.Client.Service
         #region PostResponse
 
         private async Task<string> PostResponseAsStringAsync(string url, Dictionary<string, string> parameters,
-            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+            string version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null)
         {
-            var response = await PostResponseAsync(url, parameters, version, true, expectedStatusCode);
+            var response = await PostResponseAsync(url, parameters, version, true, expectedStatusCode,
+                authenticationHeaderValue);
             return await response.Content.ReadAsStringAsync();
         }
 
         private async Task<HttpResponseMessage> PostResponseAsync(string url,
             Dictionary<string, string> parameters,
             string version = null, bool useApplicationJson = false,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null)
         {
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
             var client = GetHttpClient(version);
+
+            if (authenticationHeaderValue != null)
+            {
+                client.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
+            }
 
             HttpContent content;
             if (useApplicationJson)
@@ -171,24 +185,31 @@ namespace AElf.Client.Service
         #region DeleteResponse
 
         private async Task<string> DeleteResponseAsStringAsync(string url, string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null)
         {
-            var response = await DeleteResponseAsync(url, version, expectedStatusCode);
+            var response = await DeleteResponseAsync(url, version, expectedStatusCode, authenticationHeaderValue);
             return await response.Content.ReadAsStringAsync();
         }
 
         private async Task<HttpResponseMessage> DeleteResponseAsync(string url, string version = null,
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+            HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
+            AuthenticationHeaderValue authenticationHeaderValue = null)
         {
             version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
             var client = GetHttpClient(version);
+
+            if (authenticationHeaderValue != null)
+            {
+                client.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
+            }
+
             try
             {
                 var response = await client.DeleteAsync(url);
                 if (response.StatusCode == expectedStatusCode)
                     return response;
-                var message = await response.Content.ReadAsStringAsync();
-                throw new AElfClientException(message);
+                throw new AElfClientException(response.ToString());
             }
             catch (Exception ex)
             {

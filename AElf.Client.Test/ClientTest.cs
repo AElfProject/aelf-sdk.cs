@@ -25,7 +25,7 @@ namespace AElf.Client.Test
 {
     public class ClientTest
     {
-        private const string BaseUrl = "Http://127.0.0.1:8001";
+        private const string BaseUrl = "http://192.168.196.116:8000";
 
         private string _genesisAddress;
         private string GenesisAddress => GetGenesisContractAddress();
@@ -40,10 +40,13 @@ namespace AElf.Client.Test
         private AElfClient Client { get; }
         private readonly ITestOutputHelper _testOutputHelper;
 
+        private const string UserName = "test1";
+        private const string Password = "test";
+
         public ClientTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
-            Client = new AElfClient(BaseUrl);
+            Client = new AElfClient(BaseUrl, userName: UserName, password: Password);
             
             // To get address from privateKey.s
             _address = Client.GetAddressFromPrivateKey(PrivateKey);
@@ -132,7 +135,7 @@ namespace AElf.Client.Test
             // add ipAddress
             var addressToAdd = "192.168.199.122:7003";
 
-            var addSuccess = await Client.AddPeerAsync(addressToAdd);
+            var addSuccess = await Client.AddPeerAsync(addressToAdd, UserName, Password);
             addSuccess.ShouldBeTrue();
             _testOutputHelper.WriteLine($"Added ipAddress: {addressToAdd}");
         }
@@ -144,7 +147,7 @@ namespace AElf.Client.Test
             peers.ShouldNotBeEmpty();
 
             var peerToRemoveAddress = peers[0].IpAddress;
-            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress);
+            var removeSuccess = await Client.RemovePeerAsync(peerToRemoveAddress, UserName, Password);
             Assert.True(removeSuccess);
             _testOutputHelper.WriteLine($"Removed ipAddress: {peerToRemoveAddress}");
         }
