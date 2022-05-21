@@ -2,7 +2,7 @@ namespace AElf.Client.Options;
 
 public class AElfClientOptions
 {
-    public Dictionary<string, ClientConfig> ClientConfigs { get; set; }
+    public Dictionary<string, ClientConfig> ClientConfigs { get; set; } = new();
 }
 
 public class ClientConfig

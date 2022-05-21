@@ -7,7 +7,7 @@ public class TransactionBuilder
 {
     private readonly AElfClient _aelfClient;
 
-    private string PrivateKey { get; set; }
+    private byte[] PrivateKey { get; set; }
     private string ContractAddress { get; set; }
     private string MethodName { get; set; }
     private IMessage Parameter { get; set; }
@@ -15,10 +15,10 @@ public class TransactionBuilder
     public TransactionBuilder(AElfClient aelfClient)
     {
         _aelfClient = aelfClient;
-        PrivateKey = AElfClientConstants.DefaultPrivateKey;
+        PrivateKey = ByteArrayHelper.HexStringToByteArray(AElfClientConstants.DefaultPrivateKey);
     }
 
-    public TransactionBuilder UsePrivateKey(string privateKey)
+    public TransactionBuilder UsePrivateKey(byte[] privateKey)
     {
         PrivateKey = privateKey;
         return this;
@@ -51,7 +51,7 @@ public class TransactionBuilder
 
     public Transaction Build()
     {
-        var keyPair = CryptoHelper.FromPrivateKey(ByteArrayHelper.HexStringToByteArray(PrivateKey));
+        var keyPair = CryptoHelper.FromPrivateKey(PrivateKey);
         var from = Address.FromPublicKey(keyPair.PublicKey).ToBase58();
         var unsignedTx = _aelfClient.GenerateTransactionAsync(from, ContractAddress, MethodName, Parameter).Result;
         var signedTx = _aelfClient.SignTransaction(PrivateKey, unsignedTx);

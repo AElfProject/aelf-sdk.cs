@@ -141,6 +141,25 @@ public partial class AElfClient : IClientService
 
             return transaction;
         }
+        
+        /// <summary>
+        /// Sign a transaction using private key.
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <param name="transaction"></param>
+        /// <returns>Transaction signed</returns>
+        public Transaction SignTransaction(byte[]? privateKey, Transaction transaction)
+        {
+            var transactionData = transaction.GetHash().ToByteArray();
+
+            privateKey ??= ByteArrayHelper.HexStringToByteArray(AElfClientConstants.DefaultPrivateKey);
+
+            // Sign the hash
+            var signature = CryptoHelper.SignWithPrivateKey(privateKey, transactionData);
+            transaction.Signature = ByteString.CopyFrom(signature);
+
+            return transaction;
+        }
 
         /// <summary>
         /// Get the account address through the public key.

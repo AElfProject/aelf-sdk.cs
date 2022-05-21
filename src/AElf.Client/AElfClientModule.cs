@@ -13,5 +13,6 @@ public class AElfClientModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AElfClientOptions>(context.Services.GetConfiguration().GetSection("AElfClient"));
+        Configure<AElfAccountOptions>(context.Services.GetConfiguration().GetSection("AElfAccount"));
     }
 }

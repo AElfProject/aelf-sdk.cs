@@ -3,7 +3,7 @@ namespace AElf.Client.Options;
 public class AElfAccountOptions
 {
     public string KeyDirectory { get; set; }
-    public Dictionary<string, AccountConfig> AccountConfigs { get; set; }
+    public Dictionary<string, AccountConfig> AccountConfigs { get; set; } = new();
 }
 
 public class AccountConfig

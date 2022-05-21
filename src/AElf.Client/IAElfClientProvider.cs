@@ -38,7 +38,7 @@ public class AElfClientProvider : Dictionary<AElfClientInfo, AElfClient>, IAElfC
             .ToList();
         if (keys.Count != 1)
         {
-            throw new AElfClientException($"Failed to get client of {alias} - {environment} - {chainId} - {chainType}");
+            throw new AElfClientException($"Failed to get client of {alias} - {environment} - {chainId} - {chainType}.");
         }
 
         return this[keys.Single()];
