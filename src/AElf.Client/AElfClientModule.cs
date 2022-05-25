@@ -1,4 +1,5 @@
 using AElf.Client.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Autofac;
 using Volo.Abp.Modularity;
@@ -12,7 +13,8 @@ public class AElfClientModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        Configure<AElfClientOptions>(context.Services.GetConfiguration().GetSection("AElfClient"));
-        Configure<AElfAccountOptions>(context.Services.GetConfiguration().GetSection("AElfAccount"));
+        var configuration = context.Services.GetConfiguration();
+        Configure<AElfClientOptions>(options => { configuration.GetSection("AElfClient").Bind(options); });
+        Configure<AElfAccountOptions>(options => { configuration.GetSection("AElfAccount").Bind(options); });
     }
 }

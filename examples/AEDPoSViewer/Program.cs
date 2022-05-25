@@ -1,6 +1,6 @@
 ﻿using AEDPoSViewer;
 using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
@@ -11,24 +11,30 @@ Log.Logger = new LoggerConfiguration()
 #if DEBUG
     .MinimumLevel.Override("AEDPoSViewer", LogEventLevel.Debug)
 #else
-                .MinimumLevel.Override("AEDPoSViewer", LogEventLevel.Information)
+    .MinimumLevel.Override("AEDPoSViewer", LogEventLevel.Information)
 #endif
     .Enrich.FromLogContext()
     .WriteTo.Async(c => c.File($"Logs/aelf-consensus-viewer-{DateTime.UtcNow:yyyy-MM-dd}.logs"))
-    .WriteTo.Console()
+    .WriteTo.Async(c => c.Console())
     .CreateLogger();
 
-using var application = AbpApplicationFactory.Create<AEDPoSViewerModule>(
-    options =>
-    {
-        options.UseAutofac();
-        options.Services.AddLogging(c => c.AddSerilog());
-    });
-application.Initialize();
-
-await application.ServiceProvider
-    .GetRequiredService<AEDPoSViewerService>()
-    .RunAsync(args);
-
-application.Shutdown();
-Log.CloseAndFlush();
+try
+{
+    await Host.CreateDefaultBuilder(args)
+        .ConfigureServices(services =>
+        {
+            services.AddHostedService<AEDPoSViewerHostedService>();
+        })
+        .UseSerilog()
+        .RunConsoleAsync();
+    return 0;
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly!");
+    return 1;
+}
+finally
+{
+    Log.CloseAndFlush();
+}

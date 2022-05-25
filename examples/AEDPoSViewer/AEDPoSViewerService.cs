@@ -22,17 +22,17 @@ public class AEDPoSViewerService : ITransientDependency
         Logger = NullLogger<AEDPoSViewerService>.Instance;
     }
 
-    public async Task RunAsync(string[] args)
+    public async Task RunAsync()
     {
         using var scope = ServiceScopeFactory.CreateScope();
 
         var clientService = scope.ServiceProvider.GetRequiredService<IAElfClientService>();
 
         var result = await clientService.ViewSystemAsync(AEDPoSViewerConstants.ConsensusSmartContractName,
-            "GetCurrentRoundInformation", new Empty(), EndpointType.MainNetMainChain.ToString());
+            "GetCurrentRoundInformation", new Empty(), EndpointType.MainNetMainChain.ToString(), "Ean");
 
         var round = new Round();
         round.MergeFrom(result);
-        Logger.LogInformation(round.ToString());
+        Logger.LogInformation($"Current round: {round.RoundNumber}");
     }
 }

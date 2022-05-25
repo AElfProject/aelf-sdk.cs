@@ -1,3 +1,5 @@
+using AElf.Client.Options;
+using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
 namespace AElf.Client;
@@ -12,7 +14,7 @@ public interface IAElfClientProvider
 
 public class AElfClientProvider : Dictionary<AElfClientInfo, AElfClient>, IAElfClientProvider, ISingletonDependency
 {
-    public AElfClientProvider()
+    public AElfClientProvider(IOptionsSnapshot<AElfClientOptions> aelfClientOptions)
     {
         var clientBuilder = new AElfClientBuilder();
         SetClient(clientBuilder.UsePublicEndpoint(EndpointType.MainNetMainChain).Build(), "MainNet",
@@ -25,6 +27,16 @@ public class AElfClientProvider : Dictionary<AElfClientInfo, AElfClient>, IAElfC
             AElfClientConstants.SidechainId, "Sidechain", EndpointType.TestNetSidechain.ToString());
         SetClient(clientBuilder.UsePublicEndpoint(EndpointType.Local).Build(), "Local", AElfClientConstants.MainChainId,
             "MainChain", EndpointType.Local.ToString());
+
+        foreach (var clientConfig in aelfClientOptions.Value.ClientConfigList)
+        {
+            var client = clientBuilder
+                .UseEndpoint(clientConfig.Endpoint)
+                .ManagePeerInfo(clientConfig.UserName, clientConfig.Password)
+                .SetHttpTimeout(clientConfig.Timeout)
+                .Build();
+            SetClient(client, alias: clientConfig.Alias);
+        }
     }
 
     public AElfClient GetClient(string? alias = null, string? environment = null, int? chainId = null,
@@ -38,7 +50,8 @@ public class AElfClientProvider : Dictionary<AElfClientInfo, AElfClient>, IAElfC
             .ToList();
         if (keys.Count != 1)
         {
-            throw new AElfClientException($"Failed to get client of {alias} - {environment} - {chainId} - {chainType}.");
+            throw new AElfClientException(
+                $"Failed to get client of {alias} - {environment} - {chainId} - {chainType}.");
         }
 
         return this[keys.Single()];

@@ -1,7 +1,5 @@
 using AElf.Client.Dto;
-using AElf.Client.Options;
 using Google.Protobuf;
-using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
 namespace AElf.Client;
@@ -10,27 +8,11 @@ public class AElfClientService : IAElfClientService, ITransientDependency
 {
     private readonly IAElfClientProvider _aelfClientProvider;
     private readonly IAElfAccountProvider _aelfAccountProvider;
-    private readonly AElfClientOptions _aelfClientOptions;
-    private readonly AElfAccountOptions _aelfAccountOptions;
 
-    public AElfClientService(IAElfClientProvider aelfClientProvider, IAElfAccountProvider aelfAccountProvider,
-        IOptionsSnapshot<AElfClientOptions> aelfClientOptions, IOptionsSnapshot<AElfAccountOptions> aelfAccountOptions)
+    public AElfClientService(IAElfClientProvider aelfClientProvider, IAElfAccountProvider aelfAccountProvider)
     {
         _aelfClientProvider = aelfClientProvider;
         _aelfAccountProvider = aelfAccountProvider;
-        _aelfClientOptions = aelfClientOptions.Value;
-        _aelfAccountOptions = aelfAccountOptions.Value;
-
-        var clientBuilder = new AElfClientBuilder();
-        foreach (var (alias, clientConfig) in aelfClientOptions.Value.ClientConfigs)
-        {
-            var client = clientBuilder
-                .UseEndpoint(clientConfig.Endpoint)
-                .ManagePeerInfo(clientConfig.UserName, clientConfig.Password)
-                .SetHttpTimeout(clientConfig.Timeout)
-                .Build();
-            _aelfClientProvider.SetClient(client, alias: alias);
-        }
     }
 
     public async Task<byte[]> ViewAsync(string contractAddress, string methodName, IMessage parameter, string clientAlias,
@@ -46,7 +28,7 @@ public class AElfClientService : IAElfClientService, ITransientDependency
             .Build();
         return await PerformViewAsync(aelfClient, tx);
     }
-    
+
     public async Task<byte[]> ViewSystemAsync(string systemContractName, string methodName, IMessage parameter, string clientAlias,
         string accountAlias = "Default")
     {
