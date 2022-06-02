@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>AElf.Client.Abp</PackageId>
+        <PackageDescription>C# sdk with abp module.</PackageDescription>
+        <Company>AElf</Company>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Autofac" Version="5.2.2" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\AElf.Client\AElf.Client.csproj" />
+    </ItemGroup>
+
+</Project>

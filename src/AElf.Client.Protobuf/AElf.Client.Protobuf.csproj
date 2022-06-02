@@ -4,6 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>AElf.Client.Protobuf</PackageId>
+        <PackageDescription>Protobuf using by AElf C# sdk.</PackageDescription>
+        <Company>AElf</Company>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +21,9 @@
 
     <ItemGroup>
         <Protobuf Include="Protobuf\kernel.proto" ProtoRoot="Protobuf">
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
+        <Protobuf Include="Protobuf\transaction_fee.proto" ProtoRoot="Protobuf">
             <Generator>MSBuild:Compile</Generator>
         </Protobuf>
         <Protobuf Include="Protobuf\acs1.proto" ProtoRoot="Protobuf">
