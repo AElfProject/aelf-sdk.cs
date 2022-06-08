@@ -202,34 +202,6 @@ public partial class AElfClient : IClientService
         };
     }
 
-    public async Task<TransactionFeeBill> CalculateTransactionFeeBill(Transaction transaction)
-    {
-        var tokenContractAddress =
-            await GetContractAddressByNameAsync(HashHelper.ComputeFrom("AElf.ContractNames.Token"));
-        var fromAddress = GetAddressFromPrivateKey(AElfClientConstants.DefaultPrivateKey);
-        var toAddress = tokenContractAddress.ToBase58();
-        var methodName = "GetMethodFee";
-        var param = new StringValue { Value = transaction.MethodName };
-
-        var getMethodFeeTx = await GenerateTransactionAsync(fromAddress, toAddress, methodName, param);
-        var executeResult = await ExecuteTransactionAsync(new ExecuteTransactionDto
-        {
-            RawTransaction = getMethodFeeTx.ToByteArray().ToHex()
-        });
-
-        var methodFees = new MethodFees();
-        methodFees.MergeFrom(ByteArrayHelper.HexStringToByteArray(executeResult));
-
-        var bill = new TransactionFeeBill();
-
-        if (methodFees.Fees.Any())
-        {
-            var baseFees = GetBaseFeeDictionary(methodFees);
-        }
-
-        return bill;
-    }
-
     #region private methods
 
     private ECKeyPair GetAElfKeyPair(string? privateKeyHex)

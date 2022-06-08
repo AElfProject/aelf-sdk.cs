@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>AElf.Client.Abp</PackageId>
-        <PackageDescription>C# sdk with abp module.</PackageDescription>
+        <PackageDescription>AElf C# sdk with abp module.</PackageDescription>
         <Company>AElf</Company>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>

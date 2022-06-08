@@ -1,6 +1,6 @@
 using AElf.Client;
 using AElf.Client.Abp;
-using AElf.Client.Abp.TokenManager;
+using AElf.Client.Abp.Token;
 using AElf.Client.Dto;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.NFT;

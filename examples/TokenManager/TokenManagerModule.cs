@@ -1,5 +1,5 @@
 using AElf.Client.Abp;
-using AElf.Client.Abp.TokenManager;
+using AElf.Client.Abp.Token;
 using AElf.Client.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ namespace TokenManager;
 
 [DependsOn(
     typeof(AElfClientModule),
-    typeof(AElfClientTokenManagerModule)
+    typeof(AElfClientTokenModule)
 )]
 public class AEDPoSViewerModule : AbpModule
 {

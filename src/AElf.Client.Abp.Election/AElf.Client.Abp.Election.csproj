@@ -4,10 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>AElf.Client.Abp.Election</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\AElf.Client.Abp\AElf.Client.Abp.csproj" />
-    </ItemGroup>
 
 </Project>

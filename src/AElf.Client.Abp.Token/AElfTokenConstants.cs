@@ -1,6 +1,6 @@
-namespace AElf.Client.Abp.TokenManager;
+namespace AElf.Client.Abp.Token;
 
-public class TokenManagerConstants
+public class AElfTokenConstants
 {
     public const string TokenSmartContractName = "AElf.ContractNames.Token";
 }

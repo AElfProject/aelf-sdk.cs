@@ -2,16 +2,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 
-namespace AElf.Client.Abp.TokenManager;
+namespace AElf.Client.Abp.Token;
 
 [DependsOn(
     typeof(AElfClientModule)
 )]
-public class AElfClientTokenManagerModule : AbpModule
+public class AElfClientTokenModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
-        Configure<TokenManagerOptions>(options => { configuration.GetSection("TokenManager").Bind(options); });
+        Configure<AElfTokenOptions>(options => { configuration.GetSection("AElfToken").Bind(options); });
     }
 }
