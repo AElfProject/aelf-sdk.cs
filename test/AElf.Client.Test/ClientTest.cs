@@ -8,7 +8,7 @@ using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
 using AElf.Client.Extensions;
-using AElf.Client.Service;
+using AElf.Client.Services;
 using AElf.Contracts.MultiToken;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -25,7 +25,7 @@ namespace AElf.Client.Test;
 
 public class ClientTest
 {
-    private const string BaseUrl = "http://192.168.196.116:8000";
+    private const string BaseUrl = "https://tdvv-test-node.aelf.io";
 
     private string _genesisAddress;
     private string GenesisAddress => GetGenesisContractAddress();

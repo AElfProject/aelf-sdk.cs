@@ -1,4 +1,5 @@
 using AElf.Client;
+using AElf.Client.Abp;
 using AElf.Contracts.Consensus.AEDPoS;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -29,7 +30,7 @@ public class AEDPoSViewerService : ITransientDependency
         var clientService = scope.ServiceProvider.GetRequiredService<IAElfClientService>();
 
         var result = await clientService.ViewSystemAsync(AEDPoSViewerConstants.ConsensusSmartContractName,
-            "GetCurrentRoundInformation", new Empty(), EndpointType.MainNetSidechain.ToString(), "Ean");
+            "GetCurrentRoundInformation", new Empty(), EndpointType.TestNetMainChain.ToString());
 
         var round = new Round();
         round.MergeFrom(result);

@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace AElf.Client.Service;
+namespace AElf.Client.Services;
 
 public interface IHttpService
 {
@@ -46,7 +42,10 @@ public class HttpService : IHttpService
     {
         var response = await GetResponseAsync(url, version, expectedStatusCode);
         var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<T>(stream);
+        return await JsonSerializer.DeserializeAsync<T>(stream, options:new JsonSerializerOptions
+        {
+            //PropertyNamingPolicy =  JsonNamingPolicy.CamelCase
+        });
     }
 
     /// <summary>

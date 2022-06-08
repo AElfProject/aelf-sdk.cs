@@ -1,22 +1,26 @@
 using AElf.Client.Dto;
 using Google.Protobuf;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.ObjectMapping;
 
 namespace AElf.Client.Abp;
 
-public class AElfClientService : IAElfClientService, ITransientDependency
+public partial class AElfClientService : IAElfClientService, ITransientDependency
 {
     private readonly IAElfClientProvider _aelfClientProvider;
     private readonly IAElfAccountProvider _aelfAccountProvider;
+    private readonly IObjectMapper<AElfClientModule> _objectMapper;
 
-    public AElfClientService(IAElfClientProvider aelfClientProvider, IAElfAccountProvider aelfAccountProvider)
+    public AElfClientService(IAElfClientProvider aelfClientProvider, IAElfAccountProvider aelfAccountProvider,
+        IObjectMapper<AElfClientModule> objectMapper)
     {
         _aelfClientProvider = aelfClientProvider;
         _aelfAccountProvider = aelfAccountProvider;
+        _objectMapper = objectMapper;
     }
 
-    public async Task<byte[]> ViewAsync(string contractAddress, string methodName, IMessage parameter, string clientAlias,
-        string accountAlias = "Default")
+    public async Task<byte[]> ViewAsync(string contractAddress, string methodName, IMessage parameter,
+        string clientAlias, string accountAlias = "Default")
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
         var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);
@@ -29,8 +33,8 @@ public class AElfClientService : IAElfClientService, ITransientDependency
         return await PerformViewAsync(aelfClient, tx);
     }
 
-    public async Task<byte[]> ViewSystemAsync(string systemContractName, string methodName, IMessage parameter, string clientAlias,
-        string accountAlias = "Default")
+    public async Task<byte[]> ViewSystemAsync(string systemContractName, string methodName, IMessage parameter,
+        string clientAlias, string accountAlias = "Default")
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
         var privateKey = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);

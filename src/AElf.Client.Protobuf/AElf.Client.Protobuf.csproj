@@ -35,10 +35,16 @@
         <Protobuf Include="Protobuf\token_contract.proto" ProtoRoot="Protobuf">
             <Generator>MSBuild:Compile</Generator>
         </Protobuf>
+        <Protobuf Include="Protobuf\token_contract_impl.proto" ProtoRoot="Protobuf">
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
         <Protobuf Include="Protobuf\authority_info.proto" ProtoRoot="Protobuf">
             <Generator>MSBuild:Compile</Generator>
         </Protobuf>
         <Protobuf Include="Protobuf\aedpos_contract.proto" ProtoRoot="Protobuf">
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
+        <Protobuf Include="Protobuf\nft_contract.proto" ProtoRoot="Protobuf">
             <Generator>MSBuild:Compile</Generator>
         </Protobuf>
     </ItemGroup>

@@ -4,16 +4,16 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Volo.Abp;
 
-namespace AEDPoSViewer;
+namespace TokenManager;
 
-public class AEDPoSViewerHostedService : IHostedService
+public class TokenManagerHostedService : IHostedService
 {
     private IAbpApplicationWithInternalServiceProvider _abpApplication;
 
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
 
-    public AEDPoSViewerHostedService(IConfiguration configuration, IHostEnvironment hostEnvironment)
+    public TokenManagerHostedService(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
@@ -32,8 +32,8 @@ public class AEDPoSViewerHostedService : IHostedService
 
         await _abpApplication.InitializeAsync();
 
-        var viewerService = _abpApplication.ServiceProvider.GetRequiredService<AEDPoSViewerService>();
-        await viewerService.RunAsync();
+        var tokenManagerService = _abpApplication.ServiceProvider.GetRequiredService<TokenManagerService>();
+        await tokenManagerService.GetTokenInfoAsync();
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

@@ -8,5 +8,8 @@ namespace AEDPoSViewer;
     )]
 public class AEDPoSViewerModule : AbpModule
 {
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
 
+    }
 }
