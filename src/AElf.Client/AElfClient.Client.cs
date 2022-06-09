@@ -2,10 +2,8 @@ using AElf.Client.Dto;
 using AElf.Client.Extensions;
 using AElf.Client.Model;
 using AElf.Client.Services;
-using AElf.Contracts.MultiToken;
 using AElf.Cryptography;
 using AElf.Cryptography.ECDSA;
-using AElf.Standards.ACS1;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
@@ -21,8 +19,8 @@ public partial class AElfClient : IClientService
     {
         try
         {
-            var chainStatus = await GetChainStatusAsync();
-            return chainStatus != null;
+            await GetChainStatusAsync();
+            return true;
         }
         catch (Exception)
         {
@@ -37,7 +35,7 @@ public partial class AElfClient : IClientService
     public async Task<string?> GetGenesisContractAddressAsync()
     {
         var statusDto = await GetChainStatusAsync();
-        var genesisAddress = statusDto?.GenesisContractAddress;
+        var genesisAddress = statusDto.GenesisContractAddress;
         return genesisAddress;
     }
 
@@ -120,7 +118,7 @@ public partial class AElfClient : IClientService
         });
 
         var symbol = StringValue.Parser.ParseFrom(ByteArrayHelper.HexStringToByteArray(result));
-        var chainIdString = (await GetChainStatusAsync())?.ChainId;
+        var chainIdString = (await GetChainStatusAsync()).ChainId;
 
         return $"{symbol.Value}_{address.ToBase58()}_{chainIdString}";
     }
@@ -214,7 +212,8 @@ public partial class AElfClient : IClientService
 
     private string GetRequestUrl(string baseUrl, string relativeUrl)
     {
-        return new Uri(new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), relativeUrl).ToString();
+        var uri = new Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/"));
+        return new Uri(uri, relativeUrl).ToString();
     }
 
     private void AssertValidAddress(params string?[] addresses)
@@ -260,18 +259,6 @@ public partial class AElfClient : IClientService
         {
             throw new AElfClientException(Error.Message[Error.InvalidTransactionId]);
         }
-    }
-
-    private Dictionary<string, long> GetBaseFeeDictionary(MethodFees methodFees)
-    {
-        var dict = new Dictionary<string, long>();
-        foreach (var methodFee in methodFees.Fees)
-            if (dict.ContainsKey(methodFee.Symbol))
-                dict[methodFee.Symbol] += methodFee.BasicFee;
-            else
-                dict[methodFee.Symbol] = methodFee.BasicFee;
-
-        return dict;
     }
 
     #endregion

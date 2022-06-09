@@ -6,10 +6,11 @@ namespace AElf.Client.Abp.Token;
 
 public interface ITokenService
 {
-    Task<TransactionResult> CreateTokenAsync(Contracts.MultiToken.CreateInput createInput);
-    Task<TransactionResult> CreateNFTProtocolAsync(Contracts.NFT.CreateInput createInput);
-    Task<TransactionResult> MintNFTAsync(MintInput mintInput);
-    Task<TransactionResult> SyncTokenInfoAsync(string symbol);
+    Task<SendTransactionResult> CreateTokenAsync(Contracts.MultiToken.CreateInput createInput);
+    Task<SendTransactionResult> CreateNFTProtocolAsync(Contracts.NFT.CreateInput createInput);
+    Task<SendTransactionResult> MintNFTAsync(MintInput mintInput);
+    Task<SendTransactionResult> ValidateTokenInfoExistsAsync(ValidateTokenInfoExistsInput validateTokenInfoExistsInput);
+    Task<SendTransactionResult> CrossChainCreateTokenAsync(CrossChainCreateTokenInput crossChainCreateTokenInput);
 
     Task<TokenInfo> GetTokenInfoAsync(string symbol);
     Task<Contracts.MultiToken.GetBalanceOutput> GetTokenBalanceAsync(string symbol, Address owner);

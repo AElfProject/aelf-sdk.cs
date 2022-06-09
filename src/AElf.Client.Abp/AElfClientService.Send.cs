@@ -5,7 +5,7 @@ namespace AElf.Client.Abp;
 
 public partial class AElfClientService
 {
-    public async Task<string> SendAsync(string contractAddress, string methodName, IMessage parameter,
+    public async Task<Transaction> SendAsync(string contractAddress, string methodName, IMessage parameter,
         string clientAlias, string accountAlias = "Default")
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
@@ -16,10 +16,11 @@ public partial class AElfClientService
             .UseMethod(methodName)
             .UseParameter(parameter)
             .Build();
-        return await PerformSendAsync(aelfClient, tx);
+        await PerformSendAsync(aelfClient, tx);
+        return tx;
     }
 
-    public async Task<string> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
+    public async Task<Transaction> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
         string clientAlias, string accountAlias = "Default")
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
@@ -30,7 +31,8 @@ public partial class AElfClientService
             .UseMethod(methodName)
             .UseParameter(parameter)
             .Build();
-        return await PerformSendAsync(aelfClient, tx);
+        await PerformSendAsync(aelfClient, tx);
+        return tx;
     }
 
     private static async Task<string> PerformSendAsync(AElfClient aelfClient, Transaction tx)

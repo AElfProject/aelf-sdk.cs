@@ -1,4 +1,5 @@
 using AElf.Client.Dto;
+using Microsoft.Extensions.Logging;
 
 namespace AElf.Client.Abp;
 
@@ -28,5 +29,23 @@ public partial class AElfClientService
         }
 
         return _objectMapper.Map<TransactionResultDto, TransactionResult>(result!);
+    }
+
+    public async Task<ChainStatusDto> GetChainStatusAsync(string clientAlias)
+    {
+        var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
+        return await aelfClient.GetChainStatusAsync();
+    }
+
+    public async Task<MerklePath> GetMerklePathByTransactionIdAsync(string transactionId, string clientAlias)
+    {
+        var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
+        var merklePathDto = await aelfClient.GetMerklePathByTransactionIdAsync(transactionId);
+        if (merklePathDto == null)
+        {
+            Logger.LogError("Cannot get merkle path of transaction {TransactionId}", transactionId);
+        }
+
+        return _objectMapper.Map<MerklePathDto, MerklePath>(merklePathDto);
     }
 }

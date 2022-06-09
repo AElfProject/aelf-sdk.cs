@@ -1,5 +1,7 @@
 using AElf.Client.Dto;
 using Google.Protobuf;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.ObjectMapping;
 
@@ -11,12 +13,16 @@ public partial class AElfClientService : IAElfClientService, ITransientDependenc
     private readonly IAElfAccountProvider _aelfAccountProvider;
     private readonly IObjectMapper<AElfClientModule> _objectMapper;
 
+    public ILogger<AElfClientService> Logger { get; set; }
+
     public AElfClientService(IAElfClientProvider aelfClientProvider, IAElfAccountProvider aelfAccountProvider,
         IObjectMapper<AElfClientModule> objectMapper)
     {
         _aelfClientProvider = aelfClientProvider;
         _aelfAccountProvider = aelfAccountProvider;
         _objectMapper = objectMapper;
+
+        Logger = NullLogger<AElfClientService>.Instance;
     }
 
     public async Task<byte[]> ViewAsync(string contractAddress, string methodName, IMessage parameter,

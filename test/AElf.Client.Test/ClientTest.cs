@@ -84,7 +84,7 @@ public class ClientTest
     public async Task GetBlockByHeight_Failed_Test()
     {
         const int timeOut = 60;
-        var httpService = new HttpService(timeOut);
+        var httpService = new HttpService(timeOut, false);
         const int heightNotExist = int.MaxValue;
         var errorResponse = await httpService.GetResponseAsync<WebAppErrorResponse>(
             $"{BaseUrl}/api/blockChain/blockByHeight?blockHeight={heightNotExist}&includeTransactions=false",

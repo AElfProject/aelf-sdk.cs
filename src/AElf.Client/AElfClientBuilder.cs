@@ -5,8 +5,10 @@ public sealed class AElfClientBuilder
     private string NodeEndpoint { get; set; }
     private int Timeout { get; set; }
 
-    private string UserName { get; set; }
-    private string Password { get; set; }
+    private string? UserName { get; set; }
+    private string? Password { get; set; }
+
+    private bool IsUseCamelCase { get; set; }
 
     public AElfClientBuilder()
     {
@@ -51,15 +53,21 @@ public sealed class AElfClientBuilder
         return this;
     }
 
-    public AElfClientBuilder ManagePeerInfo(string userName, string password)
+    public AElfClientBuilder ManagePeerInfo(string? userName, string? password)
     {
         UserName = userName;
         Password = password;
         return this;
     }
 
+    public AElfClientBuilder UseCamelCase(bool isUseCamelCase)
+    {
+        IsUseCamelCase = isUseCamelCase;
+        return this;
+    }
+
     public AElfClient Build()
     {
-        return new AElfClient(NodeEndpoint, Timeout, UserName, Password);
+        return new AElfClient(NodeEndpoint, Timeout, UserName, Password, IsUseCamelCase);
     }
 }

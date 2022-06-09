@@ -30,10 +30,10 @@ public class AEDPoSViewerService : ITransientDependency
         var clientService = scope.ServiceProvider.GetRequiredService<IAElfClientService>();
 
         var result = await clientService.ViewSystemAsync(AEDPoSViewerConstants.ConsensusSmartContractName,
-            "GetCurrentRoundInformation", new Empty(), EndpointType.TestNetMainChain.ToString());
+            "GetCurrentRoundInformation", new Empty(), EndpointType.MainNetMainChain.ToString());
 
         var round = new Round();
         round.MergeFrom(result);
-        Logger.LogInformation($"Current round: {round}");
+        Logger.LogInformation("Current round: {Round}", round);
     }
 }

@@ -1,3 +1,4 @@
+using AElf.Client.Dto;
 using Google.Protobuf;
 
 namespace AElf.Client.Abp;
@@ -10,11 +11,15 @@ public interface IAElfClientService
     Task<byte[]> ViewSystemAsync(string systemContractName, string methodName, IMessage parameter,
         string clientAlias, string accountAlias = "Default");
 
-    Task<string> SendAsync(string contractAddress, string methodName, IMessage parameter,
+    Task<Transaction> SendAsync(string contractAddress, string methodName, IMessage parameter,
         string clientAlias, string accountAlias = "Default");
 
-    Task<string> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
+    Task<Transaction> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
         string clientAlias, string accountAlias = "Default");
 
     Task<TransactionResult> GetTransactionResultAsync(string transactionId, string clientAlias);
+
+    Task<ChainStatusDto> GetChainStatusAsync(string clientAlias);
+
+    Task<MerklePath> GetMerklePathByTransactionIdAsync(string transactionId, string clientAlias);
 }

@@ -2,7 +2,7 @@ using AElf.Client.Options;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
-namespace AElf.Client;
+namespace AElf.Client.Abp;
 
 public interface IAElfClientProvider
 {
@@ -14,19 +14,21 @@ public interface IAElfClientProvider
 
 public class AElfClientProvider : Dictionary<AElfClientInfo, AElfClient>, IAElfClientProvider, ISingletonDependency
 {
-    public AElfClientProvider(IOptionsSnapshot<AElfClientOptions> aelfClientOptions)
+    public AElfClientProvider(IOptionsSnapshot<AElfClientOptions> aelfClientOptions,
+        IOptionsSnapshot<AElfClientConfigOptions> aelfClientConfigOptions)
     {
+        var useCamelCase = aelfClientConfigOptions.Value.UseCamelCase;
         var clientBuilder = new AElfClientBuilder();
-        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.MainNetMainChain).Build(), "MainNet",
-            AElfClientConstants.MainChainId, "MainChain", EndpointType.MainNetMainChain.ToString());
-        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.MainNetSidechain).Build(), "MainNet",
-            AElfClientConstants.SidechainId, "Sidechain", EndpointType.MainNetSidechain.ToString());
-        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.TestNetMainChain).Build(), "TestNet",
-            AElfClientConstants.MainChainId, "MainChain", EndpointType.TestNetMainChain.ToString());
-        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.TestNetSidechain).Build(), "MainNet",
-            AElfClientConstants.SidechainId, "Sidechain", EndpointType.TestNetSidechain.ToString());
-        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.Local).Build(), "Local", AElfClientConstants.MainChainId,
-            "MainChain", EndpointType.Local.ToString());
+        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.MainNetMainChain).UseCamelCase(useCamelCase).Build(),
+            "MainNet", AElfClientConstants.MainChainId, "MainChain", EndpointType.MainNetMainChain.ToString());
+        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.MainNetSidechain).UseCamelCase(useCamelCase).Build(),
+            "MainNet", AElfClientConstants.SidechainId, "Sidechain", EndpointType.MainNetSidechain.ToString());
+        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.TestNetMainChain).UseCamelCase(useCamelCase).Build(),
+            "TestNet", AElfClientConstants.MainChainId, "MainChain", EndpointType.TestNetMainChain.ToString());
+        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.TestNetSidechain).UseCamelCase(useCamelCase).Build(),
+            "MainNet", AElfClientConstants.SidechainId, "Sidechain", EndpointType.TestNetSidechain.ToString());
+        SetClient(clientBuilder.UsePublicEndpoint(EndpointType.Local).UseCamelCase(useCamelCase).Build(), "Local",
+            AElfClientConstants.MainChainId, "MainChain", EndpointType.Local.ToString());
 
         foreach (var clientConfig in aelfClientOptions.Value.ClientConfigList)
         {
