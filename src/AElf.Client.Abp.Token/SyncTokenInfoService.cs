@@ -41,15 +41,17 @@ public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
             ExternalInfo = { tokenInfo.ExternalInfo.Value }
         };
 
-        await Task.Delay(AElfTokenConstants.TenSeconds * 3);
-
         var validateResult = await _tokenService.ValidateTokenInfoExistsAsync(validateInput);
+        Logger.LogInformation("ValidateTokenInfoExists: {Result}", validateResult.TransactionResult);
         if (validateResult.TransactionResult.Status == TransactionResultStatus.Mined)
         {
             while (true)
             {
                 var chainStatus =
                     await _clientService.GetChainStatusAsync(_clientConfigOptions.UseMainChainClientAlias);
+                Logger.LogInformation(
+                    "Main chain lib height: {LibHeight}, Validate tx package height: {ValidateHeight}",
+                    chainStatus.LastIrreversibleBlockHeight, validateResult.TransactionResult.BlockNumber);
                 if (chainStatus.LastIrreversibleBlockHeight - validateResult.TransactionResult.BlockNumber > 150)
                     break;
                 await Task.Delay(AElfTokenConstants.TenSeconds);

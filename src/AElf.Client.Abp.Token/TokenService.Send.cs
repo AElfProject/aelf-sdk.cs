@@ -39,7 +39,7 @@ public partial class TokenService : ITokenService, ITransientDependency
     {
         var useClientAlias = PreferGetUseMainChainClientAlias();
         var tx = await _clientService.SendAsync(_tokenOptions.NFTContractAddress, "Create", createInput,
-            useClientAlias);
+            useClientAlias, _clientConfigOptions.UseAccountAlias);
         var txResult = await _clientService.GetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias);
         return new SendTransactionResult
         {
@@ -52,7 +52,7 @@ public partial class TokenService : ITokenService, ITransientDependency
     {
         var useClientAlias = _clientConfigOptions.UseClientAlias;
         var tx = await _clientService.SendAsync(_tokenOptions.NFTContractAddress, "Mint", mintInput,
-            useClientAlias);
+            useClientAlias, _clientConfigOptions.UseAccountAlias);
         var txResult = await _clientService.GetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias);
         return new SendTransactionResult
         {
@@ -66,7 +66,8 @@ public partial class TokenService : ITokenService, ITransientDependency
     {
         var useClientAlias = PreferGetUseMainChainClientAlias();
         var tx = await _clientService.SendSystemAsync(AElfTokenConstants.TokenSmartContractName,
-            "ValidateTokenInfoExists", validateTokenInfoExistsInput, useClientAlias);
+            "ValidateTokenInfoExists", validateTokenInfoExistsInput, useClientAlias,
+            _clientConfigOptions.UseAccountAlias);
         var txResult = await _clientService.GetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias);
         return new SendTransactionResult
         {
@@ -79,8 +80,8 @@ public partial class TokenService : ITokenService, ITransientDependency
         CrossChainCreateTokenInput crossChainCreateTokenInput)
     {
         var useClientAlias = PreferGetUseSidechainClientAlias();
-        var tx = await _clientService.SendSystemAsync(AElfTokenConstants.TokenSmartContractName,
-            "CrossChainCreateToken", crossChainCreateTokenInput, useClientAlias);
+        var tx = await _clientService.SendAsync(AElfTokenConstants.TestNetSidechainMultiTokenContractAddress,
+            "CrossChainCreateToken", crossChainCreateTokenInput, useClientAlias, _clientConfigOptions.UseAccountAlias);
         var txResult = await _clientService.GetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias);
         return new SendTransactionResult
         {
@@ -91,14 +92,14 @@ public partial class TokenService : ITokenService, ITransientDependency
 
     private string PreferGetUseMainChainClientAlias()
     {
-        return string.IsNullOrEmpty(_clientConfigOptions.UseMainChainClientAlias)
+        return !string.IsNullOrEmpty(_clientConfigOptions.UseMainChainClientAlias)
             ? _clientConfigOptions.UseMainChainClientAlias
             : _clientConfigOptions.UseClientAlias;
     }
 
     private string PreferGetUseSidechainClientAlias()
     {
-        return string.IsNullOrEmpty(_clientConfigOptions.UseSidechainClientAlias)
+        return !string.IsNullOrEmpty(_clientConfigOptions.UseSidechainClientAlias)
             ? _clientConfigOptions.UseSidechainClientAlias
             : _clientConfigOptions.UseClientAlias;
     }

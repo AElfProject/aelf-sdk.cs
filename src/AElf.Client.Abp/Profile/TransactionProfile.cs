@@ -32,6 +32,7 @@ public class TransactionProfile : Profile
         CreateMap<TransactionResultDto, TransactionResult>()
             .ForMember(d => d.ReturnValue,
                 opt => opt.MapFrom(s => ByteString.CopyFrom(ByteArrayHelper.HexStringToByteArray(s.ReturnValue))))
+            .ForMember(d => d.BlockHash, opt => opt.MapFrom(s => Hash.LoadFromHex(s.BlockHash)))
             .ForMember(d => d.Bloom, opt => opt.MapFrom(s =>
                 s.Status.ToUpper() == TransactionResultStatus.NotExisted.ToString().ToUpper()
                     ? null
@@ -40,10 +41,13 @@ public class TransactionProfile : Profile
                         : ByteString.FromBase64(s.Bloom)))
             .ForMember(d => d.Status,
                 opt => opt.MapFrom(s =>
-                    Enum.TryParse<TransactionResultStatus>(s.Status, out status)
+                    Enum.TryParse($"{s.Status[0]}{s.Status.Substring(1).ToLower()}", out status)
                         ? status
-                        : TransactionResultStatus.NotExisted));
+                        : TransactionResultStatus.NotExisted))
+            .ForMember(d => d.Logs, opt => opt.MapFrom(s => s.Logs))
+            .Ignore(d => d.Error);
 
+        CreateMap<LogEventDto, LogEvent>();
         CreateMap<LogEvent, LogEventDto>();
     }
 }
