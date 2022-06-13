@@ -8,7 +8,7 @@ public partial class TokenService
 {
     public async Task<TokenInfo> GetTokenInfoAsync(string symbol)
     {
-        var useClientAlias = _clientConfigOptions.UseClientAlias;
+        var useClientAlias = _clientConfigOptions.ClientAlias;
         var result = await _clientService.ViewSystemAsync(AElfTokenConstants.TokenSmartContractName, "GetTokenInfo",
             new GetTokenInfoInput
             {
@@ -21,7 +21,7 @@ public partial class TokenService
 
     public async Task<GetBalanceOutput> GetTokenBalanceAsync(string symbol, Address owner)
     {
-        var useClientAlias = _clientConfigOptions.UseClientAlias;
+        var useClientAlias = _clientConfigOptions.ClientAlias;
         var result = await _clientService.ViewSystemAsync(AElfTokenConstants.TokenSmartContractName, "GetBalance",
             new GetBalanceInput
             {
@@ -35,7 +35,7 @@ public partial class TokenService
 
     public async Task<GetAllowanceOutput> GetTokenAllowanceAsync(string symbol, Address owner, Address spender)
     {
-        var useClientAlias = _clientConfigOptions.UseClientAlias;
+        var useClientAlias = _clientConfigOptions.ClientAlias;
         var result = await _clientService.ViewSystemAsync(AElfTokenConstants.TokenSmartContractName, "GetAllowance",
             new GetAllowanceInput
             {

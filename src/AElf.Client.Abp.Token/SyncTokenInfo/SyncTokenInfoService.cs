@@ -48,7 +48,7 @@ public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
             while (true)
             {
                 var chainStatus =
-                    await _clientService.GetChainStatusAsync(_clientConfigOptions.UseMainChainClientAlias);
+                    await _clientService.GetChainStatusAsync(_clientConfigOptions.MainChainClientAlias);
                 Logger.LogInformation(
                     "Main chain lib height: {LibHeight}, Validate tx package height: {ValidateHeight}",
                     chainStatus.LastIrreversibleBlockHeight, validateResult.TransactionResult.BlockNumber);
@@ -59,7 +59,7 @@ public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
 
             var merklePath = await _clientService.GetMerklePathByTransactionIdAsync(
                 validateResult.TransactionResult.TransactionId.ToHex(),
-                _clientConfigOptions.UseMainChainClientAlias);
+                _clientConfigOptions.MainChainClientAlias);
             var crossChainCreateTokenInput = new CrossChainCreateTokenInput
             {
                 FromChainId = AElfClientConstants.MainChainId,

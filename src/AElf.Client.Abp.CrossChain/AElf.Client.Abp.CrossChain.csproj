@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AElf.Client.Abp\AElf.Client.Abp.csproj" />
+    </ItemGroup>
+
 </Project>

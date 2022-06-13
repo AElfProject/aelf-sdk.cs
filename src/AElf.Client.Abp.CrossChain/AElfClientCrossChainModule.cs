@@ -1,5 +1,11 @@
-﻿namespace AElf.Client.Abp.CrossChain;
+﻿using Volo.Abp.Modularity;
 
-public class AElfClientCrossChainModule
+namespace AElf.Client.Abp.CrossChain;
+
+[DependsOn(
+    typeof(AElfClientModule),
+    typeof(CoreAElfModule)
+)]
+public class AElfClientCrossChainModule : AbpModule
 {
 }

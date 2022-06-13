@@ -44,7 +44,7 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
 
     public async Task<SendTransactionResult> MintNFTAsync(MintInput mintInput)
     {
-        var useClientAlias = _clientConfigOptions.UseClientAlias;
+        var useClientAlias = _clientConfigOptions.ClientAlias;
         var tx = await PerformSendTransactionAsync("Mint", mintInput, useClientAlias);
         return new SendTransactionResult
         {
@@ -104,7 +104,7 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
 
     public async Task<SendTransactionResult> TransferAsync(TransferInput transferInput)
     {
-        var useClientAlias = _clientConfigOptions.UseClientAlias;
+        var useClientAlias = _clientConfigOptions.ClientAlias;
         var tx = await PerformSendTransactionAsync("Transfer", transferInput,
             useClientAlias);
         return new SendTransactionResult
@@ -116,15 +116,15 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
 
     private string PreferGetUseMainChainClientAlias()
     {
-        return !string.IsNullOrEmpty(_clientConfigOptions.UseMainChainClientAlias)
-            ? _clientConfigOptions.UseMainChainClientAlias
-            : _clientConfigOptions.UseClientAlias;
+        return !string.IsNullOrEmpty(_clientConfigOptions.MainChainClientAlias)
+            ? _clientConfigOptions.MainChainClientAlias
+            : _clientConfigOptions.ClientAlias;
     }
 
     private string PreferGetUseSidechainClientAlias()
     {
-        return !string.IsNullOrEmpty(_clientConfigOptions.UseSidechainClientAlias)
-            ? _clientConfigOptions.UseSidechainClientAlias
-            : _clientConfigOptions.UseClientAlias;
+        return !string.IsNullOrEmpty(_clientConfigOptions.SidechainClientAlias)
+            ? _clientConfigOptions.SidechainClientAlias
+            : _clientConfigOptions.ClientAlias;
     }
 }

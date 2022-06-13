@@ -1,4 +1,5 @@
 using Google.Protobuf;
+using Microsoft.Extensions.Logging;
 
 namespace AElf.Client.Abp;
 
@@ -6,6 +7,8 @@ public class ContractServiceBase
 {
     private readonly IAElfClientService _clientService;
     private string SmartContractName { get; }
+
+    public ILogger<ContractServiceBase> Logger { get; set; }
 
     protected ContractServiceBase(IAElfClientService clientService, string smartContractName)
     {
@@ -33,6 +36,7 @@ public class ContractServiceBase
             txResult = await _clientService.GetTransactionResultAsync(transactionId, useClientAlias);
         } while (txResult.Status == TransactionResultStatus.Pending);
 
+        Logger.LogInformation("{TxResult}", txResult);
         return txResult;
     }
 }

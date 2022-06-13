@@ -2,9 +2,9 @@ namespace AElf.Client.Options;
 
 public class AElfClientConfigOptions
 {
-    public string UseClientAlias { get; set; } = "TestNetSidechain";
-    public string UseMainChainClientAlias { get; set; } = "TestNetMainChain";
-    public string UseSidechainClientAlias { get; set; } = "TestNetSidechain";
-    public string UseAccountAlias { get; set; } = "Default";
-    public bool UseCamelCase { get; set; } = false;
+    public string ClientAlias { get; set; } = "TestNetSidechain";
+    public string MainChainClientAlias { get; set; } = "TestNetMainChain";
+    public string SidechainClientAlias { get; set; } = "TestNetSidechain";
+    public string AccountAlias { get; set; } = "Default";
+    public bool CamelCase { get; set; } = false;
 }

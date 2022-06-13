@@ -9,7 +9,7 @@ public partial class AElfClientService
         string clientAlias)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.UseAccountAlias);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.AccountAlias);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseContract(contractAddress)
@@ -24,7 +24,7 @@ public partial class AElfClientService
         string clientAlias)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.UseAccountAlias);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.AccountAlias);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseSystemContract(systemContractName)

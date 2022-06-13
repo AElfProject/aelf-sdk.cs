@@ -1,5 +1,5 @@
 using AElf.Client.Abp;
-using AElf.Client.Abp.Token;
+using AElf.Client.Abp.CrossChain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
@@ -8,13 +8,12 @@ namespace TokenManager;
 
 [DependsOn(
     typeof(AElfClientModule),
-    typeof(AElfClientTokenModule)
+    typeof(AElfClientCrossChainModule)
 )]
-public class TokenManagerModule : AbpModule
+public class CrossChainManagerModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
-        Configure<TokenManagerOptions>(options => { configuration.GetSection("TokenManager").Bind(options); });
     }
 }

@@ -17,7 +17,7 @@ public class AElfClientProvider : Dictionary<AElfClientInfo, AElfClient>, IAElfC
     public AElfClientProvider(IOptionsSnapshot<AElfClientOptions> aelfClientOptions,
         IOptionsSnapshot<AElfClientConfigOptions> aelfClientConfigOptions)
     {
-        var useCamelCase = aelfClientConfigOptions.Value.UseCamelCase;
+        var useCamelCase = aelfClientConfigOptions.Value.CamelCase;
         var clientBuilder = new AElfClientBuilder();
         SetClient(clientBuilder.UsePublicEndpoint(EndpointType.MainNetMainChain).UseCamelCase(useCamelCase).Build(),
             "MainNet", AElfClientConstants.MainChainId, "MainChain", EndpointType.MainNetMainChain.ToString());
