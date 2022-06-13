@@ -1,11 +1,13 @@
-using AElf.Client.Abp;
+using AElf.Client;
 using AElf.Client.Abp.Token;
+using AElf.Client.Abp.Token.CrossChainTransfer;
+using AElf.Client.Abp.Token.SyncTokenInfo;
+using AElf.Contracts.MultiToken;
+using AElf.Types;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.ObjectMapping;
 
 namespace TokenManager;
 
@@ -13,8 +15,7 @@ public class TokenManagerService : ITransientDependency
 {
     private readonly ITokenService _tokenService;
     private readonly ISyncTokenInfoQueueService _syncTokenInfoQueueService;
-    private readonly IObjectMapper<AElfClientModule> _objectMapper;
-    private readonly SyncTokenInfoOptions _syncTokenInfoOptions;
+    private readonly ICrossChainTransferQueueService _crossChainTransferQueueService;
     private IServiceScopeFactory ServiceScopeFactory { get; }
 
     public ILogger<TokenManagerService> Logger { get; set; }
@@ -22,27 +23,42 @@ public class TokenManagerService : ITransientDependency
     public TokenManagerService(IServiceScopeFactory serviceScopeFactory,
         ITokenService tokenService,
         ISyncTokenInfoQueueService syncTokenInfoQueueService,
-        IObjectMapper<AElfClientModule> objectMapper,
-        IOptionsSnapshot<SyncTokenInfoOptions> syncTokenInfoOptions)
+        ICrossChainTransferQueueService crossChainTransferQueueService)
     {
         _tokenService = tokenService;
         _syncTokenInfoQueueService = syncTokenInfoQueueService;
-        _objectMapper = objectMapper;
-        _syncTokenInfoOptions = syncTokenInfoOptions.Value;
+        _crossChainTransferQueueService = crossChainTransferQueueService;
         ServiceScopeFactory = serviceScopeFactory;
 
         Logger = NullLogger<TokenManagerService>.Instance;
     }
 
-    public async Task GetTokenInfoAsync()
+    public async Task GetTokenInfoAsync(string symbol)
     {
-        var tokenInfo = await _tokenService.GetTokenInfoAsync("ELF");
+        var tokenInfo = await _tokenService.GetTokenInfoAsync(symbol);
         Logger.LogInformation("{TokenInfo}", tokenInfo.ToString());
     }
 
-    public async Task SyncTokenInfoAsync()
+    public async Task SyncTokenInfoAsync(string symbol)
     {
-        _syncTokenInfoQueueService.Enqueue("JUNETEN");
-        Logger.LogInformation("Enqueued");
+        _syncTokenInfoQueueService.Enqueue(symbol);
+        Logger.LogInformation("Enqueued SyncTokenInfo");
+    }
+
+    public async Task CrossChainTransferAsync(Address to, string symbol, long amount, string toClientAlias)
+    {
+        _crossChainTransferQueueService.Enqueue(
+            to, symbol, amount, EndpointType.TestNetMainChain.ToString(), toClientAlias);
+        Logger.LogInformation("Enqueued CrossChainTransfer");
+    }
+
+    public async Task TransferAsync(Address to, string symbol, long amount)
+    {
+        await _tokenService.TransferAsync(new TransferInput
+        {
+            To = to,
+            Symbol = symbol,
+            Amount = amount,
+        });
     }
 }

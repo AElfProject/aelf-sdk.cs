@@ -1,6 +1,5 @@
 using AElf.Client.Abp;
 using AElf.Client.Abp.Token;
-using AElf.Client.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
@@ -17,6 +16,5 @@ public class AEDPoSViewerModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         Configure<TokenManagerOptions>(options => { configuration.GetSection("TokenManager").Bind(options); });
-        Configure<SyncTokenInfoOptions>(options => { configuration.GetSection("SyncTokenInfo").Bind(options); });
     }
 }

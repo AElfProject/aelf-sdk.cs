@@ -1,7 +1,9 @@
 using AElf.Client.Dto;
+using AElf.Client.Options;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.ObjectMapping;
 
@@ -12,15 +14,17 @@ public partial class AElfClientService : IAElfClientService, ITransientDependenc
     private readonly IAElfClientProvider _aelfClientProvider;
     private readonly IAElfAccountProvider _aelfAccountProvider;
     private readonly IObjectMapper<AElfClientModule> _objectMapper;
+    private readonly AElfClientConfigOptions _clientConfigOptions;
 
     public ILogger<AElfClientService> Logger { get; set; }
 
     public AElfClientService(IAElfClientProvider aelfClientProvider, IAElfAccountProvider aelfAccountProvider,
-        IObjectMapper<AElfClientModule> objectMapper)
+        IObjectMapper<AElfClientModule> objectMapper, IOptionsSnapshot<AElfClientConfigOptions> clientConfigOptions)
     {
         _aelfClientProvider = aelfClientProvider;
         _aelfAccountProvider = aelfAccountProvider;
         _objectMapper = objectMapper;
+        _clientConfigOptions = clientConfigOptions.Value;
 
         Logger = NullLogger<AElfClientService>.Instance;
     }

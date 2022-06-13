@@ -7,7 +7,7 @@ public class AElfClientConstants
     public const string MainNetMainChain = "https://aelf-public-node.aelf.io";
     public const string MainNetSidechain = "https://tdvv-public-node.aelf.io";
     public const string TestNetMainChain = "https://aelf-test-node.aelf.io";
-    public const string TestNetSidechain = "https://tdvv-test-node.aelf.io";
+    public const string TestNetSidechain = "https://tdvw-test-node.aelf.io";
     public const int MainChainId = 9992731;
     public const int SidechainId = 1866392;
 }

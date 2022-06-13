@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
-namespace AElf.Client.Abp.Token;
+namespace AElf.Client.Abp.Token.SyncTokenInfo;
 
 public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
 {
@@ -60,7 +60,7 @@ public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
             var merklePath = await _clientService.GetMerklePathByTransactionIdAsync(
                 validateResult.TransactionResult.TransactionId.ToHex(),
                 _clientConfigOptions.UseMainChainClientAlias);
-            var createTokenParams = new CrossChainCreateTokenInput
+            var crossChainCreateTokenInput = new CrossChainCreateTokenInput
             {
                 FromChainId = AElfClientConstants.MainChainId,
                 ParentChainHeight = validateResult.TransactionResult.BlockNumber,
@@ -70,7 +70,8 @@ public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
                 MerklePath = merklePath
             };
 
-            var crossChainCreateTokenResult = await _tokenService.CrossChainCreateTokenAsync(createTokenParams);
+            var crossChainCreateTokenResult =
+                await _tokenService.CrossChainCreateTokenAsync(crossChainCreateTokenInput);
             Logger.LogInformation("CrossChainCreateToken: {Result}", crossChainCreateTokenResult.TransactionResult);
         }
     }

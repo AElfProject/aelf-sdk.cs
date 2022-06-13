@@ -33,7 +33,7 @@ public class TokenManagerHostedService : IHostedService
         await _abpApplication.InitializeAsync();
 
         var tokenManagerService = _abpApplication.ServiceProvider.GetRequiredService<TokenManagerService>();
-        await tokenManagerService.SyncTokenInfoAsync();
+        await tokenManagerService.GetTokenInfoAsync("ELF");
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

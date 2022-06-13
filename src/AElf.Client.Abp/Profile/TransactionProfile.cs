@@ -45,7 +45,8 @@ public class TransactionProfile : Profile
                         ? status
                         : TransactionResultStatus.NotExisted))
             .ForMember(d => d.Logs, opt => opt.MapFrom(s => s.Logs))
-            .Ignore(d => d.Error);
+            .Ignore(d => d.Error)
+            .Ignore(d => d.Bloom);
 
         CreateMap<LogEventDto, LogEvent>();
         CreateMap<LogEvent, LogEventDto>();

@@ -1,6 +1,7 @@
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.NFT;
 using AElf.Types;
+using TransferInput = AElf.Contracts.MultiToken.TransferInput;
 
 namespace AElf.Client.Abp.Token;
 
@@ -11,6 +12,12 @@ public interface ITokenService
     Task<SendTransactionResult> MintNFTAsync(MintInput mintInput);
     Task<SendTransactionResult> ValidateTokenInfoExistsAsync(ValidateTokenInfoExistsInput validateTokenInfoExistsInput);
     Task<SendTransactionResult> CrossChainCreateTokenAsync(CrossChainCreateTokenInput crossChainCreateTokenInput);
+    Task<SendTransactionResult> CrossChainTransferAsync(CrossChainTransferInput crossChainTransferInput,
+        string useClientAlias);
+    Task<SendTransactionResult> CrossChainReceiveTokenAsync(CrossChainReceiveTokenInput crossChainReceiveTokenInput,
+        string useClientAlias);
+
+    Task<SendTransactionResult> TransferAsync(TransferInput transferInput);
 
     Task<TokenInfo> GetTokenInfoAsync(string symbol);
     Task<Contracts.MultiToken.GetBalanceOutput> GetTokenBalanceAsync(string symbol, Address owner);

@@ -1,6 +1,6 @@
 using Volo.Abp.DependencyInjection;
 
-namespace AElf.Client.Abp.Token;
+namespace AElf.Client.Abp.Token.SyncTokenInfo;
 
 public class SyncTokenInfoQueueService : ISyncTokenInfoQueueService, ITransientDependency
 {
@@ -16,9 +16,7 @@ public class SyncTokenInfoQueueService : ISyncTokenInfoQueueService, ITransientD
 
     public void Enqueue(string symbol)
     {
-        _taskQueueManager.Enqueue(async () =>
-        {
-            await _syncTokenInfoService.SyncTokenInfoAsync(symbol);
-        }, AElfTokenConstants.SyncTokenInfoQueueName);
+        _taskQueueManager.Enqueue(async () => { await _syncTokenInfoService.SyncTokenInfoAsync(symbol); },
+            AElfTokenConstants.SyncTokenInfoQueueName);
     }
 }

@@ -6,10 +6,10 @@ namespace AElf.Client.Abp;
 public partial class AElfClientService
 {
     public async Task<Transaction> SendAsync(string contractAddress, string methodName, IMessage parameter,
-        string clientAlias, string accountAlias = "Default")
+        string clientAlias)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.UseAccountAlias);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseContract(contractAddress)
@@ -21,10 +21,10 @@ public partial class AElfClientService
     }
 
     public async Task<Transaction> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
-        string clientAlias, string accountAlias = "Default")
+        string clientAlias)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.UseAccountAlias);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseSystemContract(systemContractName)
@@ -35,12 +35,11 @@ public partial class AElfClientService
         return tx;
     }
 
-    private static async Task<string> PerformSendAsync(AElfClient aelfClient, Transaction tx)
+    private static async Task PerformSendAsync(AElfClient aelfClient, Transaction tx)
     {
         var result = await aelfClient.SendTransactionAsync(new SendTransactionInput
         {
             RawTransaction = tx.ToByteArray().ToHex()
         });
-        return result.TransactionId;
     }
 }

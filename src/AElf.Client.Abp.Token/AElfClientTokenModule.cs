@@ -21,6 +21,8 @@ public class AElfClientTokenModule : AbpModule
     {
         var taskQueueManager = context.ServiceProvider.GetService<ITaskQueueManager>();
         taskQueueManager?.CreateQueue(AElfTokenConstants.SyncTokenInfoQueueName,
-            AElfTokenConstants.SyncTokenInfoMaxDegreeOfParallelism);
+            AElfTokenConstants.DefaultMaxDegreeOfParallelism);
+        taskQueueManager?.CreateQueue(AElfTokenConstants.CrossChainTransferQueueName,
+            AElfTokenConstants.DefaultMaxDegreeOfParallelism);
     }
 }
