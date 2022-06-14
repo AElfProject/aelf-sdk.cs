@@ -6,7 +6,8 @@ namespace AElf.Client.Abp;
 public class ContractServiceBase
 {
     private readonly IAElfClientService _clientService;
-    private string SmartContractName { get; }
+    protected string SmartContractName { get; }
+    protected Address? ContractAddress { get; }
 
     public ILogger<ContractServiceBase> Logger { get; set; }
 
@@ -16,12 +17,23 @@ public class ContractServiceBase
         SmartContractName = smartContractName;
     }
 
+    protected ContractServiceBase(IAElfClientService clientService, Address contractAddress)
+    {
+        _clientService = clientService;
+        ContractAddress = contractAddress;
+    }
+
     protected async Task<Transaction> PerformSendTransactionAsync(string methodName, IMessage parameter,
         string useClientAlias, string? smartContractName = null)
     {
         if (smartContractName == null)
         {
             smartContractName = SmartContractName;
+        }
+
+        if (ContractAddress != null)
+        {
+            return await _clientService.SendAsync(ContractAddress.ToBase58(), methodName, parameter, useClientAlias);
         }
 
         return await _clientService.SendSystemAsync(smartContractName, methodName, parameter, useClientAlias);

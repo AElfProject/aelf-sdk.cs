@@ -1,3 +1,4 @@
+using AElf.Client.Abp.CrossChain;
 using AElf.Client.Options;
 using AElf.Contracts.MultiToken;
 using AElf.Types;
@@ -12,14 +13,16 @@ namespace AElf.Client.Abp.Token.SyncTokenInfo;
 public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
 {
     private readonly ITokenService _tokenService;
+    private readonly ICrossChainService _crossChainService;
     private readonly IAElfClientService _clientService;
     private readonly AElfClientConfigOptions _clientConfigOptions;
     public ILogger<SyncTokenInfoService> Logger { get; set; }
 
-    public SyncTokenInfoService(ITokenService tokenService, IAElfClientService clientService,
-        IOptionsSnapshot<AElfClientConfigOptions> clientConfigOptions)
+    public SyncTokenInfoService(ITokenService tokenService, ICrossChainService crossChainService,
+        IAElfClientService clientService, IOptionsSnapshot<AElfClientConfigOptions> clientConfigOptions)
     {
         _tokenService = tokenService;
+        _crossChainService = crossChainService;
         _clientService = clientService;
         _clientConfigOptions = clientConfigOptions.Value;
 
@@ -42,18 +45,22 @@ public class SyncTokenInfoService : ISyncTokenInfoService, ITransientDependency
         };
 
         var validateResult = await _tokenService.ValidateTokenInfoExistsAsync(validateInput);
+        var packagedBlockHeight = validateResult.TransactionResult.BlockNumber;
         Logger.LogInformation("ValidateTokenInfoExists: {Result}", validateResult.TransactionResult);
         if (validateResult.TransactionResult.Status == TransactionResultStatus.Mined)
         {
             while (true)
             {
-                var chainStatus =
-                    await _clientService.GetChainStatusAsync(_clientConfigOptions.MainChainClientAlias);
+                var syncedMainChainHeight =
+                    await _crossChainService.GetSyncedHeightByChainId(AElfClientConstants.MainChainId);
                 Logger.LogInformation(
-                    "Main chain lib height: {LibHeight}, Validate tx package height: {ValidateHeight}",
-                    chainStatus.LastIrreversibleBlockHeight, validateResult.TransactionResult.BlockNumber);
-                if (chainStatus.LastIrreversibleBlockHeight - validateResult.TransactionResult.BlockNumber > 150)
+                    "Synced main chain height: {MainChainHeight}, Validate tx package height: {ValidateHeight}",
+                    syncedMainChainHeight, validateResult.TransactionResult.BlockNumber);
+                if (syncedMainChainHeight >= packagedBlockHeight)
+                {
                     break;
+                }
+
                 await Task.Delay(AElfTokenConstants.TenSeconds);
             }
 

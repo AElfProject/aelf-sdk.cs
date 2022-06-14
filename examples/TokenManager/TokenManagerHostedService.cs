@@ -34,14 +34,15 @@ public class TokenManagerHostedService : IHostedService
 
         await _abpApplication.InitializeAsync();
 
-        var tokenManagerService = _abpApplication.ServiceProvider.GetRequiredService<TokenManagerService>();
-        await tokenManagerService.TransferAsync(Address.FromBase58("eyDPrhJdofZ9f7Qdyi8FtbA8BePubP1M3gwfVMs6MnMHHNwik"),
-            "ELF", 10000_00000000);
+         var tokenManagerService = _abpApplication.ServiceProvider.GetRequiredService<TokenManagerService>();
+        // await tokenManagerService.TransferAsync(Address.FromBase58("eyDPrhJdofZ9f7Qdyi8FtbA8BePubP1M3gwfVMs6MnMHHNwik"),
+        //     "ELF", 10000_00000000);
 /*
         await tokenManagerService.CrossChainTransferAsync(
         Address.FromBase58("2HeW7S9HZrbRJZeivMppUuUY3djhWdfVnP5zrDsz8wqq6hKMfT"), "ELF", 100000_00000000,
         EndpointType.TestNetSidechain.ToString());
         */
+        await tokenManagerService.GetTokenInfoAsync("ELF");
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

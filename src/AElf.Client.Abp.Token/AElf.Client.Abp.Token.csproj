@@ -12,6 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AElf.Client.Abp.CrossChain\AElf.Client.Abp.CrossChain.csproj" />
       <ProjectReference Include="..\AElf.Client.Abp\AElf.Client.Abp.csproj" />
     </ItemGroup>
 

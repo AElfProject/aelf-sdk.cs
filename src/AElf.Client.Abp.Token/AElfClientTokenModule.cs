@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AElf.Client.Abp.CrossChain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.Modularity;
@@ -7,7 +8,8 @@ namespace AElf.Client.Abp.Token;
 
 [DependsOn(
     typeof(AElfClientModule),
-    typeof(CoreAElfModule)
+    typeof(CoreAElfModule),
+    typeof(AElfClientCrossChainModule)
 )]
 public class AElfClientTokenModule : AbpModule
 {
