@@ -7,7 +7,7 @@ public class ContractServiceBase
 {
     private readonly IAElfClientService _clientService;
     protected string SmartContractName { get; }
-    protected Address? ContractAddress { get; }
+    protected Address? ContractAddress { get; set; }
 
     public ILogger<ContractServiceBase> Logger { get; set; }
 

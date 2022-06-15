@@ -61,4 +61,9 @@ public class TokenManagerService : ITransientDependency
             Amount = amount,
         });
     }
+
+    public async Task<long> GetBalanceAsync(Address owner, string symbol)
+    {
+        return (await _tokenService.GetTokenBalanceAsync(symbol, owner)).Balance;
+    }
 }

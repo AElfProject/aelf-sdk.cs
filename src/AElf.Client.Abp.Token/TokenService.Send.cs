@@ -1,6 +1,7 @@
 using AElf.Client.Options;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.NFT;
+using AElf.Types;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 using CreateInput = AElf.Contracts.MultiToken.CreateInput;
@@ -11,106 +12,123 @@ namespace AElf.Client.Abp.Token;
 public partial class TokenService : ContractServiceBase, ITokenService, ITransientDependency
 {
     private readonly IAElfClientService _clientService;
+    private readonly AElfTokenOptions _tokenOptions;
     private readonly AElfClientConfigOptions _clientConfigOptions;
 
-    public TokenService(IAElfClientService clientService, IOptionsSnapshot<AElfClientConfigOptions> clientConfigOptions)
-        : base(clientService, AElfTokenConstants.TokenSmartContractName)
+    public TokenService(IAElfClientService clientService, IOptionsSnapshot<AElfClientConfigOptions> clientConfigOptions,
+        IOptionsSnapshot<AElfTokenOptions> tokenOptions) : base(clientService,
+        AElfTokenConstants.TokenSmartContractName)
     {
         _clientService = clientService;
+        _tokenOptions = tokenOptions.Value;
         _clientConfigOptions = clientConfigOptions.Value;
     }
 
     public async Task<SendTransactionResult> CreateTokenAsync(CreateInput createInput)
     {
-        var useClientAlias = PreferGetUseMainChainClientAlias();
-        var tx = await PerformSendTransactionAsync("Create", createInput, useClientAlias);
+        var clientAlias = PreferGetUseMainChainClientAlias();
+        var tx = await PerformSendTransactionAsync("Create", createInput, clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> CreateNFTProtocolAsync(Contracts.NFT.CreateInput createInput)
     {
-        var useClientAlias = PreferGetUseMainChainClientAlias();
-        var tx = await PerformSendTransactionAsync("Create", createInput, useClientAlias);
+        var clientAlias = PreferGetUseMainChainClientAlias();
+        var tx = await PerformSendTransactionAsync("Create", createInput, clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> MintNFTAsync(MintInput mintInput)
     {
-        var useClientAlias = _clientConfigOptions.ClientAlias;
-        var tx = await PerformSendTransactionAsync("Mint", mintInput, useClientAlias);
+        var clientAlias = _clientConfigOptions.ClientAlias;
+        var tx = await PerformSendTransactionAsync("Mint", mintInput, clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> ValidateTokenInfoExistsAsync(
         ValidateTokenInfoExistsInput validateTokenInfoExistsInput)
     {
-        var useClientAlias = PreferGetUseMainChainClientAlias();
+        var clientAlias = PreferGetUseMainChainClientAlias();
         var tx = await PerformSendTransactionAsync("ValidateTokenInfoExists", validateTokenInfoExistsInput,
-            useClientAlias);
+            clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> CrossChainCreateTokenAsync(
         CrossChainCreateTokenInput crossChainCreateTokenInput)
     {
-        var useClientAlias = PreferGetUseSidechainClientAlias();
-        var tx = await PerformSendTransactionAsync("CrossChainCreateToken", crossChainCreateTokenInput, useClientAlias);
+        var clientAlias = PreferGetUseSidechainClientAlias();
+        var tx = await PerformSendTransactionAsync("CrossChainCreateToken", crossChainCreateTokenInput, clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> CrossChainTransferAsync(CrossChainTransferInput crossChainTransferInput,
-        string useClientAlias)
+        string clientAlias)
     {
         var tx = await _clientService.SendSystemAsync(AElfTokenConstants.TokenSmartContractName, "CrossChainTransfer",
-            crossChainTransferInput, useClientAlias);
+            crossChainTransferInput, clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> CrossChainReceiveTokenAsync(
-        CrossChainReceiveTokenInput crossChainReceiveTokenInput, string useClientAlias)
+        CrossChainReceiveTokenInput crossChainReceiveTokenInput, string clientAlias)
     {
         var tx = await PerformSendTransactionAsync("CrossChainReceiveToken", crossChainReceiveTokenInput,
-            useClientAlias);
+            clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
+        };
+    }
+
+    public async Task<SendTransactionResult> CrossChainCreateNFTProtocolAsync(
+        CrossChainCreateInput crossChainCreateInput)
+    {
+        var clientAlias = PreferGetUseSidechainClientAlias();
+        ContractAddress = Address.FromBase58(_tokenOptions.NFTContractAddress);
+        var tx = await PerformSendTransactionAsync("CrossChainCreate", crossChainCreateInput,
+            clientAlias);
+        return new SendTransactionResult
+        {
+            Transaction = tx,
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 
     public async Task<SendTransactionResult> TransferAsync(TransferInput transferInput)
     {
-        var useClientAlias = _clientConfigOptions.ClientAlias;
+        var clientAlias = _clientConfigOptions.ClientAlias;
         var tx = await PerformSendTransactionAsync("Transfer", transferInput,
-            useClientAlias);
+            clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
-            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), useClientAlias)
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
         };
     }
 

@@ -1,6 +1,7 @@
 using AElf.Contracts.MultiToken;
 using AElf.Types;
 using Google.Protobuf;
+using Microsoft.Extensions.Logging;
 
 namespace AElf.Client.Abp.Token;
 
@@ -8,7 +9,7 @@ public partial class TokenService
 {
     public async Task<TokenInfo> GetTokenInfoAsync(string symbol)
     {
-        var useClientAlias = _clientConfigOptions.ClientAlias;
+        var useClientAlias = PreferGetUseMainChainClientAlias();
         var result = await _clientService.ViewSystemAsync(AElfTokenConstants.TokenSmartContractName, "GetTokenInfo",
             new GetTokenInfoInput
             {
@@ -30,6 +31,7 @@ public partial class TokenService
             }, useClientAlias);
         var balance = new GetBalanceOutput();
         balance.MergeFrom(result);
+        Logger.LogInformation("{Address} {Symbol} {Balance}", owner, symbol, balance.Balance);
         return balance;
     }
 

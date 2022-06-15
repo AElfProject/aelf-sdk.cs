@@ -1,8 +1,9 @@
 using AElf.Client.Abp.Token;
 using AElf.Client.Abp.Token.SyncTokenInfo;
-using AElf.Contracts.MultiToken;
+using AElf.Contracts.NFT;
 using AElf.Types;
 using Shouldly;
+using TransferInput = AElf.Contracts.MultiToken.TransferInput;
 
 namespace AElf.Client.Abp.Test.Token;
 
@@ -44,5 +45,15 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
     public async Task SyncTokenInfoTest(string symbol)
     {
         _syncTokenInfoQueueService.Enqueue(symbol);
+    }
+
+    [Theory]
+    [InlineData("CO429872652")]
+    public async Task CrossChainCreateNFTProtocolTest(string symbol)
+    {
+        await _tokenService.CrossChainCreateNFTProtocolAsync(new CrossChainCreateInput
+        {
+            Symbol = symbol
+        });
     }
 }

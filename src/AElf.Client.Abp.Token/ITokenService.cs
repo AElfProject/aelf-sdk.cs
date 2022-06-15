@@ -13,9 +13,11 @@ public interface ITokenService
     Task<SendTransactionResult> ValidateTokenInfoExistsAsync(ValidateTokenInfoExistsInput validateTokenInfoExistsInput);
     Task<SendTransactionResult> CrossChainCreateTokenAsync(CrossChainCreateTokenInput crossChainCreateTokenInput);
     Task<SendTransactionResult> CrossChainTransferAsync(CrossChainTransferInput crossChainTransferInput,
-        string useClientAlias);
+        string clientAlias);
     Task<SendTransactionResult> CrossChainReceiveTokenAsync(CrossChainReceiveTokenInput crossChainReceiveTokenInput,
-        string useClientAlias);
+        string clientAlias);
+
+    Task<SendTransactionResult> CrossChainCreateNFTProtocolAsync(CrossChainCreateInput crossChainCreateInput);
 
     Task<SendTransactionResult> TransferAsync(TransferInput transferInput);
 
