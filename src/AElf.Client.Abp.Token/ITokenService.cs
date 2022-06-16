@@ -21,6 +21,8 @@ public interface ITokenService
 
     Task<SendTransactionResult> TransferAsync(TransferInput transferInput);
 
+    Task<SendTransactionResult> AddMintersAsync(AddMintersInput addMintersInput);
+
     Task<TokenInfo> GetTokenInfoAsync(string symbol);
     Task<Contracts.MultiToken.GetBalanceOutput> GetTokenBalanceAsync(string symbol, Address owner);
     Task<Contracts.MultiToken.GetAllowanceOutput> GetTokenAllowanceAsync(string symbol, Address owner, Address spender);

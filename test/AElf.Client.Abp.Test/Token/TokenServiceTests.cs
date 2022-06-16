@@ -56,4 +56,19 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
             Symbol = symbol
         });
     }
+
+    [Theory]
+    [InlineData("BA417054001", "JQkVTWz5HXxEmNXzTtsAVHC7EUTeiFktzoFUu9TyA6MWngkem")]
+    public async Task AddMintersTest(string symbol, string addressBase58)
+    {
+        var address = Address.FromBase58(addressBase58);
+        await _tokenService.AddMintersAsync(new AddMintersInput
+        {
+            Symbol = symbol,
+            MinterList = new MinterList
+            {
+                Value = { address }
+            }
+        });
+    }
 }

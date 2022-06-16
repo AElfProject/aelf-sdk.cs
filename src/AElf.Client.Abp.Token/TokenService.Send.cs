@@ -132,6 +132,19 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
         };
     }
 
+    public async Task<SendTransactionResult> AddMintersAsync(AddMintersInput addMintersInput)
+    {
+        var clientAlias = _clientConfigOptions.ClientAlias;
+        ContractAddress = Address.FromBase58(_tokenOptions.NFTContractAddress);
+        var tx = await PerformSendTransactionAsync("AddMinters", addMintersInput,
+            clientAlias);
+        return new SendTransactionResult
+        {
+            Transaction = tx,
+            TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
+        };
+    }
+
     private string PreferGetUseMainChainClientAlias()
     {
         return !string.IsNullOrEmpty(_clientConfigOptions.MainChainClientAlias)
