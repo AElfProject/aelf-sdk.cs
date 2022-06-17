@@ -133,7 +133,7 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
         var sleepTimes = 0;
         while (!toBeReleased && sleepTimes < 20)
         {
-            Thread.Sleep(1000);
+            await Task.Delay(AElfGenesisConstants.TenSeconds);
             toBeReleased = (await _parliamentService.CheckProposal(proposalId)).ToBeReleased;
             Console.Write("\rCheck proposal status");
             sleepTimes++;
