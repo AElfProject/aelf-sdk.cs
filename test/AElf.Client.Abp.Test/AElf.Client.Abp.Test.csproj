@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\AElf.Client.Abp.Genesis\AElf.Client.Abp.Genesis.csproj" />
       <ProjectReference Include="..\..\src\AElf.Client.Abp.Token\AElf.Client.Abp.Token.csproj" />
       <ProjectReference Include="..\AElf.Client.Abp.TestBase\AElf.Client.Abp.TestBase.csproj" />
     </ItemGroup>

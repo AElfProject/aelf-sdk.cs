@@ -14,22 +14,27 @@ public interface IAElfAccountProvider
     byte[] GetPrivateKey(string? alias = null, string? address = null);
     void SetPrivateKey(byte[] privateKey, string? alias = null, string? address = null);
     void SetPrivateKey(string address, string password, string? alias = null);
+    string GetDefaultPassword();
 }
 
 public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAccountProvider, ISingletonDependency
 {
     private readonly IKeyDirectoryProvider _keyDirectoryProvider;
     private readonly AElfAccountOptions _aelfAccountOptions;
+    private readonly string _aelfMinerAccountPassword;
+
     private readonly KeyStoreService _keyStoreService; 
 
     public ILogger<AElfAccountProvider> Logger { get; set; }
 
     public AElfAccountProvider(IKeyDirectoryProvider keyDirectoryProvider,
-        IOptionsSnapshot<AElfAccountOptions> aelfAccountOptions)
+        IOptionsSnapshot<AElfAccountOptions> aelfAccountOptions,
+        IOptionsSnapshot<AElfMinerAccountOptions> aelfMinerAccountOptions)
     {
         Logger = NullLogger<AElfAccountProvider>.Instance;
         _keyDirectoryProvider = keyDirectoryProvider;
         _aelfAccountOptions = aelfAccountOptions.Value;
+        _aelfMinerAccountPassword = aelfMinerAccountOptions.Value.DefaultPassword;
         var defaultPrivateKey = ByteArrayHelper.HexStringToByteArray(AElfClientConstants.DefaultPrivateKey);
         SetPrivateKey(defaultPrivateKey, "Default", Address.FromPublicKey(defaultPrivateKey).ToBase58()); 
         _keyStoreService = new KeyStoreService();
@@ -53,6 +58,11 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
                 SetPrivateKey(privateKey, accountConfig.Alias, Address.FromPublicKey(privateKey).ToBase58());
             }
         }
+    }
+
+    public string GetDefaultPassword()
+    {
+        return _aelfMinerAccountPassword;
     }
 
     public byte[] GetPrivateKey(string? alias = null, string? address = null)
@@ -87,6 +97,13 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
             var json = textReader.ReadToEnd();
             return _keyStoreService.DecryptKeyStoreFromJson(password, json);
         }));
+        
+        var keys = Keys
+            .WhereIf(!alias.IsNullOrWhiteSpace(), a => a.Alias == alias)
+            .WhereIf(!address.IsNullOrWhiteSpace(), a => a.Address == address)
+            .ToList();
+
+        if (keys.Count == 1) return;
         TryAdd(new AElfAccountInfo
         {
             Alias = alias,

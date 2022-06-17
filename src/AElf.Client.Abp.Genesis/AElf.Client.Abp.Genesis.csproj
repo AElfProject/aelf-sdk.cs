@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Volo.Abp.Core" Version="5.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AElf.Client.Abp.Consensus.AEDPoS\AElf.Client.Abp.Consensus.AEDPoS.csproj" />
+      <ProjectReference Include="..\AElf.Client.Abp.Parliament\AElf.Client.Abp.Parliament.csproj" />
+      <ProjectReference Include="..\AElf.Client.Abp.Token\AElf.Client.Abp.Token.csproj" />
+      <ProjectReference Include="..\AElf.Client.Abp\AElf.Client.Abp.csproj" />
+    </ItemGroup>
+
 </Project>

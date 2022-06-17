@@ -16,7 +16,7 @@ public class AElfClientTokenModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
-        Configure<AElfTokenOptions>(options => { configuration.GetSection("AElfToken").Bind(options); });
+        Configure<AElfTokenOptions>(options => { configuration.GetSection("AElfContract").Bind(options); });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)

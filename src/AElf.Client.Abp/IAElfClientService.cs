@@ -12,10 +12,10 @@ public interface IAElfClientService
         string clientAlias, string accountAlias = "Default");
 
     Task<Transaction> SendAsync(string contractAddress, string methodName, IMessage parameter,
-        string clientAlias);
+        string clientAlias, string? accountAlias = null, string? accountAddress = null);
 
     Task<Transaction> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
-        string clientAlias);
+        string clientAlias, string? accountAlias = null, string? accountAddress = null);
 
     Task<TransactionResult> GetTransactionResultAsync(string transactionId, string clientAlias);
 

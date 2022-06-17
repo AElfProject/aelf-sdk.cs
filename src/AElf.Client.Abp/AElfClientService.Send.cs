@@ -1,4 +1,5 @@
 using AElf.Client.Dto;
+using Castle.Core.Logging;
 using Google.Protobuf;
 
 namespace AElf.Client.Abp;
@@ -6,10 +7,10 @@ namespace AElf.Client.Abp;
 public partial class AElfClientService
 {
     public async Task<Transaction> SendAsync(string contractAddress, string methodName, IMessage parameter,
-        string clientAlias)
+        string clientAlias, string? alias = null, string? address = null)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.AccountAlias);
+        var aelfAccount = SetAccount(alias, address);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseContract(contractAddress)
@@ -21,10 +22,10 @@ public partial class AElfClientService
     }
 
     public async Task<Transaction> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
-        string clientAlias)
+        string clientAlias, string? alias = null, string? address = null)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.AccountAlias);
+        var aelfAccount = SetAccount(alias, address);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseSystemContract(systemContractName)
@@ -41,5 +42,23 @@ public partial class AElfClientService
         {
             RawTransaction = tx.ToByteArray().ToHex()
         });
+    }
+
+    private byte[] SetAccount(string? alias, string? address)
+    {
+        byte[] aelfAccount;
+        if (!string.IsNullOrWhiteSpace(address))
+        {
+            _aelfAccountProvider.SetPrivateKey(address, _aelfAccountProvider.GetDefaultPassword());
+            aelfAccount = _aelfAccountProvider.GetPrivateKey(null, address);
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(alias))
+                alias = _clientConfigOptions.AccountAlias;
+            aelfAccount = _aelfAccountProvider.GetPrivateKey(alias);
+        }
+
+        return aelfAccount;
     }
 }
