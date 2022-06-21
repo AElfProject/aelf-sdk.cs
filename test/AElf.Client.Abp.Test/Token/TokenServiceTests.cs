@@ -1,5 +1,6 @@
 using AElf.Client.Abp.Token;
 using AElf.Client.Abp.Token.SyncTokenInfo;
+using AElf.Contracts.Bridge;
 using AElf.Contracts.NFT;
 using AElf.Types;
 using Shouldly;
@@ -69,6 +70,19 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
             {
                 Value = { address }
             }
+        });
+    }
+
+    [Theory]
+    [InlineData("bb16f381b0f2e795a988285dec3a68affacdccd7d3ac2e74edc808c102efcd95", 228, "9413000000000000000000")]
+    public async Task SwapTokenTest(string swapIdHex, long receiptId, string amount)
+    {
+        var swapId = Hash.LoadFromHex(swapIdHex);
+        await _tokenService.SwapTokenAsync(new SwapTokenInput
+        {
+            SwapId = swapId,
+            OriginAmount = amount,
+            ReceiptId = receiptId
         });
     }
 }

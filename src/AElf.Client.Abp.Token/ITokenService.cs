@@ -1,3 +1,4 @@
+using AElf.Contracts.Bridge;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.NFT;
 using AElf.Types;
@@ -22,6 +23,7 @@ public interface ITokenService
     Task<SendTransactionResult> TransferAsync(TransferInput transferInput);
 
     Task<SendTransactionResult> AddMintersAsync(AddMintersInput addMintersInput);
+    Task<SendTransactionResult> SwapTokenAsync(SwapTokenInput swapTokenInput);
 
     Task<TokenInfo> GetTokenInfoAsync(string symbol);
     Task<Contracts.MultiToken.GetBalanceOutput> GetTokenBalanceAsync(string symbol, Address owner);

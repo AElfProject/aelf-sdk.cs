@@ -81,12 +81,9 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
     public void SetPrivateKey(string address, string password, string? alias = null)
     {
         var keyFilePath = GetKeyFileFullPath(address, _aelfAccountOptions.KeyDirectory);
-        var privateKey = AsyncHelper.RunSync(() => Task.Run(() =>
-        {
-            using var textReader = File.OpenText(keyFilePath);
-            var json = textReader.ReadToEnd();
-            return _keyStoreService.DecryptKeyStoreFromJson(password, json);
-        }));
+        using var textReader = File.OpenText(keyFilePath);
+        var json = textReader.ReadToEnd();
+        var privateKey = _keyStoreService.DecryptKeyStoreFromJson(password, json);
         TryAdd(new AElfAccountInfo
         {
             Alias = alias,

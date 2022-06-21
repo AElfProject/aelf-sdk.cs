@@ -6,8 +6,8 @@ public partial class AElfClient : IDisposable
 {
     private readonly IHttpService _httpService;
     private readonly string _baseUrl;
-    private readonly string? _userName;
-    private readonly string? _password;
+    private string? _userName;
+    private string? _password;
 
     public AElfClient(string baseUrl, int timeOut = 60, string? userName = null, string? password = null,
         bool useCamelCase = false)

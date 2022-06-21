@@ -1,4 +1,5 @@
 using AElf.Client.Options;
+using AElf.Contracts.Bridge;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.NFT;
 using AElf.Types;
@@ -12,15 +13,15 @@ namespace AElf.Client.Abp.Token;
 public partial class TokenService : ContractServiceBase, ITokenService, ITransientDependency
 {
     private readonly IAElfClientService _clientService;
-    private readonly AElfTokenOptions _tokenOptions;
+    private readonly AElfContractOptions _contractOptions;
     private readonly AElfClientConfigOptions _clientConfigOptions;
 
     public TokenService(IAElfClientService clientService, IOptionsSnapshot<AElfClientConfigOptions> clientConfigOptions,
-        IOptionsSnapshot<AElfTokenOptions> tokenOptions) : base(clientService,
+        IOptionsSnapshot<AElfContractOptions> contractOptions) : base(clientService,
         AElfTokenConstants.TokenSmartContractName)
     {
         _clientService = clientService;
-        _tokenOptions = tokenOptions.Value;
+        _contractOptions = contractOptions.Value;
         _clientConfigOptions = clientConfigOptions.Value;
     }
 
@@ -110,7 +111,7 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
         CrossChainCreateInput crossChainCreateInput)
     {
         var clientAlias = PreferGetUseSidechainClientAlias();
-        ContractAddress = Address.FromBase58(_tokenOptions.NFTContractAddress);
+        ContractAddress = Address.FromBase58(_contractOptions.NFTContractAddress);
         var tx = await PerformSendTransactionAsync("CrossChainCreate", crossChainCreateInput,
             clientAlias);
         return new SendTransactionResult
@@ -135,13 +136,27 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
     public async Task<SendTransactionResult> AddMintersAsync(AddMintersInput addMintersInput)
     {
         var clientAlias = _clientConfigOptions.ClientAlias;
-        ContractAddress = Address.FromBase58(_tokenOptions.NFTContractAddress);
+        ContractAddress = Address.FromBase58(_contractOptions.NFTContractAddress);
         var tx = await PerformSendTransactionAsync("AddMinters", addMintersInput,
             clientAlias);
         return new SendTransactionResult
         {
             Transaction = tx,
             TransactionResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias)
+        };
+    }
+
+    public async Task<SendTransactionResult> SwapTokenAsync(SwapTokenInput swapTokenInput)
+    {
+        var clientAlias = _clientConfigOptions.ClientAlias;
+        ContractAddress = Address.FromBase58(_contractOptions.BridgeContractAddress);
+        var tx = await PerformSendTransactionAsync("SwapToken", swapTokenInput,
+            clientAlias);
+        var txResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias);
+        return new SendTransactionResult
+        {
+            Transaction = tx,
+            TransactionResult = txResult
         };
     }
 

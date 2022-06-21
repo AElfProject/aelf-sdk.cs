@@ -1,4 +1,5 @@
 ﻿using AElf.Client.Abp.CrossChain;
+using AElf.Client.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
@@ -16,7 +17,7 @@ public class AElfClientTokenModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
-        Configure<AElfTokenOptions>(options => { configuration.GetSection("AElfToken").Bind(options); });
+        Configure<AElfContractOptions>(options => { configuration.GetSection("AElfContract").Bind(options); });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
