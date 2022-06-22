@@ -1,3 +1,5 @@
+using Google.Protobuf.WellKnownTypes;
+
 namespace AElf.Client.Dto;
 
 public class PeerDto
@@ -18,5 +20,5 @@ public class RequestMetric
     public long RoundTripTime { get; set; }
     public string MethodName { get; set; }
     public string Info { get; set; }
-    public string RequestTime { get; set; }
+    public Timestamp RequestTime { get; set; }
 }

@@ -25,7 +25,7 @@ namespace AElf.Client.Test;
 
 public class ClientTest
 {
-    private const string BaseUrl = "https://tdvv-test-node.aelf.io";
+    private const string BaseUrl = "https://tdvw-test-node.aelf.io";
 
     private string _genesisAddress;
     private string GenesisAddress => GetGenesisContractAddress();
@@ -156,6 +156,15 @@ public class ClientTest
     public async Task GetPeers_Test()
     {
         var peers = await Client.GetPeersAsync(false);
+        Assert.True(peers != null);
+        var peersInfo = JsonConvert.SerializeObject(peers, Formatting.Indented);
+        _testOutputHelper.WriteLine(peersInfo);
+    }
+    
+    [Fact]
+    public async Task GetPeersWithMetrics_Test()
+    {
+        var peers = await Client.GetPeersAsync(true);
         Assert.True(peers != null);
         var peersInfo = JsonConvert.SerializeObject(peers, Formatting.Indented);
         _testOutputHelper.WriteLine(peersInfo);
