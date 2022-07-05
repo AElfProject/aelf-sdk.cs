@@ -1,5 +1,12 @@
-﻿namespace AElf.Client.Consensus.AEDPoS;
+﻿using AElf.Client.Core;
+using Volo.Abp.Modularity;
 
-public class AElfClientAEDPoSModule
+namespace AElf.Client.Consensus.AEDPoS;
+
+[DependsOn(
+    typeof(AElfClientModule),
+    typeof(CoreAElfModule)
+)]
+public class AElfClientAEDPoSModule : AbpModule
 {
 }

@@ -1,10 +1,11 @@
+using System.Linq;
 using System.Threading.Tasks;
-using AElf.Client.Abp.Test;
 using AElf.Client.Token;
 using AElf.Client.Token.SyncTokenInfo;
 using AElf.Contracts.Bridge;
 using AElf.Contracts.NFT;
 using AElf.Types;
+using Google.Protobuf;
 using Shouldly;
 using TransferInput = AElf.Contracts.MultiToken.TransferInput;
 
@@ -31,7 +32,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
     }
 
     [Theory]
-    [InlineData("YNcE6ahghC1hGcbL9cf964Bzfw6kXkC86gYSFwSHe6i2vm8YH", "ELF", 2000_00000000)]
+    [InlineData("2nSXrp4iM3A1gB5WKXjkwJQwy56jzcw1ESNpVnWywnyjXFixGc", "ELF", 1_00000000)]
     public async Task TransferTest(string address, string symbol, long amount)
     {
         var result = await _tokenService.TransferAsync(new TransferInput
@@ -41,6 +42,17 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
             Amount = amount
         });
         result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Mined);
+        var logEvent = result.TransactionResult.Logs.First(l => l.Name == nameof(Contracts.MultiToken.Transferred));
+        var transferred = new Contracts.MultiToken.Transferred();
+        foreach (var indexed in logEvent.Indexed)
+        {
+            transferred.MergeFrom(indexed);
+        }
+
+        transferred.MergeFrom(logEvent.NonIndexed);
+        transferred.Symbol.ShouldBe(symbol);
+        transferred.To.ToBase58().ShouldBe(address);
+        transferred.Amount.ShouldBe(amount);
     }
 
     [Theory]

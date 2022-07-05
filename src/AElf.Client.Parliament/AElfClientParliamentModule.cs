@@ -1,5 +1,12 @@
-﻿namespace AElf.Client.Parliament;
+﻿using AElf.Client.Core;
+using Volo.Abp.Modularity;
 
-public class AElfClientParliamentModule
+namespace AElf.Client.Parliament;
+
+[DependsOn(
+    typeof(AElfClientModule),
+    typeof(CoreAElfModule)
+)]
+public class AElfClientParliamentModule : AbpModule
 {
 }

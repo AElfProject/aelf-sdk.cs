@@ -1,5 +1,6 @@
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
+using Volo.Abp.Threading;
 
 namespace AElf.Client.Core;
 

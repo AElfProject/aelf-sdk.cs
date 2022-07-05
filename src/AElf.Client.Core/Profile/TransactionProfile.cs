@@ -48,7 +48,9 @@ public class TransactionProfile : Profile
             .Ignore(d => d.Error)
             .Ignore(d => d.Bloom);
 
-        CreateMap<LogEventDto, LogEvent>();
+        CreateMap<LogEventDto, LogEvent>()
+            .ForMember(d => d.Indexed, opt => opt.MapFrom(s => s.Indexed.Select(ByteString.FromBase64)))
+            .ForMember(d => d.NonIndexed, opt => opt.MapFrom(s => ByteString.FromBase64(s.NonIndexed)));
         CreateMap<LogEvent, LogEventDto>();
     }
 }

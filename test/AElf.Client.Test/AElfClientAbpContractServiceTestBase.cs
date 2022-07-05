@@ -1,6 +1,6 @@
 using AElf.Client.TestBase;
 
-namespace AElf.Client.Abp.Test;
+namespace AElf.Client.Test;
 
 public abstract class
     AElfClientAbpContractServiceTestBase : AElfClientAbpTestBase<AElfClientAbpContractServiceTestModule>
