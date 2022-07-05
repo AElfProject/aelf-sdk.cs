@@ -20,9 +20,7 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
 
     private readonly IKeyDirectoryProvider _keyDirectoryProvider;
     private readonly AElfContractOption _contractOption;
-
-
-    private ILogger<DeployContractService> Logger { get; set; }
+    public ILogger<DeployContractService> Logger { get; set; }
 
     public DeployContractService(
         IGenesisService genesisService, 
@@ -83,9 +81,8 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
             var releaseCodeCheckedResult = await _genesisService.ReleaseCodeCheckedContract(releaseCodeCheckedInput);
             Logger.LogInformation("ReleaseCodeCheckedResult: {Result}", releaseCodeCheckedResult.TransactionResult);
             if (releaseCodeCheckedResult.TransactionResult.Status != TransactionResultStatus.Mined) return null;
-            var deployAddress = CodeUpdated.Parser.ParseFrom(releaseCodeCheckedResult.TransactionResult.Logs
-                .First(l => l.Name.Contains(nameof(CodeUpdated))).Indexed
-                .First()).Address;
+            var deployAddress = ContractDeployed.Parser.ParseFrom(releaseCodeCheckedResult.TransactionResult.Logs
+                .First(l => l.Name.Contains(nameof(ContractDeployed))).NonIndexed).Address;
             Logger.LogInformation($"Contract deploy passed authority, contract address: {deployAddress}");
             return deployAddress;
         }
@@ -133,7 +130,7 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
         var sleepTimes = 0;
         while (!toBeReleased && sleepTimes < 20)
         {
-            Thread.Sleep(1000);
+            await Task.Delay(2000);
             toBeReleased = (await _parliamentService.CheckProposal(proposalId)).ToBeReleased;
             Console.Write("\rCheck proposal status");
             sleepTimes++;
