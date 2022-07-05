@@ -29,14 +29,14 @@ public sealed class AElfClientBuilder
             case EndpointType.MainNetMainChain:
                 NodeEndpoint = AElfClientConstants.MainNetMainChain;
                 break;
-            case EndpointType.MainNetSidechain:
-                NodeEndpoint = AElfClientConstants.MainNetSidechain;
+            case EndpointType.MainNetSideChain1:
+                NodeEndpoint = AElfClientConstants.MainNetSideChain1;
                 break;
             case EndpointType.TestNetMainChain:
                 NodeEndpoint = AElfClientConstants.TestNetMainChain;
                 break;
-            case EndpointType.TestNetSidechain:
-                NodeEndpoint = AElfClientConstants.TestNetSidechain;
+            case EndpointType.TestNetSideChain2:
+                NodeEndpoint = AElfClientConstants.TestNetSideChain2;
                 break;
             case EndpointType.Local:
             default:

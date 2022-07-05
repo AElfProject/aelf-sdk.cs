@@ -40,7 +40,7 @@ public class TokenManagerHostedService : IHostedService
 /*
         await tokenManagerService.CrossChainTransferAsync(
         Address.FromBase58("2HeW7S9HZrbRJZeivMppUuUY3djhWdfVnP5zrDsz8wqq6hKMfT"), "ELF", 100000_00000000,
-        EndpointType.TestNetSidechain.ToString());
+        EndpointType.TestNetSideChain2.ToString());
         */
         await tokenManagerService.GetTokenInfoAsync("ELF");
     }

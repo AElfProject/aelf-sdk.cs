@@ -3,8 +3,8 @@ namespace AElf.Client;
 public enum EndpointType
 {
     MainNetMainChain,
-    MainNetSidechain,
+    MainNetSideChain1,
     TestNetMainChain,
-    TestNetSidechain,
+    TestNetSideChain2,
     Local
 }

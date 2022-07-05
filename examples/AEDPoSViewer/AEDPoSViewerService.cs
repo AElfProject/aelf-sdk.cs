@@ -1,5 +1,5 @@
 using AElf.Client;
-using AElf.Client.Abp;
+using AElf.Client.Core;
 using AElf.Contracts.Consensus.AEDPoS;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;

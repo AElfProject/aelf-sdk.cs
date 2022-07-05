@@ -1,4 +1,4 @@
-using AElf.Client.Abp.CrossChain;
+using AElf.Client.CrossChain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;

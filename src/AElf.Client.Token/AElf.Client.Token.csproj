@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>AElf.Client.Token</PackageId>
+        <PackageDescription>AElf token manager abp module.</PackageDescription>
+        <Company>AElf</Company>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AElf.Client.CrossChain\AElf.Client.CrossChain.csproj" />
+      <ProjectReference Include="..\AElf.Client.Core\AElf.Client.Core.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\AElf.Client.Abp\AElf.Client.Abp.csproj" />
+        <ProjectReference Include="..\..\src\AElf.Client.Core\AElf.Client.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

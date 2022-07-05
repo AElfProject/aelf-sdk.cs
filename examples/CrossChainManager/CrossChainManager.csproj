@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\AElf.Client.Abp.CrossChain\AElf.Client.Abp.CrossChain.csproj" />
-        <ProjectReference Include="..\..\src\AElf.Client.Abp\AElf.Client.Abp.csproj" />
+        <ProjectReference Include="..\..\src\AElf.Client.CrossChain\AElf.Client.CrossChain.csproj" />
+        <ProjectReference Include="..\..\src\AElf.Client.Core\AElf.Client.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

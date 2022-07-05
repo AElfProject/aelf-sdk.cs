@@ -1,5 +1,5 @@
-using AElf.Client.Abp;
-using AElf.Client.Abp.CrossChain;
+using AElf.Client.Core;
+using AElf.Client.CrossChain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;

@@ -1,4 +1,4 @@
-using AElf.Client.Abp;
+using AElf.Client.Core;
 using Volo.Abp.Modularity;
 
 namespace AEDPoSViewer;

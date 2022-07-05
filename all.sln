@@ -18,51 +18,45 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AEDPoSViewer", "examples\AE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Test", "test\AElf.Client.Test\AElf.Client.Test.csproj", "{4D019C99-8B1C-42B0-8630-F1E3661F414B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp", "src\AElf.Client.Abp\AElf.Client.Abp.csproj", "{BBE11EF4-5CD6-4918-8E6C-74BF61C1A87F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Core", "src\AElf.Client.Core\AElf.Client.Core.csproj", "{BBE11EF4-5CD6-4918-8E6C-74BF61C1A87F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Token", "src\AElf.Client.Abp.Token\AElf.Client.Abp.Token.csproj", "{4E127996-AE35-4DCC-B4C0-057CB5B22A0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Token", "src\AElf.Client.Token\AElf.Client.Token.csproj", "{4E127996-AE35-4DCC-B4C0-057CB5B22A0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Election", "src\AElf.Client.Abp.Election\AElf.Client.Abp.Election.csproj", "{D27E0203-23E4-4B81-A3FC-EE5034FA631E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Election", "src\AElf.Client.Election\AElf.Client.Election.csproj", "{D27E0203-23E4-4B81-A3FC-EE5034FA631E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Vote", "src\AElf.Client.Abp.Vote\AElf.Client.Abp.Vote.csproj", "{B76DF7DD-1A8A-4876-A450-5669C9B31750}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Vote", "src\AElf.Client.Vote\AElf.Client.Vote.csproj", "{B76DF7DD-1A8A-4876-A450-5669C9B31750}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Profit", "src\AElf.Client.Abp.Profit\AElf.Client.Abp.Profit.csproj", "{BD004F96-0173-489C-BA20-6C21A7F9C538}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Profit", "src\AElf.Client.Profit\AElf.Client.Profit.csproj", "{BD004F96-0173-489C-BA20-6C21A7F9C538}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Association", "src\AElf.Client.Abp.Association\AElf.Client.Abp.Association.csproj", "{7B40B739-18F8-4A40-A8EF-BA2758199092}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Association", "src\AElf.Client.Association\AElf.Client.Association.csproj", "{7B40B739-18F8-4A40-A8EF-BA2758199092}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Configuration", "src\AElf.Client.Abp.Configuration\AElf.Client.Abp.Configuration.csproj", "{E467E8FB-933C-4E2C-BC75-490B852464A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Configuration", "src\AElf.Client.Configuration\AElf.Client.Configuration.csproj", "{E467E8FB-933C-4E2C-BC75-490B852464A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Consensus.AEDPoS", "src\AElf.Client.Abp.Consensus.AEDPoS\AElf.Client.Abp.Consensus.AEDPoS.csproj", "{84E06902-1D71-4F8F-9071-49CAFF3B8A05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Consensus.AEDPoS", "src\AElf.Client.Consensus.AEDPoS\AElf.Client.Consensus.AEDPoS.csproj", "{84E06902-1D71-4F8F-9071-49CAFF3B8A05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.CrossChain", "src\AElf.Client.Abp.CrossChain\AElf.Client.Abp.CrossChain.csproj", "{6D6FE332-73A4-4F40-BE96-E720A6B83201}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.CrossChain", "src\AElf.Client.CrossChain\AElf.Client.CrossChain.csproj", "{6D6FE332-73A4-4F40-BE96-E720A6B83201}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Genesis", "src\AElf.Client.Abp.Genesis\AElf.Client.Abp.Genesis.csproj", "{12506F28-C416-4377-B23D-301CE0AA2E8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Genesis", "src\AElf.Client.Genesis\AElf.Client.Genesis.csproj", "{12506F28-C416-4377-B23D-301CE0AA2E8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.NFTMarket", "src\AElf.Client.Abp.NFTMarket\AElf.Client.Abp.NFTMarket.csproj", "{5653A6D9-D170-4C71-AB5F-9B770E45604A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Parliament", "src\AElf.Client.Parliament\AElf.Client.Parliament.csproj", "{8FE45FDB-47DC-48A8-ADA6-411A30FEF7BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Parliament", "src\AElf.Client.Abp.Parliament\AElf.Client.Abp.Parliament.csproj", "{8FE45FDB-47DC-48A8-ADA6-411A30FEF7BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Referendum", "src\AElf.Client.Referendum\AElf.Client.Referendum.csproj", "{899F17C1-2FB6-418E-A9BD-5613C563365E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Referendum", "src\AElf.Client.Abp.Referendum\AElf.Client.Abp.Referendum.csproj", "{899F17C1-2FB6-418E-A9BD-5613C563365E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.TokenHolder", "src\AElf.Client.TokenHolder\AElf.Client.TokenHolder.csproj", "{7E6BBE19-D51D-4393-9BE9-1C4E5139CB74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.TokenHolder", "src\AElf.Client.Abp.TokenHolder\AElf.Client.Abp.TokenHolder.csproj", "{7E6BBE19-D51D-4393-9BE9-1C4E5139CB74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.TokenConverter", "src\AElf.Client.TokenConverter\AElf.Client.TokenConverter.csproj", "{B3EE451C-200D-4CC0-AEFA-1553892C825F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.TokenConverter", "src\AElf.Client.Abp.TokenConverter\AElf.Client.Abp.TokenConverter.csproj", "{B3EE451C-200D-4CC0-AEFA-1553892C825F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Whitelist", "src\AElf.Client.Whitelist\AElf.Client.Whitelist.csproj", "{478E52D9-1BA5-4852-B1CC-79D5B8382D87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Whitelist", "src\AElf.Client.Abp.Whitelist\AElf.Client.Abp.Whitelist.csproj", "{478E52D9-1BA5-4852-B1CC-79D5B8382D87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Oracle", "src\AElf.Client.Oracle\AElf.Client.Oracle.csproj", "{D1C08C5C-9F59-41A9-9A7B-788377BC2B92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Oracle", "src\AElf.Client.Abp.Oracle\AElf.Client.Abp.Oracle.csproj", "{D1C08C5C-9F59-41A9-9A7B-788377BC2B92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Bridge", "src\AElf.Client.Bridge\AElf.Client.Bridge.csproj", "{4F9DFAC2-3F9D-4A89-94D8-5469DAD84610}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Bridge", "src\AElf.Client.Abp.Bridge\AElf.Client.Abp.Bridge.csproj", "{4F9DFAC2-3F9D-4A89-94D8-5469DAD84610}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Regiment", "src\AElf.Client.Abp.Regiment\AElf.Client.Abp.Regiment.csproj", "{F520E0B9-9EF7-4528-93FA-C182E8423F51}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Core", "src\AElf.Client.Abp.Core\AElf.Client.Abp.Core.csproj", "{1552B665-A065-41AE-A00E-A6E9AB974414}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Regiment", "src\AElf.Client.Regiment\AElf.Client.Regiment.csproj", "{F520E0B9-9EF7-4528-93FA-C182E8423F51}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossChainManager", "examples\CrossChainManager\CrossChainManager.csproj", "{1BC40A93-079B-48C4-B116-62C6B50C2FFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.Test", "test\AElf.Client.Abp.Test\AElf.Client.Abp.Test.csproj", "{64ACA917-AFE2-4916-A772-A3F77B3C4FE8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Abp.TestBase", "test\AElf.Client.Abp.TestBase\AElf.Client.Abp.TestBase.csproj", "{D542FBDB-DFE1-46C2-8C4E-9A5643F3C401}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.TestBase", "test\AElf.Client.TestBase\AElf.Client.TestBase.csproj", "{D542FBDB-DFE1-46C2-8C4E-9A5643F3C401}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,7 +80,6 @@ Global
 		{84E06902-1D71-4F8F-9071-49CAFF3B8A05} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{6D6FE332-73A4-4F40-BE96-E720A6B83201} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{12506F28-C416-4377-B23D-301CE0AA2E8C} = {940361AC-2167-4D30-A4F6-9A543C608196}
-		{5653A6D9-D170-4C71-AB5F-9B770E45604A} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{8FE45FDB-47DC-48A8-ADA6-411A30FEF7BF} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{899F17C1-2FB6-418E-A9BD-5613C563365E} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{7E6BBE19-D51D-4393-9BE9-1C4E5139CB74} = {940361AC-2167-4D30-A4F6-9A543C608196}
@@ -95,9 +88,7 @@ Global
 		{D1C08C5C-9F59-41A9-9A7B-788377BC2B92} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{4F9DFAC2-3F9D-4A89-94D8-5469DAD84610} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{F520E0B9-9EF7-4528-93FA-C182E8423F51} = {940361AC-2167-4D30-A4F6-9A543C608196}
-		{1552B665-A065-41AE-A00E-A6E9AB974414} = {940361AC-2167-4D30-A4F6-9A543C608196}
 		{1BC40A93-079B-48C4-B116-62C6B50C2FFC} = {5D1BDC45-D6F1-4359-868B-CB85CEC4ABD8}
-		{64ACA917-AFE2-4916-A772-A3F77B3C4FE8} = {7CD2B508-C765-4720-B430-94E79135797A}
 		{D542FBDB-DFE1-46C2-8C4E-9A5643F3C401} = {7CD2B508-C765-4720-B430-94E79135797A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -165,10 +156,6 @@ Global
 		{12506F28-C416-4377-B23D-301CE0AA2E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12506F28-C416-4377-B23D-301CE0AA2E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12506F28-C416-4377-B23D-301CE0AA2E8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5653A6D9-D170-4C71-AB5F-9B770E45604A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5653A6D9-D170-4C71-AB5F-9B770E45604A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5653A6D9-D170-4C71-AB5F-9B770E45604A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5653A6D9-D170-4C71-AB5F-9B770E45604A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8FE45FDB-47DC-48A8-ADA6-411A30FEF7BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8FE45FDB-47DC-48A8-ADA6-411A30FEF7BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FE45FDB-47DC-48A8-ADA6-411A30FEF7BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -201,18 +188,10 @@ Global
 		{F520E0B9-9EF7-4528-93FA-C182E8423F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F520E0B9-9EF7-4528-93FA-C182E8423F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F520E0B9-9EF7-4528-93FA-C182E8423F51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1552B665-A065-41AE-A00E-A6E9AB974414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1552B665-A065-41AE-A00E-A6E9AB974414}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1552B665-A065-41AE-A00E-A6E9AB974414}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1552B665-A065-41AE-A00E-A6E9AB974414}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1BC40A93-079B-48C4-B116-62C6B50C2FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1BC40A93-079B-48C4-B116-62C6B50C2FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BC40A93-079B-48C4-B116-62C6B50C2FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BC40A93-079B-48C4-B116-62C6B50C2FFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64ACA917-AFE2-4916-A772-A3F77B3C4FE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64ACA917-AFE2-4916-A772-A3F77B3C4FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64ACA917-AFE2-4916-A772-A3F77B3C4FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64ACA917-AFE2-4916-A772-A3F77B3C4FE8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D542FBDB-DFE1-46C2-8C4E-9A5643F3C401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D542FBDB-DFE1-46C2-8C4E-9A5643F3C401}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D542FBDB-DFE1-46C2-8C4E-9A5643F3C401}.Release|Any CPU.ActiveCfg = Release|Any CPU

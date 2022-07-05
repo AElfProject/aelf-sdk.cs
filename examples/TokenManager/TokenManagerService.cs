@@ -1,7 +1,7 @@
 using AElf.Client;
-using AElf.Client.Abp.Token;
-using AElf.Client.Abp.Token.CrossChainTransfer;
-using AElf.Client.Abp.Token.SyncTokenInfo;
+using AElf.Client.Token;
+using AElf.Client.Token.CrossChainTransfer;
+using AElf.Client.Token.SyncTokenInfo;
 using AElf.Contracts.MultiToken;
 using AElf.Types;
 using Microsoft.Extensions.DependencyInjection;
