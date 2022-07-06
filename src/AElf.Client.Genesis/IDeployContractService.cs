@@ -4,5 +4,5 @@ namespace AElf.Client.Genesis;
 
 public interface IDeployContractService
 {
-    Task<Address?> DeployContract(string contractFileName);
+    Task<Tuple<Address?, string>> DeployContract(string contractFileName);
 }

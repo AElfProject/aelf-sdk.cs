@@ -38,13 +38,14 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
         Logger = NullLogger<DeployContractService>.Instance;
     }
 
-    public async Task<Address?> DeployContract(string contractFileName)
+    public async Task<Tuple<Address?, string>> DeployContract(string contractFileName)
     {
         Logger.LogInformation($"Deploy contract: {contractFileName}");
         var input = await ContractDeploymentInput(contractFileName);
         var proposalNewContact = await _genesisService.ProposeNewContract(input);
         Logger.LogInformation("ProposalNewContact: {Result}", proposalNewContact.TransactionResult);
-        if (proposalNewContact.TransactionResult.Status != TransactionResultStatus.Mined) return null;
+        if (proposalNewContact.TransactionResult.Status != TransactionResultStatus.Mined) 
+            return new Tuple<Address?, string>(null, proposalNewContact.TransactionResult.Error);
 
         var proposalNewLogs = proposalNewContact.TransactionResult.Logs;
         var proposalId = ProposalCreated.Parser
@@ -55,7 +56,9 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
             .ProposedContractInputHash;
 
         var toBeRelease = await ApproveThroughMiners(proposalId);
-        if (!toBeRelease) return null;
+        if (!toBeRelease)
+            return new Tuple<Address?, string>(null, $"Proposal {proposalId} not ready for release");
+
         var releaseApprovedInput = new ReleaseContractInput
         {
             ProposalId = proposalId,
@@ -63,8 +66,8 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
         };
         var releaseApprovedContract = await _genesisService.ReleaseApprovedContract(releaseApprovedInput);
         Logger.LogInformation("ReleaseApprovedContract: {Result}", releaseApprovedContract.TransactionResult);
-        if (releaseApprovedContract.TransactionResult.Status != TransactionResultStatus.Mined) return null;
-
+        if (releaseApprovedContract.TransactionResult.Status != TransactionResultStatus.Mined)
+            return new Tuple<Address?, string>(null, releaseApprovedContract.TransactionResult.Error);
         var releaseApprovedLogs = releaseApprovedContract.TransactionResult.Logs;
         var deployProposalId = ProposalCreated.Parser
             .ParseFrom(releaseApprovedLogs.First(l => l.Name.Contains(nameof(ProposalCreated))).NonIndexed)
@@ -80,15 +83,14 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
         {
             var releaseCodeCheckedResult = await _genesisService.ReleaseCodeCheckedContract(releaseCodeCheckedInput);
             Logger.LogInformation("ReleaseCodeCheckedResult: {Result}", releaseCodeCheckedResult.TransactionResult);
-            if (releaseCodeCheckedResult.TransactionResult.Status != TransactionResultStatus.Mined) return null;
+            if (releaseCodeCheckedResult.TransactionResult.Status != TransactionResultStatus.Mined)
+                return new Tuple<Address?, string>(null, releaseCodeCheckedResult.TransactionResult.Error);
+
             var deployAddress = ContractDeployed.Parser.ParseFrom(releaseCodeCheckedResult.TransactionResult.Logs
                 .First(l => l.Name.Contains(nameof(ContractDeployed))).NonIndexed).Address;
-            Logger.LogInformation($"Contract deploy passed authority, contract address: {deployAddress}");
-            return deployAddress;
+            return new Tuple<Address?, string>(deployAddress, $"Contract deploy passed authority, contract address: {deployAddress}");;
         }
-
-        Logger.LogError("Contract code didn't pass the code check");
-        return null;
+        return new Tuple<Address?, string>(null, "Contract code didn't pass the code check");
     }
 
     private async Task<ContractDeploymentInput> ContractDeploymentInput(string name)
