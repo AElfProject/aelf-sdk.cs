@@ -32,7 +32,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
     }
 
     [Theory]
-    [InlineData("2nSXrp4iM3A1gB5WKXjkwJQwy56jzcw1ESNpVnWywnyjXFixGc", "ELF", 1_00000000)]
+    [InlineData("HyGoexPnPnJFgqTUPaBg5TrvvbgvRdu6sPZt19WjRdXZJk2jN", "ELF", 1_00000000)]
     public async Task TransferTest(string address, string symbol, long amount)
     {
         var result = await _tokenService.TransferAsync(new TransferInput

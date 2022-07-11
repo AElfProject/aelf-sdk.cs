@@ -5,6 +5,7 @@ namespace AElf.Client;
 public partial class AElfClient : IDisposable
 {
     private readonly IHttpService _httpService;
+    // aelf node endpoint.
     private readonly string _baseUrl;
     private string? _userName;
     private string? _password;

@@ -165,4 +165,4 @@ public class DeployContractService : IDeployContractService, ITransientDependenc
         var registration = await _genesisService.GetSmartContractRegistrationByCodeHash(hash);
         return registration.Equals(new SmartContractRegistration());
     }
-} 
+}

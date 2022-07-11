@@ -1,3 +1,4 @@
+using AElf.Standards.ACS0;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -10,7 +11,7 @@ public partial class GenesisService
     {
         var useClientAlias = _clientConfigOptions.ClientAlias;
         var result = await _clientService.ViewAsync(_contractAddress, "GetContractDeploymentController",
-            new Empty(), useClientAlias); 
+            new Empty(), useClientAlias);
         var authorityInfo = new AuthorityInfo();
         authorityInfo.MergeFrom(result);
         return authorityInfo;
@@ -20,9 +21,19 @@ public partial class GenesisService
     {
         var useClientAlias = _clientConfigOptions.ClientAlias;
         var result = await _clientService.ViewAsync(_contractAddress, "GetSmartContractRegistrationByCodeHash",
-            codeHash , useClientAlias); 
+            codeHash, useClientAlias);
         var smartContractRegistration = new SmartContractRegistration();
         smartContractRegistration.MergeFrom(result);
         return smartContractRegistration;
+    }
+
+    public async Task<ContractInfo> GetContractInfo(Address contractAddress)
+    {
+        var useClientAlias = _clientConfigOptions.ClientAlias;
+        var result = await _clientService.ViewAsync(_contractAddress, "GetContractInfo",
+            contractAddress, useClientAlias);
+        var contractInfo = new ContractInfo();
+        contractInfo.MergeFrom(result);
+        return contractInfo;
     }
 }
