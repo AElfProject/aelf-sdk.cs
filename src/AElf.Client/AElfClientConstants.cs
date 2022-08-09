@@ -10,5 +10,6 @@ public class AElfClientConstants
     public const string TestNetSideChain1 = "https://tdvv-test-node.aelf.io";
     public const string TestNetSideChain2 = "https://tdvw-test-node.aelf.io";
     public const int MainChainId = 9992731;
-    public const int SideChainId2 = 1866392;
+    public const int SideChainId1 = 1866392;
+    public const int SideChainId2 = 1931928;
 }

@@ -89,11 +89,13 @@ public class AEDPoSViewerService : ITransientDependency
             var minerInRound = info.Value;
             var address = Address.FromPublicKey(ByteArrayHelper.HexStringToByteArray(pubkey)).ToBase58();
             BlockProducer.Map.TryGetValue(pubkey, out var displayPubkey);
+            var actualMiningTimes = minerInRound.ActualMiningTimes.Count;
+            var isAlarm = actualMiningTimes == 0;
             table.AddRow(
-                displayPubkey ?? pubkey[..10],
+                (isAlarm ? "[red]" : "") + (displayPubkey ?? pubkey[..10]) + (isAlarm ? "[/]" : ""),
                 address,
                 minerInRound.Order.ToString(),
-                minerInRound.ActualMiningTimes.Count.ToString(),
+                (isAlarm ? "[red]" : "") + actualMiningTimes + (isAlarm ? "[/]" : ""),
                 minerInRound.MissedTimeSlots.ToString());
         }
 

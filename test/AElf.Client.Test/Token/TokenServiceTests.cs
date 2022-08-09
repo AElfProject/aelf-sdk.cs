@@ -7,6 +7,7 @@ using AElf.Contracts.NFT;
 using AElf.Types;
 using Google.Protobuf;
 using Shouldly;
+using Xunit.Abstractions;
 using TransferInput = AElf.Contracts.MultiToken.TransferInput;
 
 namespace AElf.Client.Test.Token;
@@ -14,21 +15,24 @@ namespace AElf.Client.Test.Token;
 [Trait("Category", "TokenContractService")]
 public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     private readonly ITokenService _tokenService;
     private readonly ISyncTokenInfoQueueService _syncTokenInfoQueueService;
 
-    public TokenServiceTests()
+    public TokenServiceTests(ITestOutputHelper testOutputHelper)
     {
+        _testOutputHelper = testOutputHelper;
         _tokenService = GetRequiredService<ITokenService>();
         _syncTokenInfoQueueService = GetRequiredService<ISyncTokenInfoQueueService>();
     }
 
     [Theory]
-    [InlineData("ELF")]
+    [InlineData("USDT")]
     public async Task GetTokenInfoTest(string symbol)
     {
         var tokenInfo = await _tokenService.GetTokenInfoAsync(symbol);
         tokenInfo.Symbol.ShouldBe(symbol);
+        _testOutputHelper.WriteLine(tokenInfo.ToString());
     }
 
     [Theory]

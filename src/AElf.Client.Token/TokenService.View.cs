@@ -9,7 +9,7 @@ public partial class TokenService
 {
     public async Task<TokenInfo> GetTokenInfoAsync(string symbol)
     {
-        var useClientAlias = PreferGetUseMainChainClientAlias();
+        var useClientAlias = _clientConfigOptions.ClientAlias;
         var result = await _clientService.ViewSystemAsync(AElfTokenConstants.TokenSmartContractName, "GetTokenInfo",
             new GetTokenInfoInput
             {
