@@ -1,6 +1,7 @@
 using AElf.Contracts.MultiToken;
 using AElf.Types;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 
 namespace AElf.Client.Token;
@@ -48,5 +49,15 @@ public partial class TokenService
         var allowance = new GetAllowanceOutput();
         allowance.MergeFrom(result);
         return allowance;
+    }
+
+    public async Task<CalculateFeeCoefficients> GetCalculateFeeCoefficientsForSenderAsync()
+    {
+        var useClientAlias = _clientConfigOptions.ClientAlias;
+        var result = await _clientService.ViewSystemAsync(AElfTokenConstants.TokenSmartContractName,
+            "GetCalculateFeeCoefficientsForSender", new Empty(), useClientAlias);
+        var coefficients = new CalculateFeeCoefficients();
+        coefficients.MergeFrom(result);
+        return coefficients;
     }
 }

@@ -29,4 +29,5 @@ public interface ITokenService
     Task<TokenInfo> GetTokenInfoAsync(string symbol);
     Task<Contracts.MultiToken.GetBalanceOutput> GetTokenBalanceAsync(string symbol, Address owner);
     Task<Contracts.MultiToken.GetAllowanceOutput> GetTokenAllowanceAsync(string symbol, Address owner, Address spender);
+    Task<CalculateFeeCoefficients> GetCalculateFeeCoefficientsForSenderAsync();
 }

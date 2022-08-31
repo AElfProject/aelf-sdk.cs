@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AElf.Types" Version="1.2.0" />
-        <PackageReference Include="AElf.Cryptography" Version="1.2.0" />
+        <PackageReference Include="AElf.Types" Version="1.2.1" />
+        <PackageReference Include="AElf.Cryptography" Version="1.2.1" />
         <PackageReference Include="Nethereum.KeyStore" Version="4.5.0" />
     </ItemGroup>
 

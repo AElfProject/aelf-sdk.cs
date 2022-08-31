@@ -103,4 +103,11 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
             ReceiptId = receiptId
         });
     }
+
+    [Fact]
+    public async Task GetCalculateFeeCoefficientsForSenderTest()
+    {
+        var coefficients = await _tokenService.GetCalculateFeeCoefficientsForSenderAsync();
+        coefficients.FeeTokenType.ShouldBe(4);
+    }
 }

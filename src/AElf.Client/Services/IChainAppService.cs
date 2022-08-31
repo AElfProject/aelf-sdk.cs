@@ -1,5 +1,4 @@
 using AElf.Client.Dto;
-using AElf.Kernel;
 
 namespace AElf.Client;
 
