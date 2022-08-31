@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AElf.Client.TestBase;
 using AElf.Client.Token;
 using AElf.Client.Token.SyncTokenInfo;
 using AElf.Contracts.Bridge;
@@ -26,7 +27,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
         _syncTokenInfoQueueService = GetRequiredService<ISyncTokenInfoQueueService>();
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("USDT")]
     public async Task GetTokenInfoTest(string symbol)
     {
@@ -35,7 +36,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
         _testOutputHelper.WriteLine(tokenInfo.ToString());
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("HyGoexPnPnJFgqTUPaBg5TrvvbgvRdu6sPZt19WjRdXZJk2jN", "ELF", 1_00000000)]
     public async Task TransferTest(string address, string symbol, long amount)
     {
@@ -59,14 +60,14 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
         transferred.Amount.ShouldBe(amount);
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("BA994198147")]
     public async Task SyncTokenInfoTest(string symbol)
     {
         _syncTokenInfoQueueService.Enqueue(symbol);
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("CO429872652")]
     public async Task CrossChainCreateNFTProtocolTest(string symbol)
     {
@@ -76,7 +77,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
         });
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("BA417054001", "JQkVTWz5HXxEmNXzTtsAVHC7EUTeiFktzoFUu9TyA6MWngkem")]
     public async Task AddMintersTest(string symbol, string addressBase58)
     {
@@ -91,7 +92,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
         });
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("bb16f381b0f2e795a988285dec3a68affacdccd7d3ac2e74edc808c102efcd95", 228, "9413000000000000000000")]
     public async Task SwapTokenTest(string swapIdHex, long receiptId, string amount)
     {
@@ -104,7 +105,7 @@ public sealed class TokenServiceTests : AElfClientAbpContractServiceTestBase
         });
     }
 
-    [Fact]
+    [IgnoreOnCIFact]
     public async Task GetCalculateFeeCoefficientsForSenderTest()
     {
         var coefficients = await _tokenService.GetCalculateFeeCoefficientsForSenderAsync();

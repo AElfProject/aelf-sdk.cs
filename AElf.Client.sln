@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{940361AC-2167-4D30-A4F6-9A543C608196}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7CD2B508-C765-4720-B430-94E79135797A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client", "src\AElf.Client\AElf.Client.csproj", "{1AE7844D-B4D9-4F5A-9D25-7E551B61138E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Test", "test\AElf.Client.Test\AElf.Client.Test.csproj", "{4D019C99-8B1C-42B0-8630-F1E3661F414B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AElf.Client.Protobuf", "src\AElf.Client.Protobuf\AElf.Client.Protobuf.csproj", "{01B13EE5-9892-4D2A-8E77-C0A4A9575753}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1AE7844D-B4D9-4F5A-9D25-7E551B61138E} = {940361AC-2167-4D30-A4F6-9A543C608196}
+		{4D019C99-8B1C-42B0-8630-F1E3661F414B} = {7CD2B508-C765-4720-B430-94E79135797A}
+		{01B13EE5-9892-4D2A-8E77-C0A4A9575753} = {940361AC-2167-4D30-A4F6-9A543C608196}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AE7844D-B4D9-4F5A-9D25-7E551B61138E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE7844D-B4D9-4F5A-9D25-7E551B61138E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE7844D-B4D9-4F5A-9D25-7E551B61138E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE7844D-B4D9-4F5A-9D25-7E551B61138E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D019C99-8B1C-42B0-8630-F1E3661F414B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D019C99-8B1C-42B0-8630-F1E3661F414B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D019C99-8B1C-42B0-8630-F1E3661F414B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D019C99-8B1C-42B0-8630-F1E3661F414B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01B13EE5-9892-4D2A-8E77-C0A4A9575753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01B13EE5-9892-4D2A-8E77-C0A4A9575753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01B13EE5-9892-4D2A-8E77-C0A4A9575753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01B13EE5-9892-4D2A-8E77-C0A4A9575753}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

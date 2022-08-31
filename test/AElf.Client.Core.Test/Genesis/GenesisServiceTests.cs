@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AElf.Client.Genesis;
 using AElf.Client.Test;
+using AElf.Client.TestBase;
 using AElf.Types;
 using Shouldly;
 
@@ -20,7 +21,7 @@ public sealed class GenesisServiceTests : AElfClientAbpContractServiceTestBase
         _deployService = GetRequiredService<IDeployContractService>();
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("AElf.Contracts.NFT")]
     public async Task DeployContract(string contractName)
     {
@@ -28,7 +29,7 @@ public sealed class GenesisServiceTests : AElfClientAbpContractServiceTestBase
         address.ShouldNotBeNull();
     }
 
-    [Theory]
+    [IgnoreOnCITheory]
     [InlineData("UoHeeCXZ6fV481oD3NXASSexWVtsPLgv2Wthm3BGrPAgqdS5d")]
     public async Task GetContractInfo(string contractAddress)
     {
