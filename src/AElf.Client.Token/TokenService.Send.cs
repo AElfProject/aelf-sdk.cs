@@ -112,7 +112,7 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
         CrossChainCreateInput crossChainCreateInput)
     {
         var clientAlias = PreferGetUseSideChainClientAlias();
-        ContractAddress = Address.FromBase58(_contractOptions.NFTContractAddress);
+        ContractAddress = Address.FromBase58(_contractOptions.ContractAddressList["NFTContract"]);
         var tx = await PerformSendTransactionAsync("CrossChainCreate", crossChainCreateInput,
             clientAlias);
         return new SendTransactionResult
@@ -137,7 +137,7 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
     public async Task<SendTransactionResult> AddMintersAsync(AddMintersInput addMintersInput)
     {
         var clientAlias = _clientConfigOptions.ClientAlias;
-        ContractAddress = Address.FromBase58(_contractOptions.NFTContractAddress);
+        ContractAddress = Address.FromBase58(_contractOptions.ContractAddressList["NFTContract"]);
         var tx = await PerformSendTransactionAsync("AddMinters", addMintersInput,
             clientAlias);
         return new SendTransactionResult
@@ -150,7 +150,7 @@ public partial class TokenService : ContractServiceBase, ITokenService, ITransie
     public async Task<SendTransactionResult> SwapTokenAsync(SwapTokenInput swapTokenInput)
     {
         var clientAlias = _clientConfigOptions.ClientAlias;
-        ContractAddress = Address.FromBase58(_contractOptions.BridgeContractAddress);
+        ContractAddress = Address.FromBase58(_contractOptions.ContractAddressList["BridgeContract"]);
         var tx = await PerformSendTransactionAsync("SwapToken", swapTokenInput,
             clientAlias);
         var txResult = await PerformGetTransactionResultAsync(tx.GetHash().ToHex(), clientAlias);

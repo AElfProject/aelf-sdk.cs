@@ -74,6 +74,9 @@
         <Protobuf Include="Protobuf\callback_input.proto" ProtoRoot="Protobuf">
             <Generator>MSBuild:Compile</Generator>
         </Protobuf>
+        <Protobuf Include="Protobuf\quadratic_funding_contract.proto" ProtoRoot="Protobuf">
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
     </ItemGroup>
 
 </Project>
