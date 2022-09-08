@@ -1,4 +1,4 @@
-using AElf.Client.Abp;
+using AElf.Client.Core;
 using Volo.Abp.Modularity;
 
 namespace AEDPoSViewer;
@@ -8,5 +8,8 @@ namespace AEDPoSViewer;
     )]
 public class AEDPoSViewerModule : AbpModule
 {
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
 
+    }
 }

@@ -2,7 +2,7 @@ namespace AElf.Client.Dto;
 
 public class MerklePathDto
 {
-    public List<MerklePathNodeDto> MerklePathNodes;
+    public List<MerklePathNodeDto> MerklePathNodes { get; set; }
 }
 
 public class MerklePathNodeDto

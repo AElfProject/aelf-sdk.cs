@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,8 +32,8 @@ public class AEDPoSViewerHostedService : IHostedService
 
         await _abpApplication.InitializeAsync();
 
-        var helloWorldService = _abpApplication.ServiceProvider.GetRequiredService<AEDPoSViewerService>();
-        await helloWorldService.RunAsync();
+        var viewerService = _abpApplication.ServiceProvider.GetRequiredService<AEDPoSViewerService>();
+        await viewerService.RunAsync();
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

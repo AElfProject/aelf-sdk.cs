@@ -1,18 +1,19 @@
-﻿using System.Text.Json;
-using AElf.Client.Service;
+﻿using AElf.Client.Services;
 
 namespace AElf.Client;
 
 public partial class AElfClient : IDisposable
 {
     private readonly IHttpService _httpService;
+    // aelf node endpoint.
     private readonly string _baseUrl;
-    private readonly string _userName;
-    private readonly string _password;
+    private string? _userName;
+    private string? _password;
 
-    public AElfClient(string baseUrl, int timeOut = 60, string userName = null, string password = null)
+    public AElfClient(string baseUrl, int timeOut = 60, string? userName = null, string? password = null,
+        bool useCamelCase = false)
     {
-        _httpService = new HttpService(timeOut);
+        _httpService = new HttpService(timeOut, useCamelCase);
         _baseUrl = baseUrl;
         _userName = userName;
         _password = password;

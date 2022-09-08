@@ -8,7 +8,7 @@ using AElf.Cryptography;
 using AElf.Types;
 using AElf.Client.Dto;
 using AElf.Client.Extensions;
-using AElf.Client.Service;
+using AElf.Client.Services;
 using AElf.Contracts.MultiToken;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -25,7 +25,7 @@ namespace AElf.Client.Test;
 
 public class ClientTest
 {
-    private const string BaseUrl = "http://192.168.196.116:8000";
+    private const string BaseUrl = "https://tdvw-test-node.aelf.io";
 
     private string _genesisAddress;
     private string GenesisAddress => GetGenesisContractAddress();
@@ -84,7 +84,7 @@ public class ClientTest
     public async Task GetBlockByHeight_Failed_Test()
     {
         const int timeOut = 60;
-        var httpService = new HttpService(timeOut);
+        var httpService = new HttpService(timeOut, false);
         const int heightNotExist = int.MaxValue;
         var errorResponse = await httpService.GetResponseAsync<WebAppErrorResponse>(
             $"{BaseUrl}/api/blockChain/blockByHeight?blockHeight={heightNotExist}&includeTransactions=false",
@@ -156,6 +156,15 @@ public class ClientTest
     public async Task GetPeers_Test()
     {
         var peers = await Client.GetPeersAsync(false);
+        Assert.True(peers != null);
+        var peersInfo = JsonConvert.SerializeObject(peers, Formatting.Indented);
+        _testOutputHelper.WriteLine(peersInfo);
+    }
+    
+    [Fact]
+    public async Task GetPeersWithMetrics_Test()
+    {
+        var peers = await Client.GetPeersAsync(true);
         Assert.True(peers != null);
         var peersInfo = JsonConvert.SerializeObject(peers, Formatting.Indented);
         _testOutputHelper.WriteLine(peersInfo);

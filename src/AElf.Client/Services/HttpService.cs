@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace AElf.Client.Service;
+namespace AElf.Client.Services;
 
 public interface IHttpService
 {
@@ -20,16 +16,18 @@ public interface IHttpService
 
     Task<T?> DeleteResponseAsObjectAsync<T>(string url, string? version = null,
         HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
-        AuthenticationHeaderValue authenticationHeaderValue = null);
+        AuthenticationHeaderValue? authenticationHeaderValue = null);
 }
 
 public class HttpService : IHttpService
 {
-    private HttpClient Client { get; set; }
+    private readonly bool _useCamelCase;
+    private HttpClient? Client { get; set; }
     private int TimeoutSeconds { get; }
 
-    public HttpService(int timeoutSeconds)
+    public HttpService(int timeoutSeconds, bool useCamelCase = false)
     {
+        _useCamelCase = useCamelCase;
         TimeoutSeconds = timeoutSeconds;
     }
 
@@ -46,7 +44,13 @@ public class HttpService : IHttpService
     {
         var response = await GetResponseAsync(url, version, expectedStatusCode);
         var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<T>(stream);
+        var jsonSerializerOptions = _useCamelCase
+            ? new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }
+            : new JsonSerializerOptions();
+        return await JsonSerializer.DeserializeAsync<T>(stream, jsonSerializerOptions);
     }
 
     /// <summary>
@@ -67,7 +71,13 @@ public class HttpService : IHttpService
         var response = await PostResponseAsync(url, parameters, version, true, expectedStatusCode,
             authenticationHeaderValue);
         var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<T>(stream);
+        var jsonSerializerOptions = _useCamelCase
+            ? new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }
+            : new JsonSerializerOptions();
+        return await JsonSerializer.DeserializeAsync<T>(stream, jsonSerializerOptions);
     }
 
     /// <summary>
@@ -76,16 +86,23 @@ public class HttpService : IHttpService
     /// <param name="url"></param>
     /// <param name="version"></param>
     /// <param name="expectedStatusCode"></param>
+    /// <param name="authenticationHeaderValue"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     public async Task<T?> DeleteResponseAsObjectAsync<T>(string url, string? version = null,
         HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
-        AuthenticationHeaderValue authenticationHeaderValue = null)
+        AuthenticationHeaderValue? authenticationHeaderValue = null)
     {
         var response = await DeleteResponseAsync(url, version, expectedStatusCode, authenticationHeaderValue);
         var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<T>(stream);
+        var jsonSerializerOptions = _useCamelCase
+            ? new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }
+            : new JsonSerializerOptions();
+        return await JsonSerializer.DeserializeAsync<T>(stream, jsonSerializerOptions);
     }
 
     #region GetResponse
@@ -162,7 +179,7 @@ public class HttpService : IHttpService
 
     private async Task<string> DeleteResponseAsStringAsync(string url, string? version = null,
         HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
-        AuthenticationHeaderValue authenticationHeaderValue = null)
+        AuthenticationHeaderValue? authenticationHeaderValue = null)
     {
         var response = await DeleteResponseAsync(url, version, expectedStatusCode, authenticationHeaderValue);
         return await response.Content.ReadAsStringAsync();
@@ -170,7 +187,7 @@ public class HttpService : IHttpService
 
     private async Task<HttpResponseMessage> DeleteResponseAsync(string url, string? version = null,
         HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
-        AuthenticationHeaderValue authenticationHeaderValue = null)
+        AuthenticationHeaderValue? authenticationHeaderValue = null)
     {
         version = !string.IsNullOrWhiteSpace(version) ? $";v={version}" : string.Empty;
         var client = GetHttpClient(version);
