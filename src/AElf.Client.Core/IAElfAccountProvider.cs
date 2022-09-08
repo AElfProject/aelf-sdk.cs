@@ -12,31 +12,29 @@ namespace AElf.Client.Core;
 public interface IAElfAccountProvider
 {
     byte[] GetPrivateKey(string? alias = null, string? address = null);
-    void SetPrivateKey(byte[] privateKey, string? alias = null, string? address = null);
-    void SetPrivateKey(string address, string password, string? alias = null);
-    string GetDefaultPassword();
+    void SetPrivateKey(byte[] privateKey, string? accountAlias = null);
+    void SetPrivateKey(string address, string password, string? accountAlias = null);
+    string GetAliasByAddress(string address);
+    void AddAccountByDefaultPassword(string address);
 }
 
 public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAccountProvider, ISingletonDependency
 {
     private readonly IKeyDirectoryProvider _keyDirectoryProvider;
     private readonly AElfAccountOptions _aelfAccountOptions;
-    private readonly string _aelfMinerAccountPassword;
 
     private readonly KeyStoreService _keyStoreService; 
 
     public ILogger<AElfAccountProvider> Logger { get; set; }
 
     public AElfAccountProvider(IKeyDirectoryProvider keyDirectoryProvider,
-        IOptionsSnapshot<AElfAccountOptions> aelfAccountOptions,
-        IOptionsSnapshot<AElfMinerAccountOptions> aelfMinerAccountOptions)
+        IOptionsSnapshot<AElfAccountOptions> aelfAccountOptions)
     {
         Logger = NullLogger<AElfAccountProvider>.Instance;
         _keyDirectoryProvider = keyDirectoryProvider;
         _aelfAccountOptions = aelfAccountOptions.Value;
-        _aelfMinerAccountPassword = aelfMinerAccountOptions.Value.DefaultPassword;
         var defaultPrivateKey = ByteArrayHelper.HexStringToByteArray(AElfClientConstants.DefaultPrivateKey);
-        SetPrivateKey(defaultPrivateKey, "Default", Address.FromPublicKey(defaultPrivateKey).ToBase58()); 
+        SetPrivateKey(defaultPrivateKey, "Default"); 
         _keyStoreService = new KeyStoreService();
 
         foreach (var accountConfig in aelfAccountOptions.Value.AccountConfigList)
@@ -50,19 +48,14 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
                     var json = textReader.ReadToEnd();
                     return _keyStoreService.DecryptKeyStoreFromJson(accountConfig.Password, json);
                 }));
-                SetPrivateKey(privateKey, accountConfig.Alias, accountConfig.Address);
+                SetPrivateKey(privateKey, accountConfig.Alias);
             }
             else
             {
                 var privateKey = ByteArrayHelper.HexStringToByteArray(accountConfig.PrivateKey);
-                SetPrivateKey(privateKey, accountConfig.Alias, Address.FromPublicKey(privateKey).ToBase58());
+                SetPrivateKey(privateKey, accountConfig.Alias);
             }
         }
-    }
-
-    public string GetDefaultPassword()
-    {
-        return _aelfMinerAccountPassword;
     }
 
     public byte[] GetPrivateKey(string? alias = null, string? address = null)
@@ -79,16 +72,16 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
         return this[keys.Single()];
     }
 
-    public void SetPrivateKey(byte[] privateKey, string? alias = null, string? address = null)
+    public void SetPrivateKey(byte[] privateKey, string? accountAlias = null)
     {
         TryAdd(new AElfAccountInfo
         {
-            Alias = alias,
-            Address = address
+            Alias = accountAlias,
+            Address = Address.FromPublicKey(privateKey).ToBase58()
         }, privateKey);
     }
 
-    public void SetPrivateKey(string address, string password, string? alias = null)
+    public void SetPrivateKey(string address, string password, string? accountAlias = null)
     {
         var keyFilePath = GetKeyFileFullPath(address, _aelfAccountOptions.KeyDirectory);
         var privateKey = AsyncHelper.RunSync(() => Task.Run(() =>
@@ -99,16 +92,34 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
         }));
         
         var keys = Keys
-            .WhereIf(!alias.IsNullOrWhiteSpace(), a => a.Alias == alias)
+            .WhereIf(!accountAlias.IsNullOrWhiteSpace(), a => a.Alias == accountAlias)
             .WhereIf(!address.IsNullOrWhiteSpace(), a => a.Address == address)
             .ToList();
 
         if (keys.Count == 1) return;
         TryAdd(new AElfAccountInfo
         {
-            Alias = alias,
+            Alias = accountAlias,
             Address = address
         }, privateKey);
+    }
+
+    public string GetAliasByAddress(string address)
+    {
+        var keys = Keys
+            .WhereIf(!address.IsNullOrWhiteSpace(), a => a.Address == address)
+            .ToList();
+        if (keys.Count != 1)
+        {
+            throw new AElfClientException($"Failed to get alias of {address}.");
+        }
+
+        return keys.First().Alias!;
+    }
+
+    public void AddAccountByDefaultPassword(string address)
+    {
+        SetPrivateKey(address, _aelfAccountOptions.DefaultPassword);
     }
 
     private string GetKeyFileFullPath(string address, string configuredKeyDirectory)

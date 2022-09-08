@@ -32,7 +32,7 @@ public partial class AElfClient : IChainAppService
         var set = await _httpService.GetResponseAsync<byte[]>(url);
         if (set == null)
         {
-            throw new AElfClientException("Failed to get chain status");
+            throw new AElfClientException("Failed to get method descriptor");
         }
 
         return set;

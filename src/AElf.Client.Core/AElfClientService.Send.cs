@@ -1,5 +1,5 @@
 using AElf.Client.Dto;
-using Castle.Core.Logging;
+using AElf.Client.Services;
 using Google.Protobuf;
 
 namespace AElf.Client.Core;
@@ -7,10 +7,10 @@ namespace AElf.Client.Core;
 public partial class AElfClientService
 {
     public async Task<Transaction> SendAsync(string contractAddress, string methodName, IMessage parameter,
-        string clientAlias, string? alias = null, string? address = null)
+        string clientAlias, string? accountAlias = null)
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = SetAccount(alias, address);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.AccountAlias);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseContract(contractAddress)
@@ -22,10 +22,21 @@ public partial class AElfClientService
     }
 
     public async Task<Transaction> SendSystemAsync(string systemContractName, string methodName, IMessage parameter,
-        string clientAlias, string? alias = null, string? address = null)
+        string clientAlias, string? accountAlias = null)
     {
+        if (!systemContractName.StartsWith("AElf.ContractNames."))
+        {
+            throw new ArgumentException("Invalid system contract name.");
+        }
+
+        if (systemContractName == AElfClientCoreConstants.GenesisSmartContractName)
+        {
+            return await SendAsync((await GetGenesisContractAddressAsync(clientAlias)).ToBase58(), methodName,
+                parameter, clientAlias, accountAlias);
+        }
+
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var aelfAccount = SetAccount(alias, address);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: _clientConfigOptions.AccountAlias);
         var tx = new TransactionBuilder(aelfClient)
             .UsePrivateKey(aelfAccount)
             .UseSystemContract(systemContractName)
@@ -36,29 +47,11 @@ public partial class AElfClientService
         return tx;
     }
 
-    private static async Task PerformSendAsync(AElfClient aelfClient, Transaction tx)
+    private static async Task PerformSendAsync(ITransactionAppService aelfClient, Transaction tx)
     {
-        var result = await aelfClient.SendTransactionAsync(new SendTransactionInput
+        await aelfClient.SendTransactionAsync(new SendTransactionInput
         {
             RawTransaction = tx.ToByteArray().ToHex()
         });
-    }
-
-    private byte[] SetAccount(string? alias, string? address)
-    {
-        byte[] aelfAccount;
-        if (!string.IsNullOrWhiteSpace(address))
-        {
-            _aelfAccountProvider.SetPrivateKey(address, _aelfAccountProvider.GetDefaultPassword());
-            aelfAccount = _aelfAccountProvider.GetPrivateKey(null, address);
-        }
-        else
-        {
-            if (string.IsNullOrWhiteSpace(alias))
-                alias = _clientConfigOptions.AccountAlias;
-            aelfAccount = _aelfAccountProvider.GetPrivateKey(alias);
-        }
-
-        return aelfAccount;
     }
 }

@@ -1,5 +1,6 @@
 using AElf.Client.Dto;
 using AElf.Client.Core.Options;
+using AElf.Client.Services;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -29,8 +30,8 @@ public partial class AElfClientService : IAElfClientService, ITransientDependenc
         Logger = NullLogger<AElfClientService>.Instance;
     }
 
-    public async Task<byte[]> ViewAsync(string contractAddress, string methodName, IMessage parameter,
-        string clientAlias, string accountAlias = "Default")
+    public async Task<T> ViewAsync<T>(string contractAddress, string methodName, IMessage parameter, string clientAlias,
+        string accountAlias = "Default") where T : IMessage, new()
     {
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
         var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);
@@ -40,24 +41,42 @@ public partial class AElfClientService : IAElfClientService, ITransientDependenc
             .UseMethod(methodName)
             .UseParameter(parameter)
             .Build();
-        return await PerformViewAsync(aelfClient, tx);
+        var returnValue = await PerformViewAsync(aelfClient, tx);
+        var result = new T();
+        result.MergeFrom(returnValue);
+        return result;
     }
 
-    public async Task<byte[]> ViewSystemAsync(string systemContractName, string methodName, IMessage parameter,
-        string clientAlias, string accountAlias = "Default")
+
+    public async Task<T> ViewSystemAsync<T>(string systemContractName, string methodName, IMessage parameter,
+        string clientAlias, string accountAlias = "Default") where T : IMessage, new()
     {
+        if (!systemContractName.StartsWith("AElf.ContractNames."))
+        {
+            throw new ArgumentException("Invalid system contract name.");
+        }
+
         var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
-        var privateKey = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);
+        var aelfAccount = _aelfAccountProvider.GetPrivateKey(alias: accountAlias);
         var tx = new TransactionBuilder(aelfClient)
-            .UsePrivateKey(privateKey)
+            .UsePrivateKey(aelfAccount)
             .UseSystemContract(systemContractName)
             .UseMethod(methodName)
             .UseParameter(parameter)
             .Build();
-        return await PerformViewAsync(aelfClient, tx);
+        var returnValue = await PerformViewAsync(aelfClient, tx);
+        var result = new T();
+        result.MergeFrom(returnValue);
+        return result;
     }
 
-    private async Task<byte[]> PerformViewAsync(AElfClient aelfClient, Transaction tx)
+    public async Task<Address> GetGenesisContractAddressAsync(string clientAlias)
+    {
+        var chainStatus = await GetChainStatusAsync(clientAlias);
+        return Address.FromBase58(chainStatus.GenesisContractAddress);
+    }
+
+    private async Task<byte[]> PerformViewAsync(ITransactionAppService aelfClient, Transaction tx)
     {
         var result = await aelfClient.ExecuteTransactionAsync(new ExecuteTransactionDto
         {

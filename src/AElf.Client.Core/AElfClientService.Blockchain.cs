@@ -1,4 +1,6 @@
 using AElf.Client.Dto;
+using Google.Protobuf;
+using Google.Protobuf.Reflection;
 using Microsoft.Extensions.Logging;
 
 namespace AElf.Client.Core;
@@ -23,7 +25,7 @@ public partial class AElfClientService
                 break;
             }
 
-            await Task.Delay(AElfClientAbpConstants.DefaultWaitMilliseconds);
+            await Task.Delay(AElfClientCoreConstants.DefaultWaitMilliseconds);
             result = await aelfClient.GetTransactionResultAsync(transactionId);
             i++;
         }
@@ -44,8 +46,18 @@ public partial class AElfClientService
         if (merklePathDto == null)
         {
             Logger.LogError("Cannot get merkle path of transaction {TransactionId}", transactionId);
+            merklePathDto = new MerklePathDto();
         }
 
         return _objectMapper.Map<MerklePathDto, MerklePath>(merklePathDto);
+    }
+
+    public async Task<FileDescriptorSet> GetContractFileDescriptorSetAsync(string contractAddress, string clientAlias)
+    {
+        var aelfClient = _aelfClientProvider.GetClient(alias: clientAlias);
+        var result = await aelfClient.GetContractFileDescriptorSetAsync(contractAddress);
+        var fileDescriptorSet = new FileDescriptorSet();
+        fileDescriptorSet.MergeFrom(result);
+        return fileDescriptorSet;
     }
 }

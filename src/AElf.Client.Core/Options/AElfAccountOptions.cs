@@ -4,6 +4,7 @@ public class AElfAccountOptions
 {
     public string KeyDirectory { get; set; }
     public List<AccountConfig> AccountConfigList { get; set; } = new();
+    public string DefaultPassword { get; set; }
 }
 
 public class AccountConfig

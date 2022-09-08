@@ -4,11 +4,8 @@ using AElf.Client.Core;
 using AElf.Client.Core.Options;
 using AElf.Contracts.Consensus.AEDPoS;
 using AElf.Types;
-using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
 using Volo.Abp.DependencyInjection;
@@ -19,13 +16,9 @@ public class AEDPoSViewerService : ITransientDependency
 {
     private IServiceScopeFactory ServiceScopeFactory { get; }
 
-    public ILogger<AEDPoSViewerService> Logger { get; set; }
-
     public AEDPoSViewerService(IServiceScopeFactory serviceScopeFactory)
     {
         ServiceScopeFactory = serviceScopeFactory;
-
-        Logger = NullLogger<AEDPoSViewerService>.Instance;
     }
 
     public async Task RunAsync()
@@ -47,12 +40,8 @@ public class AEDPoSViewerService : ITransientDependency
 
         var clientService = scope.ServiceProvider.GetRequiredService<IAElfClientService>();
 
-        var result = await clientService.ViewSystemAsync(AEDPoSViewerConstants.ConsensusSmartContractName,
+        return await clientService.ViewSystemAsync<Round>(AEDPoSViewerConstants.ConsensusSmartContractName,
             "GetRoundInformation", new Int64Value { Value = roundNumber }, clientConfig.Value.ClientAlias);
-
-        var round = new Round();
-        round.MergeFrom(result);
-        return round;
     }
 
     private async Task<Round> GetCurrentRoundAsync()
@@ -63,12 +52,8 @@ public class AEDPoSViewerService : ITransientDependency
 
         var clientService = scope.ServiceProvider.GetRequiredService<IAElfClientService>();
 
-        var result = await clientService.ViewSystemAsync(AEDPoSViewerConstants.ConsensusSmartContractName,
+        return await clientService.ViewSystemAsync<Round>(AEDPoSViewerConstants.ConsensusSmartContractName,
             "GetCurrentRoundInformation", new Empty(), clientConfig.Value.ClientAlias);
-
-        var round = new Round();
-        round.MergeFrom(result);
-        return round;
     }
 
     private void DisplayRound(Round round)

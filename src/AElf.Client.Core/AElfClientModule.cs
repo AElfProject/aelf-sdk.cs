@@ -20,7 +20,6 @@ public class AElfClientModule : AbpModule
         Configure<AElfAccountOptions>(options => { configuration.GetSection("AElfAccount").Bind(options); });
         Configure<AElfContractOptions>(options => { configuration.GetSection("AElfContract").Bind(options); });
         Configure<AElfClientConfigOptions>(options => { configuration.GetSection("AElfClientConfig").Bind(options); });
-        Configure<AElfMinerAccountOptions>(options => { configuration.GetSection("AElfMinerAccount").Bind(options); });
 
         context.Services.AddAutoMapperObjectMapper<AElfClientModule>();
 
