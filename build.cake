@@ -82,7 +82,7 @@ Task("test-with-codecov")
                         .Append("--collect:\"XPlat Code Coverage\"");
                 }                  
     };
-    var testProjects = GetFiles("./test/*.Tests/*.csproj");
+    var testProjects = GetFiles("./test/*.Test/*.csproj");
     var testProjectList = testProjects.OrderBy(p=>p.FullPath).ToList();
     foreach(var testProject in testProjectList)
     {
