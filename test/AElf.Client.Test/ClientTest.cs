@@ -25,7 +25,7 @@ namespace AElf.Client.Test;
 
 public class ClientTest
 {
-    private const string BaseUrl = "http://192.168.196.116:8000";
+    private const string BaseUrl = "http://127.0.0.1:8001";
 
     private string _genesisAddress;
     private string GenesisAddress => GetGenesisContractAddress();
