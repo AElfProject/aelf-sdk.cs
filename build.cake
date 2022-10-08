@@ -1,3 +1,6 @@
+#tool nuget:?package=Codecov
+#addin nuget:?package=Cake.Codecov&version=0.8.0
+
 var target = Argument("target", "default");
 var rootPath     = "./";
 var srcPath      = rootPath + "AElf.Client/";
@@ -60,6 +63,36 @@ Task("test")
     {
         DotNetCoreTest(testProject.FullPath, testSetting);
     }
+});
+
+Task("test-with-codecov")
+    .Description("operation test")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    var testSetting = new DotNetCoreTestSettings{
+        Configuration = configuration,
+        NoRestore = true,
+        NoBuild = true,
+        ArgumentCustomization = args => {
+                    return args
+                        .Append("--logger trx")
+                        .Append("--settings CodeCoverage.runsettings")
+                        .Append("--collect:\"XPlat Code Coverage\"");
+                }                  
+    };
+    var testProjects = GetFiles("./test/*.Tests/*.csproj");
+    var testProjectList = testProjects.OrderBy(p=>p.FullPath).ToList();
+    foreach(var testProject in testProjectList)
+    {
+        DotNetCoreTest(testProject.FullPath, testSetting);
+    }
+});
+
+Task("upload-coverage-azure")
+    .Does(() =>
+{
+    Codecov("./CodeCoverage/Cobertura.xml","$CODECOV_TOKEN");
 });
 
 Task("default")

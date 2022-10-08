@@ -12,4 +12,4 @@ cd aelf/aelf
 $job2 = Start-Job -ScriptBlock { cd D:\a\1\s\aelf\aelf; dotnet AElf.Launcher.dll; } 
 sleep 60
 cd D:\a\1\s
-PowerShell.exe -file build.ps1 --target=test
+PowerShell.exe -file build.ps1 --target=test-with-codecov
