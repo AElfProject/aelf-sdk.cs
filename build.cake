@@ -2,6 +2,7 @@
 #addin nuget:?package=Cake.Codecov&version=0.8.0
 
 var target = Argument("target", "default");
+var configuration = Argument("configuration", "Debug");
 var rootPath     = "./";
 var srcPath      = rootPath + "AElf.Client/";
 var testPath     = rootPath + "AElf.Client.Test/";
@@ -39,7 +40,7 @@ Task("build")
 {
     var buildSetting = new DotNetCoreBuildSettings{
         NoRestore = true,
-        Configuration = "Debug",
+        Configuration = configuration,
         ArgumentCustomization = args => {
             return args.Append("/clp:ErrorsOnly")
                        .Append("--no-incremental")
