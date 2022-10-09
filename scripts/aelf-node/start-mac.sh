@@ -6,7 +6,7 @@ mkdir -p ~/.local/share/aelf/keys
 cd ../../
 wget https://github.com/AElfProject/AElf/releases/download/v1.2.0/aelf.zip && unzip aelf.zip
 cp scripts/aelf-node/keys/SD6BXDrKT2syNd1WehtPyRo3dPBiXqfGUj8UJym7YP9W9RynM.json  ~/.local/share/aelf/keys/
-cp scripts/aelf-node/app* aelf/
+cp scripts/aelf-node/app* AElf/
 echo "start node"
 cd aelf && dotnet AElf.Launcher.dll >/dev/null 2>&1 &
 sleep 30

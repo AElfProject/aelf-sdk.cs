@@ -1,5 +1,11 @@
 # AElf-Client
 
+BRANCH | AZURE PIPELINES                                                                                                                                                                                                        | TESTS                                                                                                                                                                                    | CODE COVERAGE
+-------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------
+MASTER   | [![Build Status](https://dev.azure.com/AElfProject/aelf-sdk.cs/_apis/build/status/AElfProject.aelf-sdk.cs?branchName=master)](https://dev.azure.com/AElfProject/aelf-sdk.cs/_build/latest?definitionId=14&branchName=master) | [![Test Status](https://img.shields.io/azure-devops/tests/AElfProject/aelf-sdk.cs/14/master)](https://dev.azure.com/AElfProject/aelf-sdk.cs/_build/latest?definitionId=14&branchName=master) | [![codecov](https://codecov.io/gh/AElfProject/aelf-sdk.cs/branch/master/graph/badge.svg?token=mBrO9ZNFAS)](https://codecov.io/gh/AElfProject/aelf-sdk.cs)
+DEV    | [![Build Status](https://dev.azure.com/AElfProject/aelf-sdk.cs/_apis/build/status/AElfProject.aelf-sdk.cs?branchName=dev)](https://dev.azure.com/AElfProject/aelf-sdk.cs/_build/latest?definitionId=14&branchName=dev)       | [![Test Status](https://img.shields.io/azure-devops/tests/AElfProject/aelf-sdk.cs/14/dev)](https://dev.azure.com/AElfProject/aelf-sdk.cs/_build/latest?definitionId=14&branchName=dev)       | [![codecov](https://codecov.io/gh/AElfProject/aelf-sdk.cs/branch/dev/graph/badge.svg?token=mBrO9ZNFAS)](https://codecov.io/gh/AElfProject/aelf-sdk.cs)
+
+
 ## Introduction
 
 This is a C# client library, used to communicate with the [AElf](https://github.com/AElfProject/AElf)  API.

@@ -6,11 +6,11 @@ cd ../../
 wget https://github.com/AElfProject/AElf/releases/download/v1.2.0/aelf.zip
 sudo unzip aelf.zip
 sed -i "s/127.0.0.1/$ip/g" scripts/aelf-node/appsettings.json
-sudo mkdir -p aelf/aelf/keys
-sudo cp scripts/aelf-node/keys/*.json aelf/aelf/keys/
-sudo cp scripts/aelf-node/app* aelf/
+sudo mkdir -p AElf/aelf/keys
+sudo cp scripts/aelf-node/keys/*.json AElf/aelf/keys/
+sudo cp scripts/aelf-node/app* AElf/
 echo "start node"
-cd aelf && sudo dotnet AElf.Launcher.dll >/dev/null 2>&1 &
+cd AElf && sudo dotnet AElf.Launcher.dll >/dev/null 2>&1 &
 sleep 30
 height=`curl -s http://$ip:8001/api/blockChain/blockHeight`
 echo "height is $height"
