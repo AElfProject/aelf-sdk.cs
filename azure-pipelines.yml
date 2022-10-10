@@ -9,7 +9,7 @@ jobs:
   - task: UseDotNet@2
     displayName: 'Install .NET Core SDK'
     inputs:
-      version: 3.1.101
+      version: 6.0.x
   - powershell: ./scripts/aelf-node/start-window.ps1
     displayName: 'Build and Test'
 # All tasks on Linux
@@ -23,13 +23,28 @@ jobs:
   pool:
     vmImage: ubuntu-18.04
   steps:
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core SDK'
     inputs:
-      version: '3.1.101'
+      version: 6.0.x
   - script: cd scripts/aelf-node && bash start.sh
     displayName: 'Deploy a full node'
-  - script: bash build.sh -target=test
+  - script: bash build.sh -target=test-with-codecov
     displayName: 'build and test'
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
+  - task: reportgenerator@5
+    displayName: ReportGenerator
+    inputs:
+      reports: '$(Build.SourcesDirectory)/test/*/TestResults/*/coverage.cobertura.xml'
+      targetdir: '$(Build.SourcesDirectory)/CodeCoverage'
+      reporttypes: 'Cobertura'
+      assemblyfilters: '-xunit*'
+  - script: bash build.sh --target=upload-coverage-azure
+    displayName: 'Upload data to Codecov'
 # All tasks on macOS
 - job: build_all_macos
   displayName: Build all tasks (macos)
@@ -38,10 +53,11 @@ jobs:
   variables:
     phpVersion: 7.2
   steps:
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core SDK'
     inputs:
-      version: '3.1.101'
+      version: 6.0.x
   - script: cd scripts/aelf-node && bash start-mac.sh
     displayName: 'Deploy a full node'
-  - script: bash build.sh -target=test
+  - script: bash build.sh -target=test-with-codecov
     displayName: 'build and test'

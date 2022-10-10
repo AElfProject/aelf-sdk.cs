@@ -1,9 +1,13 @@
+#tool nuget:?package=Codecov
+#addin nuget:?package=Cake.Codecov&version=0.8.0
+
 var target = Argument("target", "default");
+var configuration = Argument("configuration", "Debug");
 var rootPath     = "./";
 var srcPath      = rootPath + "AElf.Client/";
 var testPath     = rootPath + "AElf.Client.Test/";
 var distPath     = rootPath + "aelf-node/";
-var solution     = rootPath + "AElf.Client.sln";
+var solution     = rootPath + "all.sln";
 var srcProjects  = GetFiles(srcPath + "AElf.Client.csproj");
 
 Task("clean")
@@ -36,7 +40,7 @@ Task("build")
 {
     var buildSetting = new DotNetCoreBuildSettings{
         NoRestore = true,
-        Configuration = "Debug",
+        Configuration = configuration,
         ArgumentCustomization = args => {
             return args.Append("/clp:ErrorsOnly")
                        .Append("--no-incremental")
@@ -60,6 +64,36 @@ Task("test")
     {
         DotNetCoreTest(testProject.FullPath, testSetting);
     }
+});
+
+Task("test-with-codecov")
+    .Description("operation test")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    var testSetting = new DotNetCoreTestSettings{
+        Configuration = configuration,
+        NoRestore = true,
+        NoBuild = true,
+        ArgumentCustomization = args => {
+                    return args
+                        .Append("--logger trx")
+                        .Append("--settings CodeCoverage.runsettings")
+                        .Append("--collect:\"XPlat Code Coverage\"");
+                }                  
+    };
+    var testProjects = GetFiles("./test/*.Test/*.csproj");
+    var testProjectList = testProjects.OrderBy(p=>p.FullPath).ToList();
+    foreach(var testProject in testProjectList)
+    {
+        DotNetCoreTest(testProject.FullPath, testSetting);
+    }
+});
+
+Task("upload-coverage-azure")
+    .Does(() =>
+{
+    Codecov("./CodeCoverage/Cobertura.xml","$CODECOV_TOKEN");
 });
 
 Task("default")
