@@ -8,11 +8,11 @@
     branches:
       include:
       - dev
-      - feature/daily_build
+      - feature/daily-build
   steps:
   - task: UseDotNet@2
     displayName: 'Install .NET Core SDK'
     inputs:
       version: 6.0.400
-  - script: scripts/deploy_myget_daily.sh "VERSION_PREFIX" "MYGET_API_KEY"
+  - script: bash scripts/deploy_myget_daily.sh "VERSION_PREFIX" "MYGET_API_KEY"
     displayName: 'publish myget cron'
