@@ -3,7 +3,7 @@
   pr: none 
   trigger: none
   schedules:
-  - cron: "28 04 * * *"
+  - cron: "0 16 * * *"
     displayName: "daily build and publish myget"
     branches:
       include:
