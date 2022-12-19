@@ -90,6 +90,12 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
 
     public void SetPrivateKey(string address, string password, string? alias = null)
     {
+        var keys = Keys
+            .WhereIf(!alias.IsNullOrWhiteSpace(), a => a.Alias == alias)
+            .WhereIf(!address.IsNullOrWhiteSpace(), a => a.Address == address)
+            .ToList();
+        if (keys.Count == 1) return;
+        
         var keyFilePath = GetKeyFileFullPath(address, _aelfAccountOptions.KeyDirectory);
         var privateKey = AsyncHelper.RunSync(() => Task.Run(() =>
         {
@@ -97,12 +103,11 @@ public class AElfAccountProvider : Dictionary<AElfAccountInfo, byte[]>, IAElfAcc
             var json = textReader.ReadToEnd();
             return _keyStoreService.DecryptKeyStoreFromJson(password, json);
         }));
-        
-        var keys = Keys
+        keys = Keys
             .WhereIf(!alias.IsNullOrWhiteSpace(), a => a.Alias == alias)
             .WhereIf(!address.IsNullOrWhiteSpace(), a => a.Address == address)
             .ToList();
-
+        
         if (keys.Count == 1) return;
         TryAdd(new AElfAccountInfo
         {
