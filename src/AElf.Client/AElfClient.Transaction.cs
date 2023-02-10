@@ -162,4 +162,14 @@ public partial class AElfClient : ITransactionAppService
             var url = GetRequestUrl(_baseUrl, $"api/blockChain/merklePathByTransactionId?transactionId={transactionId}");
             return await _httpService.GetResponseAsync<MerklePathDto>(url);
         }
+
+        public async Task<TransactionFeeResultOutput?> GetTransactionFeeResultAsync(CalculateTransactionFeeInput input)
+        {
+            var url = GetRequestUrl(_baseUrl, "/api/blockChain/calculateTransactionFee");
+            var parameters = new Dictionary<string, string>
+            {
+                {"RawTransaction", input.RawTransaction}
+            };
+            return await _httpService.PostResponseAsync<TransactionFeeResultOutput>(url,parameters);
+        }
 }

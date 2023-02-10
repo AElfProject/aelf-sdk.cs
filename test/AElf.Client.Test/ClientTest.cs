@@ -25,7 +25,7 @@ namespace AElf.Client.Test;
 
 public class ClientTest
 {
-    private const string BaseUrl = "http://192.168.196.116:8000";
+    private const string BaseUrl = "http://127.0.0.1:8000";
 
     private string _genesisAddress;
     private string GenesisAddress => GetGenesisContractAddress();
@@ -35,7 +35,7 @@ public class ClientTest
 
     // Address and privateKey of a node.
     private readonly string _address;
-    private const string PrivateKey = "cd86ab6347d8e52bbbe8532141fc59ce596268143a308d1d40fedf385528b458";
+    private const string PrivateKey = "4980f789235c786462b24ef23849e90bb1b6d590402a130313ce88d79a6ca3da";
 
     private AElfClient Client { get; }
     private readonly ITestOutputHelper _testOutputHelper;
@@ -537,6 +537,40 @@ public class ClientTest
         transactionResultDto = new TransactionResultDto();
         transactionFees = transactionResultDto.GetTransactionFees();
         transactionFees.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async void GetTransactionFeeResult_Test()
+    {
+        var address = GenesisAddress;
+        var status = await Client.GetChainStatusAsync();
+        var height = status.BestChainHeight;
+        var blockHash = status.BestChainHash;
+
+        var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
+        {
+            From = _address,
+            To = address,
+            MethodName = ContractMethodName,
+            Params = new JObject
+            {
+                ["value"] = HashHelper.ComputeFrom("AElf.ContractNames.Token").Value.ToBase64()
+            }.ToString(),
+            RefBlockNumber = height,
+            RefBlockHash = blockHash
+        });
+
+        createRaw.RawTransaction.ShouldNotBeEmpty();
+        var input = new CalculateTransactionFeeInput
+        {
+            RawTransaction = createRaw.RawTransaction
+        };
+        var transactionFeeOutput = await Client.GetTransactionFeeResultAsync(input);
+        transactionFeeOutput.Success.ShouldBe(true);
+
+
+
+
     }
 
     #endregion
