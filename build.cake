@@ -3,7 +3,7 @@ var rootPath     = "./";
 var srcPath      = rootPath + "AElf.Client/";
 var testPath     = rootPath + "AElf.Client.Test/";
 var distPath     = rootPath + "aelf-node/";
-var solution     = rootPath + "All.sln";
+var solution     = rootPath + "all.sln";
 var srcProjects  = GetFiles(srcPath + "AElf.Client.csproj");
 
 Task("clean")
