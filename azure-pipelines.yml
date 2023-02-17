@@ -9,7 +9,7 @@ jobs:
   - task: UseDotNet@2
     displayName: 'Install .NET Core SDK'
     inputs:
-      version: 3.1.101
+      version: '6.0.x'
   - powershell: ./scripts/aelf-node/start-window.ps1
     displayName: 'Build and Test'
 # All tasks on Linux
@@ -23,9 +23,9 @@ jobs:
   pool:
     vmImage: ubuntu-18.04
   steps:
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
     inputs:
-      version: '3.1.101'
+      version: '6.0.x'
   - script: cd scripts/aelf-node && bash start.sh
     displayName: 'Deploy a full node'
   - script: bash build.sh -target=test
@@ -40,7 +40,7 @@ jobs:
   steps:
   - task: DotNetCoreInstaller@0
     inputs:
-      version: '3.1.101'
+      version: '6.0.x'
   - script: cd scripts/aelf-node && bash start-mac.sh
     displayName: 'Deploy a full node'
   - script: bash build.sh -target=test
