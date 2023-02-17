@@ -21,7 +21,7 @@ jobs:
       ports:
       - 6379:6379
   pool:
-    vmImage: ubuntu-18.04
+    vmImage: ubuntu-latest
   steps:
   - task: UseDotNet@2
     inputs:
@@ -38,7 +38,7 @@ jobs:
   variables:
     phpVersion: 7.2
   steps:
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
     inputs:
       version: '6.0.x'
   - script: cd scripts/aelf-node && bash start-mac.sh
