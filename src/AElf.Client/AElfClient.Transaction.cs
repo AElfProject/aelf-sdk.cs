@@ -163,7 +163,7 @@ public partial class AElfClient : ITransactionAppService
             return await _httpService.GetResponseAsync<MerklePathDto>(url);
         }
 
-        public async Task<TransactionFeeResultOutput?> GetTransactionFeeResultAsync(CalculateTransactionFeeInput input)
+        public async Task<TransactionFeeResultOutput?> CalculateTransactionFeeAsync(CalculateTransactionFeeInput input)
         {
             var url = GetRequestUrl(_baseUrl, "/api/blockChain/calculateTransactionFee");
             var parameters = new Dictionary<string, string>

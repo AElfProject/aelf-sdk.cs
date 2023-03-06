@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -42,6 +43,7 @@ public class ClientTest
 
     private const string UserName = "test1";
     private const string Password = "test";
+    private const string Version = "1.2.3.0";
 
     public ClientTest(ITestOutputHelper testOutputHelper)
     {
@@ -166,6 +168,7 @@ public class ClientTest
     {
         var netWorkInfo = await Client.GetNetworkInfoAsync();
         Assert.True(netWorkInfo != null);
+        netWorkInfo.Version.ShouldBe(Version);
         var info = JsonConvert.SerializeObject(netWorkInfo, Formatting.Indented);
         _testOutputHelper.WriteLine(info);
     }
@@ -540,7 +543,7 @@ public class ClientTest
     }
 
     [Fact]
-    public async void CalculateTransactionFeeResult_Test()
+    public async void CalculateTransactionFee_Test()
     {
         var address = GenesisAddress;
         var status = await Client.GetChainStatusAsync();
@@ -565,7 +568,7 @@ public class ClientTest
         {
             RawTransaction = createRaw.RawTransaction
         };
-        var transactionFeeOutput = await Client.GetTransactionFeeResultAsync(input);
+        var transactionFeeOutput = await Client.CalculateTransactionFeeAsync(input);
         transactionFeeOutput.Success.ShouldBe(true);
         transactionFeeOutput.TransactionFee["ELF"].ShouldBeGreaterThan(18000000);
         transactionFeeOutput.TransactionFee["ELF"].ShouldBeLessThanOrEqualTo(19000000);
