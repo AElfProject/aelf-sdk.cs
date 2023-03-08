@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -25,7 +26,7 @@ namespace AElf.Client.Test;
 
 public class ClientTest
 {
-    private const string BaseUrl = "http://192.168.196.116:8000";
+    private const string BaseUrl = "http://127.0.0.1:8000";
 
     private string _genesisAddress;
     private string GenesisAddress => GetGenesisContractAddress();
@@ -42,6 +43,7 @@ public class ClientTest
 
     private const string UserName = "test1";
     private const string Password = "test";
+    private const string Version = "1.2.3.0";
 
     public ClientTest(ITestOutputHelper testOutputHelper)
     {
@@ -166,6 +168,7 @@ public class ClientTest
     {
         var netWorkInfo = await Client.GetNetworkInfoAsync();
         Assert.True(netWorkInfo != null);
+        netWorkInfo.Version.ShouldBe(Version);
         var info = JsonConvert.SerializeObject(netWorkInfo, Formatting.Indented);
         _testOutputHelper.WriteLine(info);
     }
@@ -537,6 +540,42 @@ public class ClientTest
         transactionResultDto = new TransactionResultDto();
         transactionFees = transactionResultDto.GetTransactionFees();
         transactionFees.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async void CalculateTransactionFee_Test()
+    {
+        var address = GenesisAddress;
+        var status = await Client.GetChainStatusAsync();
+        var height = status.BestChainHeight;
+        var blockHash = status.BestChainHash;
+
+        var createRaw = await Client.CreateRawTransactionAsync(new CreateRawTransactionInput
+        {
+            From = _address,
+            To = address,
+            MethodName = ContractMethodName,
+            Params = new JObject
+            {
+                ["value"] = HashHelper.ComputeFrom("AElf.ContractNames.Token").Value.ToBase64()
+            }.ToString(),
+            RefBlockNumber = height,
+            RefBlockHash = blockHash
+        });
+
+        createRaw.RawTransaction.ShouldNotBeEmpty();
+        var input = new CalculateTransactionFeeInput
+        {
+            RawTransaction = createRaw.RawTransaction
+        };
+        var calculateTransactionFeeOutput = await Client.CalculateTransactionFeeAsync(input);
+        calculateTransactionFeeOutput.Success.ShouldBe(true);
+        calculateTransactionFeeOutput.TransactionFee["ELF"].ShouldBeGreaterThan(18000000);
+        calculateTransactionFeeOutput.TransactionFee["ELF"].ShouldBeLessThanOrEqualTo(19000000);
+
+
+
+
     }
 
     #endregion
