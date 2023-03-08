@@ -568,10 +568,10 @@ public class ClientTest
         {
             RawTransaction = createRaw.RawTransaction
         };
-        var transactionFeeOutput = await Client.CalculateTransactionFeeAsync(input);
-        transactionFeeOutput.Success.ShouldBe(true);
-        transactionFeeOutput.TransactionFee["ELF"].ShouldBeGreaterThan(18000000);
-        transactionFeeOutput.TransactionFee["ELF"].ShouldBeLessThanOrEqualTo(19000000);
+        var calculateTransactionFeeOutput = await Client.CalculateTransactionFeeAsync(input);
+        calculateTransactionFeeOutput.Success.ShouldBe(true);
+        calculateTransactionFeeOutput.TransactionFee["ELF"].ShouldBeGreaterThan(18000000);
+        calculateTransactionFeeOutput.TransactionFee["ELF"].ShouldBeLessThanOrEqualTo(19000000);
 
 
 

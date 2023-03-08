@@ -1,6 +1,6 @@
 namespace AElf.Client.Dto;
 
-public class TransactionFeeResultOutput
+public class CalculateTransactionFeeOutput
 {
 
     public bool Success { get; set; }

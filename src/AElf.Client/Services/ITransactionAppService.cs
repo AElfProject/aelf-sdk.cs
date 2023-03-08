@@ -25,5 +25,5 @@ public interface ITransactionAppService
 
     Task<MerklePathDto?> GetMerklePathByTransactionIdAsync(string transactionId);
 
-    Task<TransactionFeeResultOutput?> CalculateTransactionFeeAsync(CalculateTransactionFeeInput input);
+    Task<CalculateTransactionFeeOutput?> CalculateTransactionFeeAsync(CalculateTransactionFeeInput input);
 }
