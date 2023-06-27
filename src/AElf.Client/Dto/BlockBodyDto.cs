@@ -1,8 +1,11 @@
-namespace AElf.Client.Dto;
+using System.Collections.Generic;
 
-public class BlockBodyDto
+namespace AElf.Client.Dto
 {
-    public int TransactionsCount { get; set; }
-        
-    public List<string> Transactions { get; set; }
-}
+    
+    public class BlockBodyDto
+    {
+        public int TransactionsCount { get; set; }
+            
+        public List<string> Transactions { get; set; }
+    }}

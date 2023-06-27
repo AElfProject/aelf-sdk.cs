@@ -1,6 +1,7 @@
-namespace AElf.Client.Dto;
-
-public class CreateRawTransactionOutput
+namespace AElf.Client.Dto
 {
-    public string RawTransaction { get; set; }
-}
+    
+    public class CreateRawTransactionOutput
+    {
+        public string RawTransaction { get; set; }
+    }}

@@ -1,10 +1,11 @@
-namespace AElf.Client.Dto;
-
-public class BlockDto
+namespace AElf.Client.Dto
 {
-    public string BlockHash { get; set; }
-        
-    public BlockHeaderDto Header { get; set; }
-        
-    public BlockBodyDto Body { get; set; }
-}
+    
+    public class BlockDto
+    {
+        public string BlockHash { get; set; }
+            
+        public BlockHeaderDto Header { get; set; }
+            
+        public BlockBodyDto Body { get; set; }
+    }}

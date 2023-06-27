@@ -1,11 +1,14 @@
-namespace AElf.Client.Dto;
+using System.Collections.Generic;
 
-public class CalculateTransactionFeeOutput
+namespace AElf.Client.Dto
 {
-
-    public bool Success { get; set; }
-
-    public Dictionary<string, long> TransactionFee { get; set; }
-
-    public Dictionary<string, long> ResourceFee { get; set; }
-}
+    
+    public class CalculateTransactionFeeOutput
+    {
+    
+        public bool Success { get; set; }
+    
+        public Dictionary<string, long> TransactionFee { get; set; }
+    
+        public Dictionary<string, long> ResourceFee { get; set; }
+    }}

@@ -1,9 +1,10 @@
-namespace AElf.Client.Dto;
-
-public class ExecuteTransactionDto
+namespace AElf.Client.Dto
 {
-    /// <summary>
-    /// raw transaction
-    /// </summary>
-    public string RawTransaction { get; set; }
-}
+    
+    public class ExecuteTransactionDto
+    {
+        /// <summary>
+        /// raw transaction
+        /// </summary>
+        public string RawTransaction { get; set; }
+    }}

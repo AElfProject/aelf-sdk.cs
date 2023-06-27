@@ -1,37 +1,40 @@
+using System.Collections.Generic;
+using System.Linq;
 using AElf.Client.Dto;
 using AElf.Contracts.MultiToken;
 using Google.Protobuf;
 
-namespace AElf.Client.Extensions;
-
-public static class TransactionResultDtoExtension
+namespace AElf.Client.Extensions
 {
-    public static Dictionary<string, long> GetTransactionFees(this TransactionResultDto transactionResultDto)
+    
+    public static class TransactionResultDtoExtension
     {
-        var result = new Dictionary<string, long>();
-
-        var transactionFeeLogs =
-            transactionResultDto.Logs?.Where(l => l.Name == nameof(TransactionFeeCharged)).ToList();
-        if (transactionFeeLogs != null)
+        public static Dictionary<string, long> GetTransactionFees(this TransactionResultDto transactionResultDto)
         {
-            foreach (var transactionFee in transactionFeeLogs.Select(transactionFeeLog =>
-                         TransactionFeeCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+            var result = new Dictionary<string, long>();
+    
+            var transactionFeeLogs =
+                transactionResultDto.Logs?.Where(l => l.Name == nameof(TransactionFeeCharged)).ToList();
+            if (transactionFeeLogs != null)
             {
-                result.Add(transactionFee.Symbol, transactionFee.Amount);
+                foreach (var transactionFee in transactionFeeLogs.Select(transactionFeeLog =>
+                             TransactionFeeCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+                {
+                    result.Add(transactionFee.Symbol, transactionFee.Amount);
+                }
             }
-        }
-
-        var resourceTokenLogs =
-            transactionResultDto.Logs?.Where(l => l.Name == nameof(ResourceTokenCharged)).ToList();
-        if (resourceTokenLogs != null)
-        {
-            foreach (var resourceToken in resourceTokenLogs.Select(transactionFeeLog =>
-                         ResourceTokenCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+    
+            var resourceTokenLogs =
+                transactionResultDto.Logs?.Where(l => l.Name == nameof(ResourceTokenCharged)).ToList();
+            if (resourceTokenLogs != null)
             {
-                result.Add(resourceToken.Symbol, resourceToken.Amount);
+                foreach (var resourceToken in resourceTokenLogs.Select(transactionFeeLog =>
+                             ResourceTokenCharged.Parser.ParseFrom(ByteString.FromBase64(transactionFeeLog.NonIndexed))))
+                {
+                    result.Add(resourceToken.Symbol, resourceToken.Amount);
+                }
             }
+    
+            return result;
         }
-
-        return result;
-    }
-}
+    }}

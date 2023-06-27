@@ -1,6 +1,7 @@
-namespace AElf.Client.Dto;
-
-public class CalculateTransactionFeeInput
+namespace AElf.Client.Dto
 {
-    public string RawTransaction { get; set; }
-}
+    
+    public class CalculateTransactionFeeInput
+    {
+        public string RawTransaction { get; set; }
+    }}

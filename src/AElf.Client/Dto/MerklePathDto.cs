@@ -1,12 +1,15 @@
-namespace AElf.Client.Dto;
+using System.Collections.Generic;
 
-public class MerklePathDto
+namespace AElf.Client.Dto
 {
-    public List<MerklePathNodeDto> MerklePathNodes;
-}
-
-public class MerklePathNodeDto
-{
-    public string Hash { get; set; }
-    public bool IsLeftChildNode { get; set; }
-}
+    
+    public class MerklePathDto
+    {
+        public List<MerklePathNodeDto> MerklePathNodes;
+    }
+    
+    public class MerklePathNodeDto
+    {
+        public string Hash { get; set; }
+        public bool IsLeftChildNode { get; set; }
+    }}

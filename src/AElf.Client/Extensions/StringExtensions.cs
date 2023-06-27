@@ -1,14 +1,17 @@
-namespace AElf.Client.Extensions;
+using AElf.Types;
 
-public static class StringExtensions
+namespace AElf.Client.Extensions
 {
-    public static Address ToAddress(this string? address)
+    
+    public static class StringExtensions
     {
-        if (address == null)
+        public static Address ToAddress(this string? address)
         {
-            return Address.FromPublicKey(ByteArrayHelper.HexStringToByteArray(AElfClientConstants.DefaultPrivateKey));
+            if (address == null)
+            {
+                return Address.FromPublicKey(ByteArrayHelper.HexStringToByteArray(AElfClientConstants.DefaultPrivateKey));
+            }
+    
+            return Address.FromBase58(address);
         }
-
-        return Address.FromBase58(address);
-    }
-}
+    }}
