@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using AElf.Client.Service;
 
 namespace AElf.Client

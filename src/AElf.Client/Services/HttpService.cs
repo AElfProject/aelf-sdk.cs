@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AElf.Client.Service
 {
@@ -46,8 +47,14 @@ namespace AElf.Client.Service
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             var response = await GetResponseAsync(url, version, expectedStatusCode);
-            var stream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<T>(stream);
+            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var streamReader = new StreamReader(stream);
+            using var reader = new JsonTextReader(streamReader);
+            
+            var serializer = new JsonSerializer();
+            var ret = serializer.Deserialize<T>(reader);
+            
+            return ret;
         }
     
         /// <summary>
@@ -67,8 +74,15 @@ namespace AElf.Client.Service
         {
             var response = await PostResponseAsync(url, parameters, version, true, expectedStatusCode,
                 authenticationHeaderValue);
-            var stream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<T>(stream);
+            
+            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var streamReader = new StreamReader(stream);
+            using var reader = new JsonTextReader(streamReader);
+            
+            var serializer = new JsonSerializer();
+            var ret = serializer.Deserialize<T>(reader);
+
+            return ret;
         }
     
         /// <summary>
@@ -85,8 +99,15 @@ namespace AElf.Client.Service
             AuthenticationHeaderValue authenticationHeaderValue = null)
         {
             var response = await DeleteResponseAsync(url, version, expectedStatusCode, authenticationHeaderValue);
-            var stream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<T>(stream);
+
+            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var streamReader = new StreamReader(stream);
+            using var reader = new JsonTextReader(streamReader);
+            
+            var serializer = new JsonSerializer();
+            var ret = serializer.Deserialize<T>(reader);
+
+            return ret;
         }
     
         #region GetResponse
@@ -131,7 +152,7 @@ namespace AElf.Client.Service
             HttpContent content;
             if (useApplicationJson)
             {
-                var paramsStr = JsonSerializer.Serialize(parameters);
+                var paramsStr = JsonConvert.SerializeObject(parameters);
                 content = new StringContent(paramsStr, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = MediaTypeHeaderValue.Parse($"application/json{version}");
             }
