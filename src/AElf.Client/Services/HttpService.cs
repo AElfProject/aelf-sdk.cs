@@ -47,7 +47,7 @@ namespace AElf.Client.Service
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             var response = await GetResponseAsync(url, version, expectedStatusCode);
-            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var stream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(stream);
             using var reader = new JsonTextReader(streamReader);
             
@@ -75,7 +75,7 @@ namespace AElf.Client.Service
             var response = await PostResponseAsync(url, parameters, version, true, expectedStatusCode,
                 authenticationHeaderValue);
             
-            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var stream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(stream);
             using var reader = new JsonTextReader(streamReader);
             
@@ -100,7 +100,7 @@ namespace AElf.Client.Service
         {
             var response = await DeleteResponseAsync(url, version, expectedStatusCode, authenticationHeaderValue);
 
-            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var stream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(stream);
             using var reader = new JsonTextReader(streamReader);
             
