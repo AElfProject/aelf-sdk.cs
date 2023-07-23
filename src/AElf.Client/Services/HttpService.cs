@@ -34,6 +34,16 @@ namespace AElf.Client.Service
         {
             TimeoutSeconds = timeoutSeconds;
         }
+        
+        private static T GetResponse<T>(Stream stream)
+        {
+            using var streamReader = new StreamReader(stream);
+            using var reader = new JsonTextReader(streamReader);
+
+            var serializer = new JsonSerializer();
+            var ret = serializer.Deserialize<T>(reader);
+            return ret;
+        }
     
         /// <summary>
         /// Get request.
@@ -48,15 +58,11 @@ namespace AElf.Client.Service
         {
             var response = await GetResponseAsync(url, version, expectedStatusCode);
             await using var stream = await response.Content.ReadAsStreamAsync();
-            using var streamReader = new StreamReader(stream);
-            using var reader = new JsonTextReader(streamReader);
-            
-            var serializer = new JsonSerializer();
-            var ret = serializer.Deserialize<T>(reader);
-            
+            var ret = GetResponse<T>(stream);
+
             return ret;
         }
-    
+
         /// <summary>
         /// Post request.
         /// </summary>
@@ -76,11 +82,7 @@ namespace AElf.Client.Service
                 authenticationHeaderValue);
             
             await using var stream = await response.Content.ReadAsStreamAsync();
-            using var streamReader = new StreamReader(stream);
-            using var reader = new JsonTextReader(streamReader);
-            
-            var serializer = new JsonSerializer();
-            var ret = serializer.Deserialize<T>(reader);
+            var ret = GetResponse<T>(stream);
 
             return ret;
         }
@@ -101,11 +103,7 @@ namespace AElf.Client.Service
             var response = await DeleteResponseAsync(url, version, expectedStatusCode, authenticationHeaderValue);
 
             await using var stream = await response.Content.ReadAsStreamAsync();
-            using var streamReader = new StreamReader(stream);
-            using var reader = new JsonTextReader(streamReader);
-            
-            var serializer = new JsonSerializer();
-            var ret = serializer.Deserialize<T>(reader);
+            var ret = GetResponse<T>(stream);
 
             return ret;
         }
