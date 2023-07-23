@@ -5,4 +5,5 @@ namespace AElf.Client.Dto
     {
         public int Queued { get; set; }
         public int Validated { get; set; }
-    }}
+    }
+}

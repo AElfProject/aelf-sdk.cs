@@ -13,4 +13,5 @@ namespace AElf.Client.Services
         Task<Address> GetContractAddressByNameAsync(Hash contractNameHash);
         string GetAddressFromPubKey(string pubKey);
         KeyPairInfo GenerateKeyPairInfo();
-    }}
+    }
+}

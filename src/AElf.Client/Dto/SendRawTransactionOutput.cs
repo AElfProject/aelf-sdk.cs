@@ -6,4 +6,5 @@ namespace AElf.Client.Dto
         public string TransactionId { get; set; }
     
         public TransactionDto Transaction { get; set; }
-    }}
+    }
+}

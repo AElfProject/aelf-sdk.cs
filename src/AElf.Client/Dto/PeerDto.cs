@@ -23,4 +23,5 @@ namespace AElf.Client.Dto
         public string MethodName { get; set; }
         public string Info { get; set; }
         public string RequestTime { get; set; }
-    }}
+    }
+}

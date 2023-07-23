@@ -11,4 +11,5 @@ namespace AElf.Client
         public const string TestNetSidechain = "https://tdvv-test-node.aelf.io";
         public const int MainChainId = 9992731;
         public const int SidechainId = 9992731;
-    }}
+    }
+}

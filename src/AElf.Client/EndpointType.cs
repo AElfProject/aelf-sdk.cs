@@ -8,4 +8,5 @@ namespace AElf.Client
         TestNetMainChain,
         TestNetSidechain,
         Local
-    }}
+    }
+}

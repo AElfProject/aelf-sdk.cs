@@ -37,4 +37,5 @@ namespace AElf.Client.Extensions
     
             return result;
         }
-    }}
+    }
+}

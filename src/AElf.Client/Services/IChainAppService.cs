@@ -15,4 +15,5 @@ namespace AElf.Client
         Task<List<TaskQueueInfoDto>> GetTaskQueueStatusAsync();
     
         Task<int> GetChainIdAsync();
-    }}
+    }
+}

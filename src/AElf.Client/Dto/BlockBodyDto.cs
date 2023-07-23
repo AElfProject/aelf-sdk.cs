@@ -8,4 +8,5 @@ namespace AElf.Client.Dto
         public int TransactionsCount { get; set; }
             
         public List<string> Transactions { get; set; }
-    }}
+    }
+}

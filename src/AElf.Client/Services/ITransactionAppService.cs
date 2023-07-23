@@ -29,4 +29,5 @@ namespace AElf.Client.Services
         Task<MerklePathDto?> GetMerklePathByTransactionIdAsync(string transactionId);
     
         Task<CalculateTransactionFeeOutput?> CalculateTransactionFeeAsync(CalculateTransactionFeeInput input);
-    }}
+    }
+}

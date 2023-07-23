@@ -26,4 +26,5 @@ namespace AElf.Client.Dto
         public string BestChainHash { get; set; }
             
         public long BestChainHeight { get; set; }
-    }}
+    }
+}

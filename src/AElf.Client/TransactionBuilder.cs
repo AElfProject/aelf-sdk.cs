@@ -59,4 +59,5 @@ namespace AElf.Client
             var signedTx = _aelfClient.SignTransaction(PrivateKey, unsignedTx);
             return signedTx;
         }
-    }}
+    }
+}

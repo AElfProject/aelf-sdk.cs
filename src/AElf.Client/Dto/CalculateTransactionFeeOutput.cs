@@ -11,4 +11,5 @@ namespace AElf.Client.Dto
         public Dictionary<string, long> TransactionFee { get; set; }
     
         public Dictionary<string, long> ResourceFee { get; set; }
-    }}
+    }
+}

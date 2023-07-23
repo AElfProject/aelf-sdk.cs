@@ -43,4 +43,5 @@ namespace AElf.Client
                 $"api/blockChain/blockByHeight?blockHeight={blockHeight}&includeTransactions={includeTransactions}");
             return await _httpService.GetResponseAsync<BlockDto>(url);
         }
-    }}
+    }
+}

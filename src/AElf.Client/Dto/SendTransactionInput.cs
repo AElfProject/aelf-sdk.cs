@@ -7,4 +7,5 @@ namespace AElf.Client.Dto
         /// raw transaction
         /// </summary>
         public string RawTransaction { get; set; }
-    }}
+    }
+}

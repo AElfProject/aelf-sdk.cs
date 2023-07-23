@@ -17,4 +17,5 @@ namespace AElf.Client.Dto
         /// total number of open connections between this node and other nodes
         /// </summary>
         public int Connections { get; set; }
-    }}
+    }
+}

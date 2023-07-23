@@ -63,4 +63,5 @@ namespace AElf.Client
         {
             return new AElfClient(NodeEndpoint, Timeout, UserName, Password);
         }
-    }}
+    }
+}

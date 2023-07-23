@@ -175,4 +175,5 @@ namespace AElf.Client
                 };
                 return await _httpService.PostResponseAsync<CalculateTransactionFeeOutput>(url,parameters);
             }
-    }}
+    }
+}

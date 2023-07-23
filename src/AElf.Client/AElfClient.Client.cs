@@ -270,4 +270,5 @@ namespace AElf.Client
             }
     
             #endregion
-    }}
+    }
+}

@@ -24,4 +24,5 @@ namespace AElf.Client.Dto
         public string Bloom { get; set; }
     
         public string SignerPubkey { get; set; }
-    }}
+    }
+}

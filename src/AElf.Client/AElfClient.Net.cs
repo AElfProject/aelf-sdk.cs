@@ -81,4 +81,5 @@ namespace AElf.Client
                 var byteArray = Encoding.ASCII.GetBytes($"{_userName}:{_password}");
                 return new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             }
-    }}
+    }
+}

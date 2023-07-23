@@ -234,4 +234,5 @@ namespace AElf.Client.Service
         }
     
         #endregion
-    }}
+    }
+}

@@ -20,4 +20,5 @@ namespace AElf.Client.Dto
         public string ReturnValue { get; set; }
     
         public string Error { get; set; }
-    }}
+    }
+}

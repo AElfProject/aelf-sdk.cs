@@ -35,4 +35,5 @@ namespace AElf.Client
             {InvalidParams, "Invalid params"},
             {InvalidSignature, "Invalid signature"}
         };
-    }}
+    }
+}

@@ -17,4 +17,5 @@ namespace AElf.Client.Dto
         /// return transaction detail or not
         /// </summary>
         public bool ReturnTransaction { get; set; }
-    }}
+    }
+}

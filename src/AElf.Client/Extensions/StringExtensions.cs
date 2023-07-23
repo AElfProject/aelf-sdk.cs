@@ -14,4 +14,5 @@ namespace AElf.Client.Extensions
     
             return Address.FromBase58(address);
         }
-    }}
+    }
+}

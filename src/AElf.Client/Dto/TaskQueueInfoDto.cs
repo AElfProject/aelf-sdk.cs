@@ -6,4 +6,5 @@ namespace AElf.Client.Dto
         public string Name { get; set; }
     
         public int Size { get; set; }
-    }}
+    }
+}

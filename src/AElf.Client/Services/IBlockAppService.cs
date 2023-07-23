@@ -11,4 +11,5 @@ namespace AElf.Client.Services
         Task<BlockDto?> GetBlockByHashAsync(string blockHash, bool includeTransactions = false);
     
         Task<BlockDto?> GetBlockByHeightAsync(long blockHeight, bool includeTransactions = false);
-    }}
+    }
+}

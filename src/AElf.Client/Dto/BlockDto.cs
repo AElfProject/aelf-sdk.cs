@@ -8,4 +8,5 @@ namespace AElf.Client.Dto
         public BlockHeaderDto Header { get; set; }
             
         public BlockBodyDto Body { get; set; }
-    }}
+    }
+}

@@ -12,4 +12,5 @@ namespace AElf.Client.Dto
         /// signature
         /// </summary>
         public string Signature { get; set; }
-    }}
+    }
+}

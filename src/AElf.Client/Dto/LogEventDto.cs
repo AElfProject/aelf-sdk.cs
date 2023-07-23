@@ -10,4 +10,5 @@ namespace AElf.Client.Dto
         public string[] Indexed { get; set; }
             
         public string NonIndexed { get; set; }
-    }}
+    }
+}

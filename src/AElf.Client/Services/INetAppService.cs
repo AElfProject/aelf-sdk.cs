@@ -14,4 +14,5 @@ namespace AElf.Client.Services
         Task<List<PeerDto>?> GetPeersAsync(bool withMetrics);
     
         Task<NetworkInfoOutput?> GetNetworkInfoAsync();
-    }}
+    }
+}

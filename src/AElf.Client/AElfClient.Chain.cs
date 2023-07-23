@@ -69,4 +69,5 @@ namespace AElf.Client
             var chainId = ChainHelper.ConvertBase58ToChainId(base58ChainId);
             return chainId;
         }
-    }}
+    }
+}
