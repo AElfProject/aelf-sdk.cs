@@ -21,45 +21,40 @@ namespace AElf.Client.Helper
             string host;
             var port = -1;
 
-            switch (values.Length)
+            if(values.Length <= 2)
             {
-                case <= 2:
+                // ipv4 or hostname
+                host = values[0];
+
+                if (values.Length == 1)
                 {
-                    // ipv4 or hostname
-                    host = values[0];
-
-                    if (values.Length == 1)
-                    {
-                        port = defaultPort;
-                    }
-                    else
-                    {
-                        var parsedPort = GetPort(values[1]);
-
-                        if (parsedPort == 0)
-                            return false;
-
-                        port = parsedPort;
-                    }
-
-                    break;
+                    port = defaultPort;
                 }
-                //ipv6
-                //could be [a:b:c]:d
-                case > 2 when values[0].StartsWith("[") && values[values.Length - 2].EndsWith("]"):
+                else
                 {
-                    host = string.Join(":", values.Take(values.Length - 1).ToArray());
-                    var parsedPort = GetPort(values[values.Length - 1]);
+                    var parsedPort = GetPort(values[1]);
 
                     if (parsedPort == 0)
                         return false;
-                    break;
+
+                    port = parsedPort;
                 }
-                // [a:b:c] or a:b:c
-                case > 2:
-                    host = endpointString;
-                    port = defaultPort;
-                    break;
+            }
+            //ipv6
+            //could be [a:b:c]:d
+            else if(values.Length > 2 && (values[0].StartsWith("[") && values[^2].EndsWith("]")))
+            {
+                host = string.Join(":", values.Take(values.Length - 1).ToArray());
+                var parsedPort = GetPort(values[^1]);
+
+                if (parsedPort == 0)
+                    return false;
+            }
+            // [a:b:c] or a:b:c
+            else
+            {
+                host = endpointString;
+                port = defaultPort;
             }
 
             if (port == -1)

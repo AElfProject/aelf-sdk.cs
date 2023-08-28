@@ -13,14 +13,14 @@ namespace AElf.Client.Service
     
     public interface IHttpService
     {
-        Task<T?> GetResponseAsync<T>(string url, string? version = null,
+        Task<T> GetResponseAsync<T>(string url, string? version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK);
     
-        Task<T?> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
+        Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
             string? version = null, HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
             AuthenticationHeaderValue? authenticationHeaderValue = null);
     
-        Task<T?> DeleteResponseAsObjectAsync<T>(string url, string? version = null,
+        Task<T> DeleteResponseAsObjectAsync<T>(string url, string? version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
             AuthenticationHeaderValue authenticationHeaderValue = null);
     }
@@ -53,7 +53,7 @@ namespace AElf.Client.Service
         /// <param name="expectedStatusCode"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public async Task<T?> GetResponseAsync<T>(string url, string? version = null,
+        public async Task<T> GetResponseAsync<T>(string url, string? version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {
             var response = await GetResponseAsync(url, version, expectedStatusCode);
@@ -73,7 +73,7 @@ namespace AElf.Client.Service
         /// <param name="authenticationHeaderValue"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public async Task<T?> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
+        public async Task<T> PostResponseAsync<T>(string url, Dictionary<string, string> parameters,
             string? version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
             AuthenticationHeaderValue? authenticationHeaderValue = null)
@@ -96,7 +96,7 @@ namespace AElf.Client.Service
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<T?> DeleteResponseAsObjectAsync<T>(string url, string? version = null,
+        public async Task<T> DeleteResponseAsObjectAsync<T>(string url, string? version = null,
             HttpStatusCode expectedStatusCode = HttpStatusCode.OK,
             AuthenticationHeaderValue authenticationHeaderValue = null)
         {
