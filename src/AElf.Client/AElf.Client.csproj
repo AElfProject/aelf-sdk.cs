@@ -17,6 +17,7 @@
         <PackageReference Include="AElf.Types" Version="1.6.0-beta.1" />
         <PackageReference Include="AElf.Cryptography" Version="1.6.0-beta.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Nethereum.KeyStore" Version="3.8.0" />
     </ItemGroup>
 
 </Project>

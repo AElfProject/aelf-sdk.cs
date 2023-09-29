@@ -12,7 +12,6 @@
     
     <ItemGroup>
         <PackageReference Include="Volo.Abp.Autofac" Version="5.2.2" />
-        <PackageReference Include="Nethereum" Version="0.95.0--date20210125-0551.git-05a29e9" />
     </ItemGroup>
     
     <ItemGroup>
