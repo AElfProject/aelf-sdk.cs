@@ -1,9 +1,13 @@
-namespace AElf.Client;
+using System;
 
-public class AElfClientException : Exception
+namespace AElf.Client
 {
-    public AElfClientException(string message) : base(message)
+    
+    public class AElfClientException : Exception
     {
-            
+        public AElfClientException(string message) : base(message)
+        {
+                
+        }
     }
 }

@@ -1,7 +1,9 @@
-namespace AElf.Client.Dto;
-
-public class TransactionPoolStatusOutput
+namespace AElf.Client.Dto
 {
-    public int Queued { get; set; }
-    public int Validated { get; set; }
+    
+    public class TransactionPoolStatusOutput
+    {
+        public int Queued { get; set; }
+        public int Validated { get; set; }
+    }
 }

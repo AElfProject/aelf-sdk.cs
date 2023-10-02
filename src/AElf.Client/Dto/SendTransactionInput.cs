@@ -1,9 +1,11 @@
-namespace AElf.Client.Dto;
-
-public class SendTransactionInput
+namespace AElf.Client.Dto
 {
-    /// <summary>
-    /// raw transaction
-    /// </summary>
-    public string RawTransaction { get; set; }
+    
+    public class SendTransactionInput
+    {
+        /// <summary>
+        /// raw transaction
+        /// </summary>
+        public string RawTransaction { get; set; }
+    }
 }

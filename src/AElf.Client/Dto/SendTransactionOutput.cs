@@ -1,6 +1,8 @@
-namespace AElf.Client.Dto;
-
-public class SendTransactionOutput
+namespace AElf.Client.Dto
 {
-    public string TransactionId { get; set; }
+    
+    public class SendTransactionOutput
+    {
+        public string TransactionId { get; set; }
+    }
 }

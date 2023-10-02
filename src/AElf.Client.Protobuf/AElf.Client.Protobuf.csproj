@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <PackageId>AElf.Client.Protobuf</PackageId>
         <PackageDescription>Protobuf using by AElf C# sdk.</PackageDescription>
@@ -11,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AElf.Types" Version="1.0.0" />
+        <PackageReference Include="AElf.Types" Version="1.6.0-beta.1" />
         <PackageReference Include="Google.Protobuf" Version="3.19.4" />
         <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
         <PackageReference Include="Grpc.Tools" Version="2.46.1" PrivateAssets="All" />

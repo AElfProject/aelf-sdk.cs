@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <PackageId>AElf.Client</PackageId>
         <PackageDescription>This is a C# client library, used to communicate with the AElf API.</PackageDescription>
@@ -15,8 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AElf.Types" Version="1.2.0-rc-19145" />
-        <PackageReference Include="AElf.Cryptography" Version="1.2.0-rc-19145" />
+        <PackageReference Include="AElf.Types" Version="1.6.0-beta.1" />
+        <PackageReference Include="AElf.Cryptography" Version="1.6.0-beta.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Nethereum.KeyStore" Version="3.8.0" />
     </ItemGroup>
 

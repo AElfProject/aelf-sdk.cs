@@ -1,10 +1,12 @@
-namespace AElf.Client;
-
-public enum EndpointType
+namespace AElf.Client
 {
-    MainNetMainChain,
-    MainNetSidechain,
-    TestNetMainChain,
-    TestNetSidechain,
-    Local
+    
+    public enum EndpointType
+    {
+        MainNetMainChain,
+        MainNetSidechain,
+        TestNetMainChain,
+        TestNetSidechain,
+        Local
+    }
 }
