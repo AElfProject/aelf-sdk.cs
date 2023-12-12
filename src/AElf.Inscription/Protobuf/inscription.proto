@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package aelf.inscription;
+import "aelf/core.proto";
+
+option csharp_namespace = "AElf.Inscription";
+
+message TransferInputWithInscription {
+    // The receiver of the token.
+    aelf.Address to = 1;
+    // The token symbol to transfer.
+    string symbol = 2;
+    // The amount to to transfer.
+    int64 amount = 3;
+    // The memo.
+    string memo = 4;
+    bytes inscription = 42;
+}
