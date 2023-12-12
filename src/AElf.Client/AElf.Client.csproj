@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AElf.Client.Protobuf\AElf.Client.Protobuf.csproj" />
+      <ProjectReference Include="..\AElf.Inscription\AElf.Inscription.csproj" />
     </ItemGroup>
 
     <ItemGroup>
