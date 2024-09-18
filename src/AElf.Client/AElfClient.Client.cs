@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
@@ -65,7 +66,7 @@ namespace AElf.Client
     
                 return address;
             }
-    
+
             /// <summary>
             /// Build a transaction from the input parameters.
             /// </summary>
@@ -73,14 +74,15 @@ namespace AElf.Client
             /// <param name="to"></param>
             /// <param name="methodName"></param>
             /// <param name="input"></param>
+            /// <param name="baseUrl"></param>
             /// <returns>Transaction unsigned</returns>
             public async Task<Transaction> GenerateTransactionAsync(string? from, string? to,
-                string methodName, IMessage input)
+                string methodName, IMessage input, string? baseUrl = null)
             {
                 try
                 {
                     AssertValidAddress(to);
-                    var chainStatus = await GetChainStatusAsync();
+                    var chainStatus = await GetChainStatusAsync(baseUrl);
                     var transaction = new Transaction
                     {
                         From = from.ToAddress(),
@@ -99,7 +101,30 @@ namespace AElf.Client
                     throw new AElfClientException($"Failed to generate transaction: {ex.Message}");
                 }
             }
-    
+
+            public async Task<MultiTransaction> GenerateMultiTransactionAsync(GenerateMultiTransactionInput input)
+            {
+                var txList = new List<TransactionAndChainId>();
+                foreach (var generateTransactionInput in input.GenerateTransactionInputs)
+                {
+                    var transaction = await GenerateTransactionAsync(generateTransactionInput.From,
+                        generateTransactionInput.To,
+                        generateTransactionInput.MethodName,
+                        generateTransactionInput.Params,
+                        generateTransactionInput.ClientUrl);
+                    txList.Add(new TransactionAndChainId
+                    {
+                        Transaction = transaction,
+                        ChainId = generateTransactionInput.ChainId
+                    });
+                }
+
+                return new MultiTransaction
+                {
+                    Transactions = { txList },
+                };
+            }
+
             /// <summary>
             /// Convert the Address to the displayed string：symbol_base58-string_base58-string-chain-id
             /// </summary>
@@ -146,7 +171,27 @@ namespace AElf.Client
     
                 return transaction;
             }
-            
+
+            /// <summary>
+            /// Should be called by gateway.
+            /// </summary>
+            /// <param name="privateKeyHex"></param>
+            /// <param name="transaction"></param>
+            /// <returns></returns>
+            public MultiTransaction SignMultiTransaction(string? privateKeyHex, MultiTransaction transaction)
+            {
+                var transactionData = transaction.GetHash().ToByteArray();
+
+                privateKeyHex ??= AElfClientConstants.DefaultPrivateKey;
+
+                // Sign the hash
+                var privateKey = ByteArrayHelper.HexStringToByteArray(privateKeyHex);
+                var signature = CryptoHelper.SignWithPrivateKey(privateKey, transactionData);
+                transaction.Signature = ByteString.CopyFrom(signature);
+
+                return transaction;
+            }
+
             /// <summary>
             /// Sign a transaction using private key.
             /// </summary>

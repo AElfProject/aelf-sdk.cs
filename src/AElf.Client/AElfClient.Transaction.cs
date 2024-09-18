@@ -110,7 +110,34 @@ namespace AElf.Client
                 };
                 return await _httpService.PostResponseAsync<SendTransactionOutput>(url, parameters);
             }
-    
+
+            /// <summary>
+            /// Broadcast a multi-transaction.
+            /// Should be called by gateway.
+            /// </summary>
+            /// <param name="input"></param>
+            /// <returns></returns>
+            public async Task<SendMultiTransactionOutput?> SendMultiTransactionAsync(SendMultiTransactionInput input)
+            {
+                var url = GetRequestUrl(_baseUrl, "api/blockChain/sendMultiTransaction");
+                var parameters = new Dictionary<string, string>
+                {
+                    { "RawTransactions", input.RawTransactions }
+                };
+                return await _httpService.PostResponseAsync<SendMultiTransactionOutput>(url, parameters);
+            }
+
+            public async Task<SendUserSignedMultiTransactionOutput?> SendMultiTransactionToGatewayAsync(
+                SendMultiTransactionToGatewayInput input)
+            {
+                var url = GetRequestUrl(input.GatewayUrl, "api/gateway/sendUserSignedMultiTransaction");
+                var parameters = new Dictionary<string, string>
+                {
+                    { "RawMultiTransaction", input.RawMultiTransaction }
+                };
+                return await _httpService.PostResponseAsync<SendUserSignedMultiTransactionOutput>(url, parameters);
+            }
+
             /// <summary>
             /// Broadcast volume transactions.
             /// </summary>

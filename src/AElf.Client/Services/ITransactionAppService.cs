@@ -18,6 +18,11 @@ namespace AElf.Client.Services
         Task<SendRawTransactionOutput?> SendRawTransactionAsync(SendRawTransactionInput input);
     
         Task<SendTransactionOutput?> SendTransactionAsync(SendTransactionInput input);
+
+        Task<SendMultiTransactionOutput?> SendMultiTransactionAsync(SendMultiTransactionInput input);
+
+        Task<SendUserSignedMultiTransactionOutput?> SendMultiTransactionToGatewayAsync(
+            SendMultiTransactionToGatewayInput input);
     
         Task<string[]?> SendTransactionsAsync(SendTransactionsInput input);
     

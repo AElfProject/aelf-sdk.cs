@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AElf.Client.Dto;
-using AElf.Kernel;
 
 namespace AElf.Client
 {
     
     public interface IChainAppService
     {
-        Task<ChainStatusDto> GetChainStatusAsync();
+        Task<ChainStatusDto> GetChainStatusAsync(string? baseUrl = null);
     
         Task<byte[]> GetContractFileDescriptorSetAsync(string? address);
     

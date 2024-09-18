@@ -8,21 +8,22 @@ namespace AElf.Client
     public partial class AElfClient : IChainAppService
     {
         /// <summary>
-        /// Get the current status of the block chain.
+        /// Get the current status of the blockchain.
         /// </summary>
         /// <returns>Description of current status</returns>
-        public async Task<ChainStatusDto> GetChainStatusAsync()
+        public async Task<ChainStatusDto> GetChainStatusAsync(string? baseUrl = null)
         {
-            var url = GetRequestUrl(_baseUrl, "api/blockChain/chainStatus");
+            baseUrl ??= _baseUrl;
+            var url = GetRequestUrl(baseUrl, "api/blockChain/chainStatus");
             var chainStatus = await _httpService.GetResponseAsync<ChainStatusDto>(url);
             if (chainStatus == null)
             {
                 throw new AElfClientException("Failed to get chain status");
             }
-    
+
             return chainStatus;
         }
-    
+
         /// <summary>
         /// Get the definitions of proto-buff related to a contract.
         /// </summary>
